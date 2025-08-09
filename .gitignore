@@ -1,0 +1,44 @@
+.idea/
+
+# Frontend build artifacts
+
+arapp-front/node_modules
+arapp-front/dist
+arapp-front/ dist-ssr
+arapp-front/*.local
+
+# Backend build artifacts
+
+Arapp/HELP.md
+Arapp/target/
+Arapp/.mvn/wrapper/maven-wrapper.jar
+Arapp/!**/src/main/**/target/
+Arapp/!**/src/test/**/target/
+
+### STS ###
+Arapp/.apt_generated
+Arapp/.classpath
+Arapp/.factorypath
+Arapp/.project
+Arapp/.settings
+Arapp/.springBeans
+Arapp/.sts4-cache
+
+### IntelliJ IDEA ###
+Arapp/.idea
+Arapp/*.iws
+Arapp/*.iml
+Arapp/*.ipr
+Arapp/
+### NetBeans ###
+Arapp/nbproject/private/
+Arapp/nbbuild/
+Arapp/dist/
+Arapp/nbdist/
+Arapp/.nb-gradle/
+Arapp/build/
+Arapp/!**/src/main/**/build/
+Arapp/!**/src/test/**/build/
+
+### VS Code ###
+Arapp/.vscode/
