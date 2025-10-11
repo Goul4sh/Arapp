@@ -29,7 +29,7 @@ Arapp/.idea
 Arapp/*.iws
 Arapp/*.iml
 Arapp/*.ipr
-Arapp/
+
 ### NetBeans ###
 Arapp/nbproject/private/
 Arapp/nbbuild/
