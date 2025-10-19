@@ -3,7 +3,8 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-    color: green;
+  color: green;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 #root > div {
   display: flex;
@@ -13,5 +14,5 @@
 }
 
 body {
-    background-color: #ebc8ad;
+    background-color: #f0f0f0;
 }

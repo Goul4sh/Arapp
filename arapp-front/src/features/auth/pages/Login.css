@@ -1,0 +1,65 @@
+
+
+
+.login_form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 300px;
+
+}
+
+.separator {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.login_page .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  line-height: 1;
+  width: 120px;
+  padding: 6px 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: none;
+  font-size: 18px;
+  border-radius: 10px;
+  border: 3px solid transparent;
+  color: whitesmoke;
+  box-shadow: 0 3px 0 0 rgba(0,0,0,0.12);
+  text-decoration: none;
+  user-select: none;
+}
+
+.login {
+    
+  background-color: #4cae4f;
+  color: whitesmoke;
+  border-color: #4cae4f90;
+  box-shadow: 0 3px 0 0 #4CAF5090;
+}
+
+.google {
+  background: white;
+  border-color: #ddd;
+  box-shadow: 0 3px 0 0 rgba(0,0,0,0.08);
+}
+
+.google_logo {
+    height: 24px;
+    width: 24px;
+    display: block;
+}
+.google_text {
+    font-size: 16px;
+    color: #4cae4f;
+}
+
+.button:active {
+  box-shadow: none;
+  transform: translateY(3px);
+}
+

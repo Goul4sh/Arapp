@@ -1,0 +1,53 @@
+.welcomeContainer {
+  margin: 40px auto;
+  max-width: 45%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.buttons {
+  display: grid;
+  gap: 70px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.button {
+  height: 40px;
+  line-height: 40px;
+  width: 120px;
+  font-weight: bold;
+  cursor: pointer;
+   transition: all 0.1s ease-in-out;
+  font-size: 22px;
+  border-radius: 10px;
+  border-width: 3px;
+  border-style: solid;
+  align-items: center;
+  color: whitesmoke;
+  padding: 10px;
+  text-decoration: none;
+  outline: none;
+}
+
+.login {
+  composes: button;
+  background-color: hsl(122, 39%, 49%);
+  border-color: #4cae4f90;
+  box-shadow: 0 3px 0 0 #4CAF5090;
+}
+
+.signup {
+  composes: button;
+  background-color: #008CBA;
+  border-color: #008CBA90;
+  box-shadow: 0 3px 0 0 #008CBA90;
+}
+
+.login:active,
+.signup:active {
+  box-shadow: none;
+  transform: translateY(3px);
+}
