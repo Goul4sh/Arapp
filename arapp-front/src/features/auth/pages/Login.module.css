@@ -1,4 +1,5 @@
 .loginPage {
+    gap: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -9,32 +10,62 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
-    width: 300px;
+    width: 60%;
 }
 
-.separator {
-    text-align: center;
-    margin: 10px 0;
+.emailContainer,
+.passwordContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+
+}
+
+.emailContainer input ,
+.passwordContainer input {
+    height: 40px;
+    font-size: 16px;
+    /*padding: 5px 10px;*/
+    border-radius: 10px;
+    border: 3px solid #4cae4f;
+    background-color: #ddd;
+    padding: 6px 10px;
+    color: #4cae4f;
+
+}
+
+.emailContainer input::placeholder,
+.passwordContainer input::placeholder {
+    color: #666;
+    opacity: 1;
 }
 
 .button {
+    box-sizing: border-box;
+    height: 40px;
+    line-height: 40px;
+    width: 120px;
+    padding: 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 50px;
-    line-height: 1;
-    width: 180px;
-    padding: 6px 12px;
+   
     font-weight: bold;
     cursor: pointer;
     transition: all 0.1s ease-in-out;
     font-size: 18px;
     border-radius: 10px;
-    border: 3px solid transparent;
+    border: 3px solid;
     color: whitesmoke;
     box-shadow: 0 3px 0 0 rgba(0, 0, 0, 0.12);
-    text-decoration: none;
-    user-select: none;
+    /*text-decoration: none;*/
+    /*user-select: none;*/
+
+}
+
+.button:hover {
+    border-color: whitesmoke;
 }
 
 .login {
@@ -46,13 +77,18 @@
 
 .google {
     composes: button;
-        width: 240px;
+    /*width: 240px;*/
+    width: 60%;
 
     background-color: white;
     border-color: #ddd;
     box-shadow: 0 3px 0 0 rgba(0, 0, 0, 0.08);
     color: #4cae4f;
     gap: 8px;
+}
+
+.google:hover {
+    border-color: #4cae4f;
 }
 
 .googleLogo {
@@ -69,4 +105,22 @@
 .button:active {
     box-shadow: none;
     transform: translateY(3px);
+}
+
+
+.forgotPassword {
+    gap: 20px;
+    color: #4cae4f;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.separator {
+    gap: 20px;
+    width: 60%;
+    height: 2px;
+    background-color: #4cae4f;
+    margin: 1px 0;
+    border-radius: 5px;
+
 }
