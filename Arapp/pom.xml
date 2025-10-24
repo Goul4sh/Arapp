@@ -11,7 +11,7 @@
     <groupId>engineer</groupId>
     <artifactId>arabski</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Arapp</name>
+    <name>arapp-back</name>
     <description>Arapp</description>
     <url/>
     <licenses>
@@ -71,6 +71,25 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+
+        <!-- pom.xml -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
