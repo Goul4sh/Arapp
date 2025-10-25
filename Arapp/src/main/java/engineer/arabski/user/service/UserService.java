@@ -1,5 +1,6 @@
 package engineer.arabski.user.service;
 
+import engineer.arabski.common.security.dto.RegisterRequest;
 import engineer.arabski.common.security.jwt.JwtUtil;
 import engineer.arabski.user.model.User;
 import engineer.arabski.user.repository.UserRepository;
@@ -28,6 +29,21 @@ public class UserService {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
+    public Optional<User> createUser(RegisterRequest registerRequest) {
+        try {
+            User user = new User(registerRequest);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            User savedUser = userRepository.save(user);
+            System.out.println(savedUser.getPassword());
+
+            return Optional.of(savedUser);
+        } catch (Exception e) {
+            System.out.println(e);
+            return Optional.empty();
+        }
+    }
+
+
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
@@ -38,7 +54,7 @@ public class UserService {
 
 
     public String authenticateUser(String email, String password) {
-        // Find user by email
+
         return userRepository.findByEmail(email)
                 .filter(user -> passwordEncoder.matches(password, user.getPassword()))
                 .map(user -> jwtTokenUtil.generateToken(user.getEmail()))

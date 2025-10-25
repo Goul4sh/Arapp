@@ -2,6 +2,7 @@ package engineer.arabski.common.security.controller;
 
 import engineer.arabski.common.security.dto.JwtResponse;
 import engineer.arabski.common.security.dto.LoginRequest;
+import engineer.arabski.common.security.dto.RegisterRequest;
 import engineer.arabski.common.security.jwt.JwtUtil;
 import engineer.arabski.user.model.User;
 import engineer.arabski.user.service.UserService;
@@ -16,19 +17,14 @@ import org.springframework.web.bind.annotation.*;
 
 public class AuthController {
 
-
     private final UserService userService;
-//    private final AuthenticationManager authenticationManager;
-//    private final JwtUtil jwtUtils;
 
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtils) {
+    public AuthController(UserService userService) {
         this.userService = userService;
-//        this.authenticationManager = authenticationManager;
-//        this.jwtUtils = jwtUtils;
+
     }
 
-
-    @PostMapping
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
 
         if (loginRequest.email() == null || loginRequest.password() == null) {
@@ -45,6 +41,20 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
 
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
+        if (registerRequest.email() == null || registerRequest.password() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email and password are required");
+        }
+
+        try {
+            userService.createUser(registerRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/test")

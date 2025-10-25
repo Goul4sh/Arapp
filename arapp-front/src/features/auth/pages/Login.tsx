@@ -2,17 +2,44 @@ import {useState, type JSX} from "react";
 import GoogleLogo from "../../../assets/Google__G__logo.svg"
 import styles from './Login.module.css'
 import * as React from "react";
+import api from "../api";
+import {useAuth} from "../auth";
 
 function Login(): JSX.Element {
 
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const {setAccessToken, setUser} = useAuth();
 
-    const handleSubmit = (event: React.FormEvent) => {
+
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         console.log('Email:', email);
         console.log('Password:', password);
+        try {
+            const resp = await api.post("/api/auth/login", {email, password});
+
+            const token: string = resp.data.token;
+            const userData: { id: string; name: string } = {
+                id: resp.data.user_id,
+                name: resp.data.role
+            };
+
+            if (token && userData) {
+                setAccessToken(token);
+                setUser(userData);
+            }
+            //TODO chyba sie nie dodaje do contextu
+
+            console.log('Auth token:', token);
+            console.log('User Data:', userData);
+            console.log("Logged in");
+
+
+        } catch (error) {
+            console.error('Login failed:', error);
+        }
     }
 
     const handleGoogleSignIn = () => {
@@ -22,48 +49,48 @@ function Login(): JSX.Element {
     return (
         <>
             <div className={styles.loginPage}>
-            <h1>Zaloguj się do Arappki </h1>
-            <form className={styles.loginForm} onSubmit={handleSubmit}>
+                <h1>Zaloguj się do Arappki </h1>
+                <form className={styles.loginForm} onSubmit={handleSubmit}>
 
-                <div className={styles.emailContainer}>
-                    {/*<label htmlFor="email">Email:</label>*/}
+                    <div className={styles.emailContainer}>
+                        {/*<label htmlFor="email">Email:</label>*/}
 
-                    <input type="email" 
-                            id="email" 
-                            name="email" 
-                            required 
-                            placeholder="you@example.com"
-                            aria-label="Adres email"
-                            autoComplete="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}/>
-                </div>
-                <div className={styles.passwordContainer}>
-                    {/*<label htmlFor="password">Hasło:</label>*/}
-                    <input type="password" 
-                           id="password" 
-                           name="password" 
-                           required
-                           placeholder="Twoje hasło"
-                           aria-label="Password"
-                           autoComplete="current-password"
-                           value={password}
-                           onChange={(e) => setPassword(e.target.value)}/>
-                </div>
-                <div className={styles.submitContainer}>
-                    <button type="submit" className={`${styles.button} ${styles.login}`}>Zaloguj się</button>
-                </div>
+                        <input type="email"
+                               id="email"
+                               name="email"
+                               required
+                               placeholder="you@example.com"
+                               aria-label="Adres email"
+                               autoComplete="email"
+                               value={email}
+                               onChange={(e) => setEmail(e.target.value)}/>
+                    </div>
+                    <div className={styles.passwordContainer}>
+                        {/*<label htmlFor="password">Hasło:</label>*/}
+                        <input type="password"
+                               id="password"
+                               name="password"
+                               required
+                               placeholder="Twoje hasło"
+                               aria-label="Password"
+                               autoComplete="current-password"
+                               value={password}
+                               onChange={(e) => setPassword(e.target.value)}/>
+                    </div>
+                    <div className={styles.submitContainer}>
+                        <button type="submit" className={`${styles.button} ${styles.login}`}>Zaloguj się</button>
+                    </div>
 
-            </form>
+                </form>
                 <div className={styles.forgotPassword}>
-                    <a >Zapomniałeś hasła?</a>
+                    <a>Zapomniałeś hasła?</a>
                 </div>
                 <div className={styles.separator}></div>
 
                 <button type="button" className={`${styles.button} ${styles.google}`} onClick={handleGoogleSignIn}>
-                <img className={styles.googleLogo} src={GoogleLogo} alt="Google Logo"/>
-                <span className={styles.googleText}>Zaloguj kontem Google</span>
-            </button>
+                    <img className={styles.googleLogo} src={GoogleLogo} alt="Google Logo"/>
+                    <span className={styles.googleText}>Zaloguj kontem Google</span>
+                </button>
             </div>
         </>
     )

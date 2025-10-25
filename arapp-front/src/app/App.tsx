@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Signup from '../features/auth/pages/Signup';
 import Login from "../features/auth/pages/Login.tsx";
 import Home from "../features/home/pages/Home.tsx";
+import Dashboard from "../features/home/pages/Dashboard.tsx";
 import './App.css'
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
                 <Route path={"/"} element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path={"*"} element={<Navigate to="/" replace/>} />
             </Routes>
         </BrowserRouter>
