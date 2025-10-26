@@ -1,19 +1,24 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import Signup from '../features/auth/pages/Signup';
 import Login from "../features/auth/pages/Login.tsx";
 import Home from "../features/home/pages/Home.tsx";
 import Dashboard from "../features/home/pages/Dashboard.tsx";
 import './App.css'
+import ProtectedRoute from "../features/auth/Protectedroute.tsx";
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path={"/"} element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path={"*"} element={<Navigate to="/" replace/>} />
+                <Route path={"/"} element={<Home/>}/>
+                <Route path="/login" element={<Login/>}/>
+                <Route path="/signup" element={<Signup/>}/>
+                <Route path="/dashboard" element={
+                    <ProtectedRoute>
+                        <Dashboard/>
+                    </ProtectedRoute>
+                }/>
+                <Route path={"*"} element={<Navigate to="/" replace/>}/>
             </Routes>
         </BrowserRouter>
     );

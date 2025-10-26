@@ -4,13 +4,15 @@ import styles from './Login.module.css'
 import * as React from "react";
 import api from "../api";
 import {useAuth} from "../auth";
+import {useNavigate} from "react-router-dom";
 
 function Login(): JSX.Element {
 
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const {setAccessToken, setUser} = useAuth();
+    const {setUser} = useAuth();
+    const navigate = useNavigate();
 
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -18,23 +20,19 @@ function Login(): JSX.Element {
         console.log('Email:', email);
         console.log('Password:', password);
         try {
-            const resp = await api.post("/api/auth/login", {email, password});
+            const resp = await api.post("/api/auth/login", {email, password}, {withCredentials: true});
 
-            const token: string = resp.data.token;
-            const userData: { id: string; name: string } = {
+            const userData: { id: string; name: string; email: string; role: string } = {
                 id: resp.data.user_id,
-                name: resp.data.role
+                name: resp.data.username,
+                email: resp.data.email,
+                role: resp.data.role
             };
 
-            if (token && userData) {
-                setAccessToken(token);
-                setUser(userData);
-            }
-            //TODO chyba sie nie dodaje do contextu
+            setUser(userData);
+            localStorage.setItem("user", JSON.stringify(userData));
 
-            console.log('Auth token:', token);
-            console.log('User Data:', userData);
-            console.log("Logged in");
+            navigate("/dashboard");
 
 
         } catch (error) {

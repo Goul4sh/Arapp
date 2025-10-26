@@ -41,6 +41,7 @@ public class SecurityConfig {
                                                    AuthenticationProvider authenticationProvider) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.disable())
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/api/auth/register", "/api/auth/login", "/oauth2/**").permitAll()
                         .anyRequest().authenticated()
@@ -58,7 +59,8 @@ public class SecurityConfig {
                         new LoginUrlAuthenticationEntryPoint("/oauth2/authorization/google")
                                 .commence(request, response, authException);
                     }
-                }));
+                }))
+               ;
         return http.build();
     }
 

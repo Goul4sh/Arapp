@@ -4,8 +4,6 @@ type AuthContextType = {
 
     user: { id: string; name: string } | null;
     setUser: (user: { id: string; name: string } | null) => void;
-    accessToken: string | null;
-    setAccessToken: (token: string | null) => void;
     logout: () => void;
 
 }

@@ -1,18 +1,29 @@
-import {type ReactNode, useState} from "react";
+import {type ReactNode, useEffect, useState} from "react";
 import {AuthContext} from "./auth";
 
 export function AuthProvider({children}: { children: ReactNode }) {
-    const [accessToken, setAccessToken] = useState<string | null>(null);
     const [user, setUser] = useState<{ id: string; name: string } | null>(null);
 
     const logout = () => {
-        setAccessToken(null);
         setUser(null);
         //api wylogowanie TODO
     };
 
+    useEffect(() => {
+        const saved = localStorage.getItem("user");
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                setUser(parsed);
+            } catch {
+                localStorage.removeItem("user");
+            }
+        }
+    }, []);
+
+
     return (
-        <AuthContext.Provider value={{accessToken, setAccessToken, logout, user, setUser}}>
+        <AuthContext.Provider value={{logout, user, setUser}}>
             {children}
         </AuthContext.Provider>
     );

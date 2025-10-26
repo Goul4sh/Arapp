@@ -55,10 +55,15 @@ public class UserService {
 
     public String authenticateUser(String email, String password) {
 
-        return userRepository.findByEmail(email)
-                .filter(user -> passwordEncoder.matches(password, user.getPassword()))
-                .map(user -> jwtTokenUtil.generateToken(user.getEmail()))
-                .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new BadCredentialsException("Invalid email or password");
+        }
+
+        return jwtTokenUtil.generateToken(user.getEmail());
+
     }
 
 
