@@ -24,13 +24,10 @@ public class SecurityConfig {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    //    private final CustomUserDetailsService customUserDetailsService;
-//    private JwtAuthenticationFilter jwtAuthenticationFilter;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
 
     public SecurityConfig(CustomDetailsService customUserDetailsService, OAuth2SuccessHandler oAuth2SuccessHandler) {
-//        this.customUserDetailsService = customUserDetailsService;
 
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
     }

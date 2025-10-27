@@ -1,5 +1,6 @@
 package engineer.arabski.common.security.controller;
 
+import engineer.arabski.common.security.CustomUserDetails;
 import engineer.arabski.common.security.dto.UserDataResponse;
 import engineer.arabski.common.security.dto.LoginRequest;
 import engineer.arabski.common.security.dto.RegisterRequest;
@@ -12,7 +13,9 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -98,10 +101,25 @@ public class AuthController {
 
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "AuthController is working!";
-    }
 
+    @GetMapping("/validate")
+    public ResponseEntity<?> validateToken(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
+
+        var userDetails = (CustomUserDetails) authentication.getPrincipal();
+        UserDataResponse userData = new UserDataResponse(
+                userDetails.getId(),
+                userDetails.getRealUsername(),
+                userDetails.getUsername(),
+                "USER"
+        );
+
+        System.out.println("Validated user: " + userDetails.getUsername());
+        return ResponseEntity.ok(userData);
+
+
+    }
 
 }

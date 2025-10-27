@@ -1,5 +1,6 @@
 package engineer.arabski.common.security.service;
 
+import engineer.arabski.common.security.CustomUserDetails;
 import engineer.arabski.user.model.User;
 import engineer.arabski.user.service.UserService;
 import org.springframework.context.annotation.Lazy;
@@ -23,10 +24,6 @@ public class CustomDetailsService implements UserDetailsService {
         User user = userService.getUserByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
-                .password(user.getPassword())
-                .authorities(user.getRole())
-                .build();
+        return CustomUserDetails.fromUser(user);
     }
 }

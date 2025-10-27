@@ -3,14 +3,18 @@ package engineer.arabski.common.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import engineer.arabski.common.security.jwt.JwtUtil;
 import engineer.arabski.user.service.UserService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Map;
 
 @Component
@@ -34,10 +38,17 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         String localUsername = userService.processOAuthPostLogin(oauthUser);
 
-        String token = jwtUtil.generateTokenGoogle(localUsername);
+        String jwt = jwtUtil.generateTokenGoogle(localUsername);
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("utf-8");
-        objectMapper.writeValue(response.getWriter(), Map.of("token", token, "type", "Bearer"));
+        ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(Duration.ofDays(1))
+                .build();
+        response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        response.sendRedirect("http://localhost:5173/dashboard");
     }
 }

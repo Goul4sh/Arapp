@@ -3,12 +3,13 @@ import { useAuth } from "./auth";
 import type {JSX} from "react";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-    const { user } = useAuth();
+    const { user , loading} = useAuth();
 
+    if (loading) return <div></div>;
     if (!user) {
         return <Navigate to="/login" replace />;
     }
-    // TODO nie przekierowywac od razu do loginu jesli uzytkownik byl zalogowany i ma aktywny token
+
     return children;
 };
 

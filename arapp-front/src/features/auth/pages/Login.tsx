@@ -41,8 +41,10 @@ function Login(): JSX.Element {
     }
 
     const handleGoogleSignIn = () => {
-        console.log('Google Sign-In clicked');
-    }
+        const backendURL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+        window.location.href = `${backendURL}/oauth2/authorization/google`;
+    };
+
 
     return (
         <>

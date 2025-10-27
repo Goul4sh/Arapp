@@ -1,29 +1,44 @@
 import {type ReactNode, useEffect, useState} from "react";
 import {AuthContext} from "./auth";
+import api from "./api.ts";
 
 export function AuthProvider({children}: { children: ReactNode }) {
     const [user, setUser] = useState<{ id: string; name: string } | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    const logout = () => {
-        setUser(null);
-        //api wylogowanie TODO
+    const logout = async () => {
+
+        try {
+            const resp = await api.post("/api/auth/logout", null, {withCredentials: true});
+            if (resp.status === 200 || resp.status === 204) {
+                setUser(null);
+                localStorage.removeItem("user");
+                window.location.reload();
+            }
+
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+
     };
 
     useEffect(() => {
-        const saved = localStorage.getItem("user");
-        if (saved) {
+        const fetchUser = async () => {
             try {
-                const parsed = JSON.parse(saved);
-                setUser(parsed);
+                const resp = await api.get("/api/auth/validate", {withCredentials: true});
+                setUser(resp.data);
             } catch {
-                localStorage.removeItem("user");
+                setUser(null);
+            } finally {
+                setLoading(false);
             }
         }
+
+        fetchUser();
     }, []);
 
-
     return (
-        <AuthContext.Provider value={{logout, user, setUser}}>
+        <AuthContext.Provider value={{logout, user, setUser, loading}}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,28 +1,16 @@
 import {type JSX} from "react";
 import styles from './Dashboard.module.css'
 import {useAuth} from "../../auth/auth";
-import api from "../../auth/api.ts";
 
 function Dashboard(): JSX.Element {
 
-    const {user} = useAuth();
+    const {user, logout} = useAuth();
     const name = user?.name || 'Uzytkownik';
     const provider = 'System Arappkowego Logowania (SAL)';
 
 
     const handleLogout = async () => {
-
-        try {
-
-            const resp = await api.post("/api/auth/logout",null, {withCredentials: true});
-            if (resp.status === 200 || resp.status === 204) {
-                localStorage.removeItem("user");
-                window.location.reload();
-            }
-
-        } catch (error) {
-            console.error('Logout failed:', error);
-        }
+        logout();
 
     };
 
