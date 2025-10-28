@@ -25,12 +25,8 @@ public class User {
 
     public User(RegisterRequest registerRequest) {
         this.email = registerRequest.email();
-        System.out.println("Jestesmy w konstruktorze User");
-        System.out.println("Przypisany mail to: " + this.email);
         this.username = registerRequest.username();
-        // Set password from DTO so it's not null. Encoding should be done by the service.
         this.password = registerRequest.password();
-        // Optionally set a default role if desired
         if (this.role == null) {
             this.role = "USER";
         }
