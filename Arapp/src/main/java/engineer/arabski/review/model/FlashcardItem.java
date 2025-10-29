@@ -1,4 +1,4 @@
-package engineer.arabski.flashcard.model;
+package engineer.arabski.review.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
