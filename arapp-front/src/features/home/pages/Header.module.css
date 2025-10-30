@@ -1,0 +1,47 @@
+.header {
+    width: 100%;
+    height: 68px;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0 20px;
+
+}
+
+.innerBox {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.linksSegment {
+    display: block;
+}
+
+.linksList {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 15px;
+}
+
+.listItem {
+    display: inline-block;
+
+    color: green;
+    cursor: pointer;
+}
+.listItem a {
+    text-decoration: none;
+    color: inherit;
+    font-weight: bold;
+}
+

@@ -1,26 +1,35 @@
-import React from 'react';
 import styles from './Header.module.css';
+import {useAuth} from "../../auth/auth";
+import {Link} from "react-router-dom";
 
 
+function Header() {
 
-export default function Header() {
+    const {user} = useAuth();
+    const name = user?.name || 'Uzytkownik';
+
+
     return (
         <header className={styles.header}>
+            <div className={styles.innerBox}>
+                <div className={styles.linksSegment}>
+                    <ul className={styles.linksList}>
+                        <li className={styles.listItem}><Link className={styles.link} to="">literki</Link></li>
+                        <li className={styles.listItem}><Link className={styles.link} to="">gramatyka </Link></li>
+                        <li className={styles.listItem}><Link className={styles.link} to="#">słówka</Link></li>
+                        <li className={styles.listItem}><Link className={styles.link} to="">fiszki</Link></li>
+                        <li className={styles.listItem}><Link className={styles.link} to="/dashboard">quizy</Link></li>
+                    </ul>
 
-            <div className={styles.links}>
-            <ul >
-                <li className={styles.listItem}><a className={styles.link} href="/">Strona Główna</a></li>
-                <li className={styles.listItem}><a className={styles.link} href="/login">Logowanie</a></li>
-                <li className={styles.listItem}><a className={styles.link} href="/signup">Rejestracja</a></li>
-                <li className={styles.listItem}><a className={styles.link} href="/dashboard">Dashboard</a></li>
-            </ul>
-
+                </div>
+                <div className={styles.user}>
+                    <div className={styles.userPhoto}></div>
+                    <div className={styles.userName}>{name}</div>
+                </div>
             </div>
-
-
-
-
 
         </header>
     );
 }
+
+export default Header;

@@ -4,20 +4,32 @@ import Login from "../features/auth/pages/Login.tsx";
 import Home from "../features/home/pages/Home.tsx";
 import Dashboard from "../features/home/pages/Dashboard.tsx";
 import './App.css'
-import ProtectedRoute from "../features/auth/Protectedroute.tsx";
+
+import ReviewPage from "../features/review/pages/ReviewPage.tsx";
+import ProtectedDashboardLayout from '../common/layouts/ProtectedDashboardLayout';
+
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
+
+                {/*Trasy uzywane do logowania i rejestracji*/}
                 <Route path={"/"} element={<Home/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/signup" element={<Signup/>}/>
-                <Route path="/dashboard" element={
-                    <ProtectedRoute>
-                        <Dashboard/>
-                    </ProtectedRoute>
-                }/>
+                
+                {/*Trasy dostepne po logowaniu, uzywajace widoku dashboard (header)*/}
+                <Route element={<ProtectedDashboardLayout />}>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/review" element={<ReviewPage />} />
+                    <Route path="/quiz" element={<div>Quiz Page</div>} />
+                    <Route path="/letters" element={<div>Arabic symbols</div>} />
+                    <Route path="/words" element={<div>Some words</div>} />
+                    <Route path="/grammar" element={<div>Grammar Page</div>} />
+                </Route>
+
+
                 <Route path={"*"} element={<Navigate to="/" replace/>}/>
             </Routes>
         </BrowserRouter>

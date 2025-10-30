@@ -3,9 +3,6 @@
   line-height: 1.5;
   font-weight: 400;
 
-  /*color-scheme: light dark;*/
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 
@@ -14,7 +11,7 @@
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  /*place-items: center;*/
   min-width: 320px;
   min-height: 100vh;
 }
@@ -35,7 +32,5 @@ button {
   transition: border-color 0.25s;
 }
 
-button:hover {
-  border-color: green;
-}
+
 
