@@ -1,17 +1,9 @@
 #root {
-  /*max-width: 1280px;*/
   margin: 0 auto;
-  /*padding: 2rem;*/
   text-align: center;
   color: green;
     width: 100%;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-#root > div {
-  display: flex;
-  flex-direction: column;
-  /*gap: 50px;*/
-  align-items: center;
 }
 
 body {

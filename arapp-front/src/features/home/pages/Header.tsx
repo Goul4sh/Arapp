@@ -14,17 +14,21 @@ function Header() {
             <div className={styles.innerBox}>
                 <div className={styles.linksSegment}>
                     <ul className={styles.linksList}>
-                        <li className={styles.listItem}><Link className={styles.link} to="">literki</Link></li>
-                        <li className={styles.listItem}><Link className={styles.link} to="">gramatyka </Link></li>
-                        <li className={styles.listItem}><Link className={styles.link} to="#">słówka</Link></li>
-                        <li className={styles.listItem}><Link className={styles.link} to="">fiszki</Link></li>
-                        <li className={styles.listItem}><Link className={styles.link} to="/dashboard">quizy</Link></li>
+                        {/*TODO zmienic wyglad przyciskow */}
+                        <li className={styles.listItem}><Link className={styles.link} to="/letters">literki</Link></li>
+                        <li className={styles.listItem}><Link className={styles.link} to="/grammar">gramatyka </Link></li>
+                        <li className={styles.listItem}><Link className={styles.link} to="/words">słówka</Link></li>
+                        <li className={styles.listItem}><Link className={styles.link} to="/review">fiszki</Link></li>
+                        <li className={styles.listItem}><Link className={styles.link} to="/quiz">quizy</Link></li>
                     </ul>
 
                 </div>
                 <div className={styles.user}>
                     <div className={styles.userPhoto}></div>
-                    <div className={styles.userName}>{name}</div>
+                    <div className={styles.userName}>
+                        <Link to="/dashboard" className={styles.userLink}>
+                            {name}</Link>
+                    </div>
                 </div>
             </div>
 

@@ -1,5 +1,6 @@
 import type {JSX} from "react";
 
+// TODO zrobic rejestracje widok
 
 function Signup() : JSX.Element {
     return (
