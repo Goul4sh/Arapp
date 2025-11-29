@@ -3,7 +3,6 @@ import Signup from '../features/auth/pages/Signup';
 import Login from "../features/auth/pages/Login.tsx";
 import Home from "../features/home/pages/Home.tsx";
 import Dashboard from "../features/home/pages/Dashboard.tsx";
-import './App.css'
 
 import ReviewPage from "../features/review/pages/ReviewPage.tsx";
 import ProtectedDashboardLayout from '../common/layouts/ProtectedDashboardLayout';

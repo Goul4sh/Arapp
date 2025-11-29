@@ -4,7 +4,7 @@ import styles from './Login.module.css'
 import * as React from "react";
 import api from "../api";
 import {useAuth} from "../auth";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 function Login(): JSX.Element {
 
@@ -17,8 +17,7 @@ function Login(): JSX.Element {
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        console.log('Email:', email);
-        console.log('Password:', password);
+
         try {
             const resp = await api.post("/api/auth/login", {email, password}, {withCredentials: true});
 
@@ -91,6 +90,12 @@ function Login(): JSX.Element {
                     <img className={styles.googleLogo} src={GoogleLogo} alt="Google Logo"/>
                     <span className={styles.googleText}>Zaloguj kontem Google</span>
                 </button>
+
+                <div className={styles.register}>
+                     <p>Nie masz konta? </p> <Link to={"/signup"}>Zarejestruj się </Link>
+
+
+                </div>
             </div>
         </>
     )

@@ -32,7 +32,14 @@ public class CustomUserDetails implements UserDetails {
     }
 
     public static CustomUserDetails fromUser(User user) {
-        List<GrantedAuthority> auth = List.of(new SimpleGrantedAuthority(user.getRole()));
+
+        String role = user.getRole();
+        if (role == null || role.isEmpty()) {
+            role = "USER";
+            System.out.println("No role found for user " + user.getEmail() + ", assigning default role USER");
+        }
+
+        List<GrantedAuthority> auth = List.of(new SimpleGrantedAuthority(role));
         return new CustomUserDetails(
                 user.getId(),
                 user.getEmail(),

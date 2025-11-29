@@ -1,5 +1,4 @@
-.loginPage {
-
+.signUpPage {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -11,28 +10,51 @@
 
     padding: 2rem;
     max-width: 600px;
+
     gap: 20px;
 }
 
-.loginForm {
+.signupTopText {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;}
+
+.signupForm {
+
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    /*min-height: 80vh;*/
+    width: 100%;
+    margin: 0 auto;
+
+    /*padding: 2rem;*/
+    max-width: 600px;
+
     gap: 15px;
-    width: 60%;
+
 }
 
 .emailContainer,
-.passwordContainer {
+.passwordContainer,
+.confirmPasswordContainer,
+.usernameContainer {
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: 15px;
+    /*gap: 15px;*/
 
 }
 
+
 .emailContainer input,
-.passwordContainer input {
-    height: 40px;
+.passwordContainer input,
+.confirmPasswordContainer input,
+.usernameContainer input{
+
     font-size: 16px;
     border-radius: 10px;
     border: 3px solid #4cae4f;
@@ -42,8 +64,21 @@
 
 }
 
+.invalid {
+    border-color: red !important;
+
+    }
+.error {
+    color: red;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 5px;}
+
+
 .emailContainer input::placeholder,
-.passwordContainer input::placeholder {
+.passwordContainer input::placeholder,
+.confirmPasswordContainer input::placeholder,
+.usernameContainer input::placeholder {
     color: #666;
     opacity: 1;
 }
@@ -52,7 +87,7 @@
     box-sizing: border-box;
     height: 40px;
     line-height: 40px;
-    width: 120px;
+    min-width: 160px;
     padding: 10px;
     display: inline-flex;
     align-items: center;
@@ -70,86 +105,22 @@
 
 }
 
-.button:hover {
+.button:not(:disabled):hover {
     border-color: whitesmoke;
 }
 
-.login {
+.signup {
     composes: button;
     background-color: #4cae4f;
     border-color: #4cae4f90;
     box-shadow: 0 3px 0 0 #4CAF5090;
 }
-
-.google {
-    composes: button;
-    width: 60%;
-
-    background-color: white;
-    border-color: #ddd;
-    box-shadow: 0 3px 0 0 rgba(0, 0, 0, 0.08);
-    color: #4cae4f;
-    gap: 8px;
-}
-
-.google:hover {
-    border-color: #4cae4f;
-}
-
-.googleLogo {
-    height: 24px;
-    width: 24px;
-    display: block;
-}
-
-.googleText {
-    font-size: 16px;
-    color: #4cae4f;
-}
-
-.button:active {
+.button:not(:disabled):active {
     box-shadow: none;
     transform: translateY(3px);
 }
 
-
-.forgotPassword {
-    gap: 20px;
-    color: #4cae4f;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.separator {
-    gap: 20px;
-    width: 60%;
-    height: 2px;
-    background-color: #4cae4f;
-    margin: 1px 0;
-    border-radius: 5px;
-
-}
-
-.register {
-    display: flex;
-    flex-direction: row;
-    text-align:  center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.register a {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-content: center;
-    text-decoration: none;
-    color: #4cae4f;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.register a, .register p {
-
-    padding: 0;
+.button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
