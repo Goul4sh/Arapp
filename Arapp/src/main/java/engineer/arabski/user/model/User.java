@@ -23,6 +23,9 @@ public class User {
     private String password;
     private String role;
 
+    // powiązane z aktywacją konta w mailu
+    private boolean enabled = false;
+
     public User(RegisterRequest registerRequest) {
         this.email = registerRequest.email();
         this.username = registerRequest.username();

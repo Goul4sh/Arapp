@@ -1,9 +1,12 @@
 package engineer.arabski.common.security.controller;
 
 import engineer.arabski.common.security.CustomUserDetails;
+import engineer.arabski.common.security.EmailVerificationToken;
 import engineer.arabski.common.security.dto.UserDataResponse;
 import engineer.arabski.common.security.dto.LoginRequest;
 import engineer.arabski.common.security.dto.RegisterRequest;
+import engineer.arabski.common.security.service.EmailService;
+import engineer.arabski.common.security.service.EmailVerificationService;
 import engineer.arabski.user.model.User;
 import engineer.arabski.user.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -18,6 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/auth")
 
@@ -26,10 +32,13 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
+    private final EmailVerificationService emailVerificationService;
+    private final EmailService emailService;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, EmailVerificationService emailVerificationService, EmailService emailService) {
         this.userService = userService;
-
+        this.emailVerificationService = emailVerificationService;
+        this.emailService = emailService;
     }
 
     @PostMapping("/login")
@@ -42,6 +51,10 @@ public class AuthController {
         try {
             String jwt = userService.authenticateUser(loginRequest.email(), loginRequest.password());
             User user = userService.getUserByEmail(loginRequest.email()).get();
+
+            if (!user.isEnabled()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Email not verified");
+            }
 
             Cookie cookie = new Cookie("jwt", jwt);
             cookie.setHttpOnly(true);
@@ -65,7 +78,15 @@ public class AuthController {
         }
 
         try {
-            userService.createUser(registerRequest);
+            Optional<User> newUser = userService.createUser(registerRequest);
+
+            if (newUser.isEmpty()) {
+                throw new IllegalArgumentException("User registration failed");
+            }
+
+            EmailVerificationToken token = emailVerificationService.createToken(newUser.get());
+            emailService.sendVerificationEmail(newUser.get(), token.getToken());
+
             return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -122,6 +143,32 @@ public class AuthController {
         return ResponseEntity.ok(userData);
 
 
+    }
+
+    //TODO poprawic obsluge bledow, dodac przekierowania
+    @GetMapping("/verify-email")
+    public ResponseEntity<?> verifyEmail(@RequestParam String token) {
+
+        System.out.println("Verifying email with token: " + token);
+
+        try {
+            Optional<User> user = emailVerificationService.verify(token);
+
+            if (user.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token");
+            }
+
+            User verifiedUser = user.get();
+            verifiedUser.setEnabled(true);
+            userService.saveUser(verifiedUser);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .location(URI.create("http://localhost:5173/api/auth/login"))
+                .body("Email zweryfikowany pomyślnie. Możesz teraz zamknąć tę stronę.");
     }
 
 }

@@ -52,6 +52,13 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
 
     public String authenticateUser(String email, String password) {
 

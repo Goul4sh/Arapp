@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/auth/register", "/api/auth/login", "/oauth2/**").permitAll()
+                        .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/verify-email**", "/oauth2/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider)
@@ -57,7 +57,7 @@ public class SecurityConfig {
                                 .commence(request, response, authException);
                     }
                 }))
-               ;
+        ;
         return http.build();
     }
 

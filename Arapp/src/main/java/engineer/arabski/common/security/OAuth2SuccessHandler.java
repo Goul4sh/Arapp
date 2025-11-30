@@ -49,6 +49,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                 .build();
         response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
+        //TODO zmienne?
         response.sendRedirect("http://localhost:5173/dashboard");
     }
 }

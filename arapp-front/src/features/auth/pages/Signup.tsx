@@ -4,7 +4,8 @@ import styles from './Signup.module.css'
 import api from "../api.ts";
 import {useNavigate} from "react-router-dom";
 
-// TODO zrobic rejestracje widok
+// TODO dodac komunikaty o bledach podczas rejestracji
+
 
 function Signup(): JSX.Element {
 
@@ -32,6 +33,8 @@ function Signup(): JSX.Element {
 
             if (resp.status === 201) {
                 console.log("User created successfully");
+
+
                 navigate("/login");
 
             }
