@@ -27,8 +27,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/auth")
 
-//TODO dodać wysylanie maila, w celu potwierdzenia rejestracji
-
 public class AuthController {
 
     private final UserService userService;

@@ -15,11 +15,13 @@ function Header() {
                 <div className={styles.linksSegment}>
                     <ul className={styles.linksList}>
                         {/*TODO zmienic wyglad przyciskow */}
-                        <li className={styles.listItem}><Link className={styles.link} to="/letters">literki</Link></li>
-                        <li className={styles.listItem}><Link className={styles.link} to="/grammar">gramatyka </Link></li>
-                        <li className={styles.listItem}><Link className={styles.link} to="/words">słówka</Link></li>
-                        <li className={styles.listItem}><Link className={styles.link} to="/review">fiszki</Link></li>
-                        <li className={styles.listItem}><Link className={styles.link} to="/quiz">quizy</Link></li>
+                        <li className={styles.listItem}><Link className={styles.link} to="/letters">Pisownia</Link></li>
+                        {/*<li className={styles.listItem}><Link className={styles.link} to="/grammar">Gramatyka </Link></li>*/}
+                        <li className={styles.listItem}><Link className={styles.link} to="/words">Słownictwo</Link></li>
+                        <li className={styles.listItem}><Link className={styles.link} to="/review">Powtórki</Link></li>
+                        <li className={styles.listItem}><Link className={styles.link} to="/quiz">Quizy</Link></li>
+                        <li className={styles.listItem}><Link className={styles.link} to="/exercises">Ćwiczenia</Link></li>
+
                     </ul>
 
                 </div>

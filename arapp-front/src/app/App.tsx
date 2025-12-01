@@ -6,6 +6,9 @@ import Dashboard from "../features/home/pages/Dashboard.tsx";
 
 import ReviewPage from "../features/review/pages/ReviewPage.tsx";
 import ProtectedDashboardLayout from '../common/layouts/ProtectedDashboardLayout';
+import ExerciseSelector from "../features/exercises/pages/ExerciseSelector.tsx";
+import ProtectedExerciseLayout from "../common/layouts/ProtectedExerciseLayout.tsx";
+import ExerciseWrapperPage from "../features/exercises/pages/ExerciseWrapperPage.tsx";
 
 
 function App() {
@@ -26,6 +29,12 @@ function App() {
                     <Route path="/letters" element={<div>Arabic symbols</div>} />
                     <Route path="/words" element={<div>Some words</div>} />
                     <Route path="/grammar" element={<div>Grammar Page</div>} />
+                    <Route path="/exercises" element={<ExerciseSelector/>} />
+                </Route>
+
+                {/*Trasa pozwalająca na wykonywanie ćwiczeń zależnie od id*/}
+                <Route element={<ProtectedExerciseLayout/>}>
+                    <Route path="/exercises/:exerciseId" element={<ExerciseWrapperPage/>} />
                 </Route>
 
 

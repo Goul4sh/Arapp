@@ -17,6 +17,13 @@ import java.util.Set;
 @Table(name = "choose_one_task")
 public class ChooseOneTask extends Task {
 
+    public ChooseOneTask(String description, String answer, Set<String> decoyAnswers) {
+        this.setTaskType("choose-one");
+        this.setDescription(description);
+        this.answer = answer;
+        this.decoyAnswers = decoyAnswers;
+    }
+
     private String answer;
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> decoyAnswers;
