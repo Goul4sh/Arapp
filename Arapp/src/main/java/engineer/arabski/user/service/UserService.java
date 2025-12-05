@@ -86,6 +86,7 @@ public class UserService {
             newUser.setEmail(email);
             newUser.setUsername(oAuth2User.getAttribute("name"));
             newUser.setRole("USER");
+            newUser.setEnabled(true);
 
             return userRepository.save(newUser);
         });

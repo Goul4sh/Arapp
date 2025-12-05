@@ -1,0 +1,53 @@
+.buttonsContainer {
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
+    gap: 20px;
+
+
+}
+
+.answerButton {
+
+  /*  height: 40px;*/
+  /*  line-height: 40px;*/
+  /*  width: 200px;*/
+  /*  font-weight: bold;*/
+  /*  cursor: pointer;*/
+  /*  transition: all 0.1s ease-in-out;*/
+  /*  font-size: 18px;*/
+  /*  border-radius: 10px;*/
+
+  /*border: #4cae4f solid 1px;*/
+
+
+    box-sizing: border-box;
+    height: 40px;
+    line-height: 40px;
+    width: 120px;
+    padding: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #e6e6e6;
+
+    color: #4cae4f;
+
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+    font-size: 18px;
+    border-radius: 10px;
+    border: 3px solid;
+
+    box-shadow: 0 3px 0 0 rgba(0, 0, 0, 0.12);
+
+}
+
+.answerButton:hover {
+    background-color: #d4d4d4;
+}

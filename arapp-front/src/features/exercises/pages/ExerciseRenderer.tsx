@@ -4,6 +4,7 @@ import styles from './Renderer.module.css';
 import MultipleChoiceTask from "../components/MultipleChoiceTask.tsx";
 import MatchingTask from "../components/MatchingTask.tsx";
 import FillInTheBlankTask from "../components/FillInTheBlankTask.tsx";
+import ChooseOneTask from "../components/ChooseOneTask.tsx";
 
 
 // Komponent odpowiedzialny za wybór i renderowanie odpowiedniego typu zadania
@@ -22,6 +23,9 @@ function ExerciseRenderer({currentTask}: { currentTask: Task }) {
                 return <FillInTheBlankTask task={task}/>;
             case 'matching':
                 return <MatchingTask task={task}/>;
+            case 'choose-one':
+                return <ChooseOneTask task={task}/>;
+
             default:
                 return <div>Unknown task type</div>;
 

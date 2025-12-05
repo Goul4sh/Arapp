@@ -1,14 +1,14 @@
 export interface BaseTask {
     id: string;
     type: string;
-    question: string;
+    description: string;
 }
-
+//Uwaga ! możliwe ze bedzie trzeba zmienic nazwy atrybutow, aby zgadzaly sie z jsonem z backendu
 
 export interface ChooseOneTaskType extends BaseTask {
     type: 'choose-one';
     decoyAnswers: string[];
-    correctAnswer: string;
+    answer: string;
 }
 
 
@@ -38,4 +38,4 @@ export interface LetterDrawTaskType extends BaseTask {
     prompt: string;
 }
 
-export type Task = MultipleChoiceTaskType | FillInTheBlankTaskType | MatchingTaskType | LetterFormSingleTaskType | LetterDrawTaskType;
+export type Task = ChooseOneTaskType | MultipleChoiceTaskType | FillInTheBlankTaskType | MatchingTaskType | LetterFormSingleTaskType | LetterDrawTaskType;

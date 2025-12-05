@@ -1,7 +1,7 @@
 package engineer.arabski.task.service;
 
-import engineer.arabski.task.dto.ChooseOneTaskResponse;
-import engineer.arabski.task.dto.TaskResponse;
+import engineer.arabski.task.dto.ChooseOneTaskData;
+import engineer.arabski.task.dto.TaskData;
 import engineer.arabski.task.model.ChooseOneTask;
 import engineer.arabski.task.model.Task;
 import engineer.arabski.task.repository.TaskRepository;
@@ -15,12 +15,13 @@ public class TaskService {
     private final TaskRepository taskRepository;
 
     //TODO dodać więcej typów zadań
-    private TaskResponse toResponse(Task task) {
+    private TaskData toResponse(Task task) {
 
         return switch (task) {
 
-            case ChooseOneTask t -> new ChooseOneTaskResponse(
-                    t.getTaskType(),
+            //IMPORTANT wrocic tu zaraz
+            case ChooseOneTask t -> new ChooseOneTaskData(
+
                     t.getDescription(),
                     t.getAnswer(),
                     t.getDecoyAnswers()
@@ -31,13 +32,31 @@ public class TaskService {
 
     }
 
+    private Task toEntity(TaskData taskData) {
+
+        return switch (taskData) {
+
+            case ChooseOneTaskData t -> {
+                ChooseOneTask task = new ChooseOneTask();
+                task.setTaskType(t.type());
+                task.setDescription(t.description());
+                task.setAnswer(t.answer());
+                task.setDecoyAnswers(t.decoyAnswers());
+                yield task;
+            }
+
+            default -> throw new IllegalStateException("Unexpected value: " + taskData);
+        };
+
+    }
+
 
     public TaskService(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
 
 
-    public Optional<TaskResponse> findById(Long id) {
+    public Optional<TaskData> findById(Long id) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + id));
         return Optional.of(toResponse(task));
@@ -45,9 +64,22 @@ public class TaskService {
 
     }
 
-    public void addTask(Task task) {
-        taskRepository.save(task);
+    public Optional<TaskData> addTask(TaskData task) {
+
+        Task taskToAdd = toEntity(task);
+
+        System.out.println("Adding task: " + taskToAdd.getDescription() + " of type " + taskToAdd.getTaskType());
+
+        Task savedTask = taskRepository.save(taskToAdd);
+        return Optional.of(toResponse(savedTask));
     }
+
+
+
+//    public void addTask(Task task) {
+//
+//        taskRepository.save(task);
+//    }
 
 
 }

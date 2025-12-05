@@ -23,7 +23,7 @@ function ExerciseSelector() {
                         <p> Kliknij aby rozpocząć ćwiczenie</p>
                         <p style={{color: "red"}}> Fill in the blank </p>
 
-                        <Link to={"/exercises/1"} className={styles.startLink}>
+                        <Link to={"/exercises/4"} className={styles.startLink}>
                             <button className={styles.startButton}>
                                 <FontAwesomeIcon icon={faPlay}/> Start
                             </button>

@@ -1,14 +1,11 @@
 package engineer.arabski.task.controller;
 
 
-import engineer.arabski.task.dto.TaskResponse;
+import engineer.arabski.task.dto.TaskData;
 import engineer.arabski.task.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -31,7 +28,7 @@ public class TaskController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
 
-        Optional<TaskResponse> task = taskService.findById(id);
+        Optional<TaskData> task = taskService.findById(id);
         if (task.isPresent()) {
 
             return ResponseEntity.status(HttpStatus.OK).body(task.get());
@@ -41,5 +38,17 @@ public class TaskController {
 
     }
 
+    @PostMapping
+    public ResponseEntity<?> createTask(@RequestBody TaskData data) {
+
+        Optional<TaskData> createdTask = taskService.addTask(data);
+        if (createdTask.isPresent()) {
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdTask.get());
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not create task");
+
+    }
 
 }
