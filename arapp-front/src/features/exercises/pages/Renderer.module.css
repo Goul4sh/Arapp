@@ -1,0 +1,39 @@
+.exercisePage {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    max-width: 1260px;
+    margin: 0 auto;
+
+
+
+
+}
+
+.topBar {
+
+    width: 100%;
+    max-width: 1260px;
+    height: 60px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    margin: 20px 50px;
+
+    background-color: #ff0000;
+
+}
+
+
+.completionBar {
+
+
+    width : 100%;
+
+}
