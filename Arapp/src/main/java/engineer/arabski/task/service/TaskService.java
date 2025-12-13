@@ -1,9 +1,11 @@
 package engineer.arabski.task.service;
 
 import engineer.arabski.task.dto.ChooseOneTaskData;
+import engineer.arabski.task.dto.FillInTheBlankTaskData;
 import engineer.arabski.task.dto.MultipleChoiceTaskData;
 import engineer.arabski.task.dto.TaskData;
 import engineer.arabski.task.model.ChooseOneTask;
+import engineer.arabski.task.model.FillInTheBlankTask;
 import engineer.arabski.task.model.MultipleChoiceTask;
 import engineer.arabski.task.model.Task;
 import engineer.arabski.task.repository.TaskRepository;
@@ -34,6 +36,13 @@ public class TaskService {
                     t.getDecoyAnswers()
             );
 
+            case FillInTheBlankTask t -> new FillInTheBlankTaskData(
+
+                    t.getDescription(),
+                    t.getAnswer(),
+                    t.getSentenceWithBlank()
+            );
+
             default -> throw new IllegalStateException("Unexpected value: " + task);
         };
 
@@ -57,6 +66,16 @@ public class TaskService {
                 task.setDescription(t.description());
                 task.setAnswers(t.answers());
                 task.setDecoyAnswers(t.decoyAnswers());
+                yield task;
+            }
+
+            case FillInTheBlankTaskData t -> {
+                FillInTheBlankTask task = new FillInTheBlankTask();
+                task.setTaskType(t.type());
+                task.setDescription(t.description());
+                task.setAnswer(t.answer());
+                task.setSentenceWithBlank(t.sentenceWithBlank());
+
                 yield task;
             }
 

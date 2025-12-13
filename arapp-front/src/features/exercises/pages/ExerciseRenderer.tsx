@@ -1,10 +1,10 @@
 import type {Task} from "../taskTypes.ts";
 
 import styles from './Renderer.module.css';
-import MultipleChoiceTask from "../components/MultipleChoiceTask.tsx";
-import MatchingTask from "../components/MatchingTask.tsx";
-import FillInTheBlankTask from "../components/FillInTheBlankTask.tsx";
-import ChooseOneTask from "../components/ChooseOneTask.tsx";
+import MultipleChoiceTask from "../components/tasks/MultipleChoiceTask.tsx";
+import MatchingTask from "../components/tasks/MatchingTask.tsx";
+import FillInTheBlankTask from "../components/tasks/FillInTheBlankTask.tsx";
+import ChooseOneTask from "../components/tasks/ChooseOneTask.tsx";
 
 
 // Komponent odpowiedzialny za wybór i renderowanie odpowiedniego typu zadania

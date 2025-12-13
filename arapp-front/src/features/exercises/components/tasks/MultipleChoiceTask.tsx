@@ -1,7 +1,7 @@
-import type { MultipleChoiceTaskType } from '../taskTypes.ts'
-import styles from "./Tasks.module.css";
+import type { MultipleChoiceTaskType } from '../../taskTypes.ts'
+import styles from "../Tasks.module.css";
 import {useContext, useMemo, useState} from "react";
-import {LessonContext} from "./LessonContext.tsx";
+import {LessonContext} from "../LessonContext.tsx";
 
 
 function MultipleChoiceTask ({task}: { task: MultipleChoiceTaskType }) {

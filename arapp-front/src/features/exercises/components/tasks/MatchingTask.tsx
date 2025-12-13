@@ -1,4 +1,4 @@
-import type { MatchingTaskType } from '../taskTypes.ts'
+import type { MatchingTaskType } from '../../taskTypes.ts'
 
 
 function MatchingTask({task}: { task: MatchingTaskType }) {

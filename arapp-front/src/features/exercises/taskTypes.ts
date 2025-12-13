@@ -11,7 +11,6 @@ export interface ChooseOneTaskType extends BaseTask {
     answer: string;
 }
 
-
 export interface MultipleChoiceTaskType extends BaseTask {
     type: 'multiple-choice';
     decoyAnswers: string[];
@@ -20,7 +19,8 @@ export interface MultipleChoiceTaskType extends BaseTask {
 
 export interface FillInTheBlankTaskType extends BaseTask {
     type: 'fill-in-the-blank';
-    correctAnswer: string;
+    sentenceWithBlank: string;
+    answer: string;
 }
 
 export interface MatchingTaskType extends BaseTask {

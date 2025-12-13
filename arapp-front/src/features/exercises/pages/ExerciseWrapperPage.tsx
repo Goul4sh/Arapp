@@ -26,7 +26,6 @@ function ExerciseWrapperPage() {
         setLoading(true);
 
         if (workingMode) {
-            alert("tryb lekcji")
             api.get(`/api/lessons/${lesson_id}`, {withCredentials: true})
                 .then(resp => {
 
@@ -41,7 +40,6 @@ function ExerciseWrapperPage() {
 
 
         } else {
-            alert("tryb solo taska")
             api.get(`/api/exercises/${id}`, {withCredentials: true})
                 .then(resp => {
 

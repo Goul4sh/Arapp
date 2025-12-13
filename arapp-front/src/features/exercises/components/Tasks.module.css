@@ -9,11 +9,6 @@
     margin-bottom: 20px;
     padding: 20px;
 
-    /*border: 2px solid #4cae4f;*/
-    /*border-radius: 15px;*/
-    /*background-color: #f9f9f9;*/
-    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
-
     max-width: 600px;
     width: 100%;
 }
@@ -33,18 +28,6 @@
 }
 
 .answerButton {
-
-  /*  height: 40px;*/
-  /*  line-height: 40px;*/
-  /*  width: 200px;*/
-  /*  font-weight: bold;*/
-  /*  cursor: pointer;*/
-  /*  transition: all 0.1s ease-in-out;*/
-  /*  font-size: 18px;*/
-  /*  border-radius: 10px;*/
-
-  /*border: #4cae4f solid 1px;*/
-
 
     box-sizing: border-box;
     height: 40px;
@@ -124,4 +107,62 @@
 
 .checkButton:hover {
     background-color: #007bb5;
+}
+
+
+.gapInput {
+    background-color: #f0f0f0;
+
+    color: green;
+
+    border: none;
+    border-bottom: 2px solid #cccccc;
+    padding: 4px 8px;
+    font-size: inherit;
+    width: 60px;
+    min-width: 30px;
+    text-align: center;
+}
+
+.gapInput:focus {
+    outline: none;
+    border-bottom: 2px solid #4cae4f;
+    transition: all 0.1s ease-in-out;
+
+}
+
+.sentenceContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    flex-wrap: wrap;
+    max-width: 600px;
+}
+
+
+.fillTheGapContainer {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+
+    margin-top: 10px;
+
+    font-weight: 600;
+
+}
+
+.separator {
+    gap: 20px;
+    width: 60%;
+    height: 2px;
+    background-color: #4cae4f;
+    margin: 1px 0;
+    border-radius: 5px;
+
 }
