@@ -9,8 +9,6 @@
     margin: 0 auto;
 
 
-
-
 }
 
 .topBar {
@@ -26,7 +24,7 @@
 
     margin: 20px 50px;
 
-    background-color: #ff0000;
+    /*background-color: #ff0000;*/
 
 }
 
@@ -34,6 +32,6 @@
 .completionBar {
 
 
-    width : 100%;
+    width: 100%;
 
 }

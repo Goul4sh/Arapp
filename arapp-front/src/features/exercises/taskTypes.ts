@@ -14,8 +14,8 @@ export interface ChooseOneTaskType extends BaseTask {
 
 export interface MultipleChoiceTaskType extends BaseTask {
     type: 'multiple-choice';
-    options: string[];
-    correctOption: number;
+    decoyAnswers: string[];
+    answers: string[];
 }
 
 export interface FillInTheBlankTaskType extends BaseTask {

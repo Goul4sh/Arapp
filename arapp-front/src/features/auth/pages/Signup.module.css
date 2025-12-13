@@ -15,10 +15,12 @@
 }
 
 .signupTopText {
-    font-size: 24px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 10px;}
+
+    /*font-weight: 600;*/
+    /*margin-bottom: 10px;*/
+
+
+}
 
 .signupForm {
 
@@ -27,11 +29,9 @@
     align-items: center;
     justify-content: center;
 
-    /*min-height: 80vh;*/
-    width: 100%;
+    width: 60%;
     margin: 0 auto;
 
-    /*padding: 2rem;*/
     max-width: 600px;
 
     gap: 15px;
@@ -53,8 +53,9 @@
 .emailContainer input,
 .passwordContainer input,
 .confirmPasswordContainer input,
-.usernameContainer input{
+.usernameContainer input {
 
+    height: 40px;
     font-size: 16px;
     border-radius: 10px;
     border: 3px solid #4cae4f;
@@ -67,12 +68,14 @@
 .invalid {
     border-color: red !important;
 
-    }
+}
+
 .error {
     color: red;
     font-size: 14px;
     font-weight: 500;
-    margin-top: 5px;}
+    margin-top: 5px;
+}
 
 
 .emailContainer input::placeholder,
@@ -115,6 +118,7 @@
     border-color: #4cae4f90;
     box-shadow: 0 3px 0 0 #4CAF5090;
 }
+
 .button:not(:disabled):active {
     box-shadow: none;
     transform: translateY(3px);

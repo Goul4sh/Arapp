@@ -1,8 +1,10 @@
 package engineer.arabski.task.service;
 
 import engineer.arabski.task.dto.ChooseOneTaskData;
+import engineer.arabski.task.dto.MultipleChoiceTaskData;
 import engineer.arabski.task.dto.TaskData;
 import engineer.arabski.task.model.ChooseOneTask;
+import engineer.arabski.task.model.MultipleChoiceTask;
 import engineer.arabski.task.model.Task;
 import engineer.arabski.task.repository.TaskRepository;
 import org.springframework.stereotype.Service;
@@ -15,15 +17,20 @@ public class TaskService {
     private final TaskRepository taskRepository;
 
     //TODO dodać więcej typów zadań
-    private TaskData toResponse(Task task) {
+    public TaskData toResponse(Task task) {
 
         return switch (task) {
 
-            //IMPORTANT wrocic tu zaraz
             case ChooseOneTask t -> new ChooseOneTaskData(
 
                     t.getDescription(),
                     t.getAnswer(),
+                    t.getDecoyAnswers()
+            );
+
+            case MultipleChoiceTask t -> new MultipleChoiceTaskData(
+                    t.getDescription(),
+                    t.getAnswers(),
                     t.getDecoyAnswers()
             );
 
@@ -44,6 +51,14 @@ public class TaskService {
                 task.setDecoyAnswers(t.decoyAnswers());
                 yield task;
             }
+            case MultipleChoiceTaskData t -> {
+                MultipleChoiceTask task = new MultipleChoiceTask();
+                task.setTaskType(t.type());
+                task.setDescription(t.description());
+                task.setAnswers(t.answers());
+                task.setDecoyAnswers(t.decoyAnswers());
+                yield task;
+            }
 
             default -> throw new IllegalStateException("Unexpected value: " + taskData);
         };
@@ -61,7 +76,11 @@ public class TaskService {
                 .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + id));
         return Optional.of(toResponse(task));
 
+    }
 
+    public Task findByIdEntity(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + id));
     }
 
     public Optional<TaskData> addTask(TaskData task) {
@@ -73,7 +92,6 @@ public class TaskService {
         Task savedTask = taskRepository.save(taskToAdd);
         return Optional.of(toResponse(savedTask));
     }
-
 
 
 //    public void addTask(Task task) {

@@ -36,9 +36,9 @@ function ExerciseSelector() {
 
                         <FontAwesomeIcon icon={faBook}/>
                         <p> Kliknij aby rozpocząć ćwiczenie</p>
-                        <p style={{color: "red"}}> Multiple choice </p>
+                        <p style={{color: "rosybrown"}}> Multiple choice </p>
 
-                        <Link to={"/exercises/2"} className={styles.startLink}>
+                        <Link to={"/exercises/7"} className={styles.startLink}>
                             <button className={styles.startButton}>
                                 <FontAwesomeIcon icon={faPlay}/> Start
                             </button>
@@ -53,7 +53,22 @@ function ExerciseSelector() {
                         <p> Kliknij aby rozpocząć ćwiczenie</p>
                         <p style={{color: "red"}}> Choose one </p>
 
-                        <Link to={"/exercises/3"} className={styles.startLink}>
+                        <Link to={"/exercises/6"} className={styles.startLink}>
+                            <button className={styles.startButton}>
+                                <FontAwesomeIcon icon={faPlay}/> Start
+                            </button>
+
+                        </Link>
+
+                    </div>
+
+                    <div className={styles.exerciseCard}>
+
+                        <FontAwesomeIcon icon={faBook}/>
+                        <p> Kliknij aby rozpocząć lekcję!</p>
+                        <p style={{color: "blueviolet"}}> Choose one </p>
+
+                        <Link to={"/lessons/1"} className={styles.startLink}>
                             <button className={styles.startButton}>
                                 <FontAwesomeIcon icon={faPlay}/> Start
                             </button>

@@ -2,12 +2,15 @@
     width: 100%;
     max-width: 1260px;
     background-color: #e5e7eb;
+    border-color: #007bb5;
+    border-style: solid;
+    border-width: 1px;
     border-radius: 9999px;
     height: 1rem;
 }
 
 .progressBarFill {
-    background-color: #2563eb;
+    background-color: #4cae4f;
     height: 1rem;
     border-radius: 9999px;
     transition: all 0.5s ease-in-out;

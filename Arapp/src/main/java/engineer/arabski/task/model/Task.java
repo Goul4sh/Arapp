@@ -1,9 +1,12 @@
 package engineer.arabski.task.model;
 
+import engineer.arabski.lesson.model.Lesson;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -19,6 +22,9 @@ public abstract class Task {
     private Long id;
     private String taskType;
     private String description;
+
+    @ManyToMany(mappedBy = "tasks")
+    private List<Lesson> lessons = new ArrayList<>();
 
 
 }

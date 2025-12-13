@@ -35,6 +35,7 @@ function App() {
                 {/*Trasa pozwalająca na wykonywanie ćwiczeń zależnie od id*/}
                 <Route element={<ProtectedExerciseLayout/>}>
                     <Route path="/exercises/:id" element={<ExerciseWrapperPage/>} />
+                    <Route path="/lessons/:lesson_id" element={<ExerciseWrapperPage/>} />
                 </Route>
 
 

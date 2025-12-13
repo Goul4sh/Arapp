@@ -52,7 +52,8 @@ function Signup(): JSX.Element {
             <div className={styles.signUpPage}>
 
 
-                <div className={styles.signupTopText}> Zarejestruj się</div>
+                <h1 className={styles.signupTopText}>
+                    Zarejestruj się</h1>
 
                 <form className={styles.signupForm} onSubmit={handleSubmit}>
 
@@ -70,6 +71,17 @@ function Signup(): JSX.Element {
                                onChange={(e) => setEmail(e.target.value)}/>
                     </div>
 
+                    <div className={styles.usernameContainer}>
+                        {/*<label htmlFor="username">Nazwa użytkownika:</label>*/}
+                        <input type="text"
+                               id="username"
+                               name="username"
+                               required
+                               placeholder="Nazwa użytkownika"
+                               aria-label="Nazwa użytkownika"
+                               value={username}
+                               onChange={(e) => setUsername(e.target.value)}/>
+                    </div>
 
                     <div className={styles.passwordContainer}>
                         {/*<label htmlFor="password">Hasło:</label>*/}
@@ -99,23 +111,14 @@ function Signup(): JSX.Element {
                                className={confirmPassword && password !== confirmPassword ? styles.invalid : ''}
                         />
                     </div>
-                    <div className={styles.usernameContainer}>
-                        {/*<label htmlFor="username">Nazwa użytkownika:</label>*/}
-                        <input type="text"
-                               id="username"
-                               name="username"
-                               required
-                               placeholder="Nazwa użytkownika"
-                               aria-label="Nazwa użytkownika"
-                               value={username}
-                               onChange={(e) => setUsername(e.target.value)}/>
-                    </div>
+
                     <div className={styles.submitContainer}>
                         <button
                             type="submit"
                             className={`${styles.button} ${styles.signup}`}
                             disabled={!password || !confirmPassword || password !== confirmPassword}
-                        >Zarejestruj się</button>
+                        >Zarejestruj się
+                        </button>
                     </div>
 
                 </form>
