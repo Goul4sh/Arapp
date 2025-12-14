@@ -14,11 +14,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ChooseOneTaskData.class, name = "choose-one"),
         @JsonSubTypes.Type(value = MultipleChoiceTaskData.class, name = "multiple-choice"),
-        @JsonSubTypes.Type(value = FillInTheBlankTaskData.class, name = "fill-in-the-blank")
+        @JsonSubTypes.Type(value = FillInTheBlankTaskData.class, name = "fill-in-the-blank"),
+        @JsonSubTypes.Type(value = MatchPairsTaskData.class, name = "match-pairs")
 
 })
 
-public sealed interface TaskData permits ChooseOneTaskData, MultipleChoiceTaskData, FillInTheBlankTaskData {
+public sealed interface TaskData permits ChooseOneTaskData, MultipleChoiceTaskData, FillInTheBlankTaskData, MatchPairsTaskData {
 
     String type();
 

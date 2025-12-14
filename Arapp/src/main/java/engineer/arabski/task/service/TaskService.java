@@ -1,13 +1,7 @@
 package engineer.arabski.task.service;
 
-import engineer.arabski.task.dto.ChooseOneTaskData;
-import engineer.arabski.task.dto.FillInTheBlankTaskData;
-import engineer.arabski.task.dto.MultipleChoiceTaskData;
-import engineer.arabski.task.dto.TaskData;
-import engineer.arabski.task.model.ChooseOneTask;
-import engineer.arabski.task.model.FillInTheBlankTask;
-import engineer.arabski.task.model.MultipleChoiceTask;
-import engineer.arabski.task.model.Task;
+import engineer.arabski.task.dto.*;
+import engineer.arabski.task.model.*;
 import engineer.arabski.task.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +37,13 @@ public class TaskService {
                     t.getSentenceWithBlank()
             );
 
+            case MatchPairsTask t -> new MatchPairsTaskData(
+
+                    t.getDescription(),
+                    t.getPairs()
+
+            );
+
             default -> throw new IllegalStateException("Unexpected value: " + task);
         };
 
@@ -75,6 +76,15 @@ public class TaskService {
                 task.setDescription(t.description());
                 task.setAnswer(t.answer());
                 task.setSentenceWithBlank(t.sentenceWithBlank());
+
+                yield task;
+            }
+
+            case MatchPairsTaskData t -> {
+                MatchPairsTask task = new MatchPairsTask();
+                task.setTaskType(t.type());
+                task.setDescription(t.description());
+                task.setPairs(t.pairs());
 
                 yield task;
             }

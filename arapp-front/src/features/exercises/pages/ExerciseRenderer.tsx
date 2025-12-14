@@ -2,7 +2,7 @@ import type {Task} from "../taskTypes.ts";
 
 import styles from './Renderer.module.css';
 import MultipleChoiceTask from "../components/tasks/MultipleChoiceTask.tsx";
-import MatchingTask from "../components/tasks/MatchingTask.tsx";
+import MatchPairsTask from "../components/tasks/MatchPairsTask.tsx";
 import FillInTheBlankTask from "../components/tasks/FillInTheBlankTask.tsx";
 import ChooseOneTask from "../components/tasks/ChooseOneTask.tsx";
 
@@ -21,8 +21,8 @@ function ExerciseRenderer({currentTask}: { currentTask: Task }) {
                 return <MultipleChoiceTask task={task}/>;
             case 'fill-in-the-blank':
                 return <FillInTheBlankTask task={task}/>;
-            case 'matching':
-                return <MatchingTask task={task}/>;
+            case 'match-pairs':
+                return <MatchPairsTask task={task}/>;
             case 'choose-one':
                 return <ChooseOneTask task={task}/>;
 

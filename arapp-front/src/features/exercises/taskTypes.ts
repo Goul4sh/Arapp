@@ -23,9 +23,9 @@ export interface FillInTheBlankTaskType extends BaseTask {
     answer: string;
 }
 
-export interface MatchingTaskType extends BaseTask {
-    type: 'matching';
-    pairs: { left: string; right: string }[];
+export interface MatchPairsTaskType extends BaseTask {
+    type: 'match-pairs';
+    pairs: Record<string, string>;
 }
 
 export interface LetterFormSingleTaskType extends BaseTask {
@@ -38,4 +38,4 @@ export interface LetterDrawTaskType extends BaseTask {
     prompt: string;
 }
 
-export type Task = ChooseOneTaskType | MultipleChoiceTaskType | FillInTheBlankTaskType | MatchingTaskType | LetterFormSingleTaskType | LetterDrawTaskType;
+export type Task = ChooseOneTaskType | MultipleChoiceTaskType | FillInTheBlankTaskType | MatchPairsTaskType | LetterFormSingleTaskType | LetterDrawTaskType;

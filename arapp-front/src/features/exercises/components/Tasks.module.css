@@ -53,6 +53,14 @@
 
 }
 
+.answerButton:disabled {
+    background-color: #cccccc;
+    border-color: #bbbbbb;
+    box-shadow: none;
+    color: #666666;
+    cursor: not-allowed;
+}
+
 .answerButton:hover {
     background-color: #d4d4d4;
 }
@@ -166,3 +174,19 @@
     border-radius: 5px;
 
 }
+
+.pairsContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+
+    flex-wrap: wrap;
+}
+.column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;}

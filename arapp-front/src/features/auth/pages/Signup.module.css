@@ -128,3 +128,63 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+.google {
+    composes: button;
+    width: 60%;
+
+    background-color: white;
+    border-color: #ddd;
+    box-shadow: 0 3px 0 0 rgba(0, 0, 0, 0.08);
+    color: #4cae4f;
+    gap: 8px;
+}
+
+.google:hover {
+    border-color: #4cae4f;
+}
+
+.googleLogo {
+    height: 24px;
+    width: 24px;
+    display: block;
+}
+
+.googleText {
+    font-size: 16px;
+    color: #4cae4f;
+}
+
+.separator {
+    gap: 20px;
+    width: 60%;
+    height: 2px;
+    background-color: #4cae4f;
+    margin: 1px 0;
+    border-radius: 5px;
+
+}
+
+.register {
+    display: flex;
+    flex-direction: row;
+    text-align:  center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.register a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    text-decoration: none;
+    color: #4cae4f;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.register a, .register p {
+
+    padding: 0;
+}

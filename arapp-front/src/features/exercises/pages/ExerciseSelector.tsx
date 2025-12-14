@@ -77,6 +77,9 @@ function ExerciseSelector() {
 
                     </div>
 
+                    
+
+
                     <div className={styles.exerciseCard}>
 
                         <FontAwesomeIcon icon={faBook}/>

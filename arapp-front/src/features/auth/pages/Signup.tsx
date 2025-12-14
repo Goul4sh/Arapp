@@ -2,7 +2,8 @@ import {type JSX} from "react";
 import * as React from "react";
 import styles from './Signup.module.css'
 import api from "../api.ts";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import GoogleLogo from "../../../assets/Google__G__logo.svg";
 
 // TODO dodac komunikaty o bledach podczas rejestracji
 
@@ -45,6 +46,10 @@ function Signup(): JSX.Element {
 
     }
 
+    const handleGoogleSignIn = () => {
+        const backendURL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+        window.location.href = `${backendURL}/oauth2/authorization/google`;
+    };
 
     return (
         <>
@@ -122,6 +127,20 @@ function Signup(): JSX.Element {
                     </div>
 
                 </form>
+
+                <div className={styles.separator}></div>
+
+                <button type="button" className={`${styles.button} ${styles.google}`} onClick={handleGoogleSignIn}>
+                    <img className={styles.googleLogo} src={GoogleLogo} alt="Google Logo"/>
+                    <span className={styles.googleText}>Zaloguj kontem Google</span>
+                </button>
+
+                <div className={styles.register}>
+                    <p>Masz już konto? </p> <Link to={"/login"}>Zaloguj się </Link>
+
+
+                </div>
+
             </div>
 
         </>
