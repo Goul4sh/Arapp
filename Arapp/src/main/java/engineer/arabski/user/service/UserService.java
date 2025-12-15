@@ -44,6 +44,11 @@ public class UserService {
     }
 
 
+    public User getUserById(Long id) {
+        return userRepository.findUserById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id " + id));
+    }
+
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }

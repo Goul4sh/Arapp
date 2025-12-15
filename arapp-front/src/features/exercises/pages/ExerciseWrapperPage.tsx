@@ -1,6 +1,6 @@
 import styles from "./Renderer.module.css";
 import ExerciseRenderer from "./ExerciseRenderer.tsx";
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import api from "../../auth/api.ts";
 import type {Task} from "../taskTypes.ts";
@@ -18,9 +18,19 @@ function ExerciseWrapperPage() {
     const [totalTasks, setTotalTasks] = useState<number>(0);
     const [completedTasks, setCompletedTasks] = useState<number>(0);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
 
     const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
     const workingMode = !!lesson_id;
+
+
+    const [sessionStats, setSessionStats] = useState({
+        correctAnswers: 0,
+        incorrectAnswers: 0,
+        startTime: Date.now(),
+        completedTasksCount: 0
+    });
 
     useEffect(() => {
         setLoading(true);
@@ -56,6 +66,17 @@ function ExerciseWrapperPage() {
     function submitAnswer(answer: boolean) {
         if (answer) {
             alert("Dobrze!")
+
+            const newCompletedCount = sessionStats.completedTasksCount + 1;
+            const newCorrectAnswers = sessionStats.correctAnswers + 1;
+
+            setSessionStats(prev => ({
+                ...prev,
+                correctAnswers: newCorrectAnswers,
+                completedTasksCount: newCompletedCount
+            }));
+
+
             const newQueue = taskQueue.slice(1);
             setTaskQueue(newQueue);
             setCompletedTasks(prev => prev + 1);
@@ -65,11 +86,25 @@ function ExerciseWrapperPage() {
 
             } else {
                 // Wszystkie zadania ukończone!
-                // setCurrentTask(null);
+
+                //Wysyłanie statystyk po zakończeniu lekcji
+                submitSessionStats(newCompletedCount, newCorrectAnswers, sessionStats.incorrectAnswers)
+                    .finally(() => {navigate("/exercises");})
+                alert("Wszsystkie zadania ukończone!");
+
             }
 
         } else {
             alert("źle!")
+
+            const newIncorrectAnswers = sessionStats.incorrectAnswers + 1;
+
+
+            setSessionStats(prev => ({
+                ...prev,
+                incorrectAnswers: newIncorrectAnswers
+            }));
+
             // Przeniesienie aktualnego zadania na koniec kolejki - nie zostało rozwiązane poprawnie
             const [first, ...rest] = taskQueue;
             const newQueue = [...rest, first];
@@ -79,6 +114,24 @@ function ExerciseWrapperPage() {
         }
 
     }
+
+    const submitSessionStats = async (completedCount: number, correctAnswers: number, incorrectAnswers: number) => {
+        const duration = Math.floor((Date.now() - sessionStats.startTime) / 1000); // w sekundach
+
+
+        try {
+            await api.post('/api/statistics', {
+                completedTasks: completedCount,
+                correctAnswers: correctAnswers,
+                incorrectAnswers: incorrectAnswers,
+                durationSeconds: duration,
+
+            }, { withCredentials: true });
+        } catch (error) {
+            console.error('Failed to submit stats:', error);
+        }
+    };
+
 
     if (loading) {
         return <div>Loading...</div>;

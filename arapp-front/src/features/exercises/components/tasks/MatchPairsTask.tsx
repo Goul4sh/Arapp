@@ -27,9 +27,15 @@ function MatchPairsTask({task}: { task: MatchPairsTaskType }) {
         }
     }
     const handleClickRight = (option: string) => {
-        setSelectedRight(option);
-        if (selectedLeft) {
-            checkMatch(selectedLeft, option);
+        if (matchedPairs.includes(option)) return;
+
+        if (selectedRight === option) {
+            setSelectedRight(null);
+        } else {
+            setSelectedRight(option);
+            if (selectedLeft) {
+                checkMatch(selectedLeft, option);
+            }
         }
     }
 
@@ -37,9 +43,13 @@ function MatchPairsTask({task}: { task: MatchPairsTaskType }) {
 
         const isCorrect = task.pairs[left] === right;
         if (isCorrect) {
-            setMatchedPairs([...matchedPairs, left, right]);
+            const newMatchedPairs = [...matchedPairs, left, right];
+            setMatchedPairs(newMatchedPairs);
             setSelectedLeft(null);
             setSelectedRight(null);
+            if (newMatchedPairs.length === Object.keys(task.pairs).length * 2) {
+                submitAnswer( true);
+            }
         } else {
             setSelectedLeft(null);
             setSelectedRight(null);

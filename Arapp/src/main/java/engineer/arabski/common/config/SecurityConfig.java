@@ -38,7 +38,9 @@ public class SecurityConfig {
                                                    AuthenticationProvider authenticationProvider) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
+//                .cors(cors -> cors.disable())
+                .cors(cors -> cors.configure(http)) // walka trwa
+
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/verify-email**", "/oauth2/**").permitAll()
                         .anyRequest().authenticated()
