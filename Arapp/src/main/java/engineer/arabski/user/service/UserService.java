@@ -57,6 +57,10 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
+
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }

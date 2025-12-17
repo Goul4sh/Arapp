@@ -1,0 +1,201 @@
+.reviewPage {
+
+    margin: 30px;
+
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    /*align-items: center;*/
+    /*justify-content: center;*/
+
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    align-items: start;
+    justify-content: center;
+    box-sizing: border-box;
+
+
+}
+
+.columnLeft, .columnRight, .columnCenter {
+
+    background-color: #f8f9fa;
+    border-radius: 25px;
+    height: fit-content;
+
+}
+
+
+.columnLeft, .columnRight {
+
+    width: 348px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+
+}
+
+
+/*lewa kolumna*/
+
+.columnLeft {
+
+    height: 842px;
+
+
+}
+
+
+.topText {
+
+    margin-top: 30px;
+    margin-left: 30px;
+    margin-right: 30px;
+
+}
+
+.topText p {
+    font-weight: bold;
+    /*font-size: 28px;*/
+    font-size: 1.5em;
+
+    margin: 0;
+
+}
+
+.separator {
+    gap: 10px;
+    width: 80%;
+    height: 2px;
+    background-color: #4cae4f;
+    margin: 1px 0;
+    border-radius: 5px;
+
+}
+.flashcardGroupsContainer {
+
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+
+    height: 100%;
+    width: 100%;
+
+
+
+
+}
+
+/*TODO poprawic wyglad slajdera, a konkretnie odleglosc od krawedzi*/
+
+.flashcardGroupsSlider {
+
+    background-color: rgba(80, 241, 1, 0.93);
+
+    height: 95%;
+    width: 85%;
+
+
+
+    border-radius: 25px;
+}
+
+
+/*srodkowa kolumna*/
+
+.columnCenter {
+
+    width: 1104px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: left;
+    gap: 30px;
+
+}
+
+
+.topRow {
+
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-top: 30px;
+
+}
+
+
+
+.middleRow {
+
+    margin-left: 30px;
+    margin-right: 30px;
+
+}
+
+.bottomRow {
+
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-bottom: 30px;
+
+
+}
+
+.flashcardsSlider {
+    background-color: rgba(80, 241, 1, 0.93);
+
+
+    height: 247px;
+    width: 1044px;
+    border-radius: 25px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    box-sizing: border-box;
+    padding: 20px;
+
+    gap: 20px;
+
+
+    scroll-behavior: smooth;
+
+}
+
+
+
+
+.flashcardItem {
+
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+
+
+    min-width: 300px;
+    width: 300px;
+    height: 180px;
+    flex-shrink: 0;
+
+
+    font-size: 18px;
+    text-align: center;
+
+
+
+}
+

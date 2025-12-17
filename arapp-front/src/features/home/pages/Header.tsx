@@ -18,7 +18,7 @@ function Header() {
                         <li className={styles.listItem}><Link className={styles.link} to="/letters">Pisownia</Link></li>
                         {/*<li className={styles.listItem}><Link className={styles.link} to="/grammar">Gramatyka </Link></li>*/}
                         <li className={styles.listItem}><Link className={styles.link} to="/words">Słownictwo</Link></li>
-                        <li className={styles.listItem}><Link className={styles.link} to="/review">Powtórki</Link></li>
+                        <li className={styles.listItem}><Link className={styles.link} to="/review">Fiszunie</Link></li>
                         <li className={styles.listItem}><Link className={styles.link} to="/quiz">Quizy</Link></li>
                         <li className={styles.listItem}><Link className={styles.link} to="/exercises">Ćwiczenia</Link></li>
 

@@ -29,39 +29,39 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
-        taskService.addTask(new ChooseOneTaskData(
-                "Jaka jest stolica Syrii?",
-                "Damaszek",
-                Set.of("Ankara", "Kair", "Astana")
-        ));
-
-        taskService.addTask(new MultipleChoiceTaskData(
-
-                "Select A and C",
-                Set.of("Option A", "Option C"),
-                Set.of("Option B", "Option D")
-
-        ));
-
-        taskService.addTask(new FillInTheBlankTaskData(
-                "Uzupełnij lukę.",
-                "Słońce",
-                "Największa gwiazda w układzie słonecznym to __."
-        ));
-
-
-        Lesson lesson = new Lesson();
-        lessonService.addLesson(List.of(155L, 156L, 157L), lesson);
+//        taskService.addTask(new ChooseOneTaskData(
+//                "Jaka jest stolica Syrii?",
+//                "Damaszek",
+//                Set.of("Ankara", "Kair", "Astana")
+//        ));
+//
+//        taskService.addTask(new MultipleChoiceTaskData(
+//
+//                "Wybierz A i C",
+//                Set.of("A", "C"),
+//                Set.of("B", "D")
+//
+//        ));
+//
+//        taskService.addTask(new FillInTheBlankTaskData(
+//                "Uzupełnij lukę.",
+//                "Słońce",
+//                "Największa gwiazda w układzie słonecznym to __."
+//        ));
+//
+//
+//        Lesson lesson = new Lesson();
+//        lessonService.addLesson(List.of(1L, 2L, 3L), lesson);
 
         
-        taskService.addTask(new MatchPairsTaskData(
-                "Dopasuj pary",
-                Map.of(
-                        "Polska", "Warszawa",
-                        "Niemcy", "Berlin",
-                        "Francja", "Paryż"
-                )
-        ));
+//        taskService.addTask(new MatchPairsTaskData(
+//                "Dopasuj pary",
+//                Map.of(
+//                        "Polska", "Warszawa",
+//                        "Niemcy", "Berlin",
+//                        "Francja", "Paryż"
+//                )
+//        ));
 
 
     }
