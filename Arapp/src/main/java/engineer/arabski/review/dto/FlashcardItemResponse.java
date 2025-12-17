@@ -1,9 +1,15 @@
 package engineer.arabski.review.dto;
 
-public record FlashcardItemResponse (
+import java.time.LocalDateTime;
+
+public record FlashcardItemResponse(
 
         WordResponse word,
-        Long repetitionInterval
+        LocalDateTime nextReviewDate
+
+//        Integer repetitions,
+//        Integer intervalDays,
+//        Double easeFactor
 
 ) {
 }

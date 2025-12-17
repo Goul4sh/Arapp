@@ -2,6 +2,7 @@ package engineer.arabski.review.service;
 
 import engineer.arabski.review.dto.FlashcardGroupRequest;
 import engineer.arabski.review.dto.FlashcardGroupResponse;
+import engineer.arabski.review.exception.FlashcardNotFoundException;
 import engineer.arabski.review.model.FlashcardGroup;
 import engineer.arabski.review.model.FlashcardItem;
 import engineer.arabski.review.repository.FlashcardGroupRepository;
@@ -10,7 +11,9 @@ import engineer.arabski.user.model.User;
 import engineer.arabski.user.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 //TODO wypelnic funkcje walidacją i logiką biznesową
 @Service
@@ -49,10 +52,15 @@ public class FlashcardGroupService {
             throw new RuntimeException("User not found");
         }
 
-        List<FlashcardItem> flashcardItems = request.flashcardItem_Ids().stream()
+        Set<Long> uniqueIds = new HashSet<>(request.flashcardItem_Ids());
+
+        List<FlashcardItem> flashcardItems = uniqueIds.stream()
                 .map(flashcardService::getFlashcardItemEntity)
                 .toList();
 
+        if (flashcardItems.contains(null)) {
+            throw new FlashcardNotFoundException("One or more flashcard items do not exist");
+        }
 
         //TODO dodac mozliwosc dodawania bezpiecznie pustej grupy, a dopiero pozniej dodania do niej fiszek
 
@@ -83,9 +91,17 @@ public class FlashcardGroupService {
         flashcardGroup.setCategory(request.category());
 
         if (request.flashcardItem_Ids() != null) {
-            List<FlashcardItem> flashcardItems = request.flashcardItem_Ids().stream()
+
+            Set<Long> uniqueIds = new HashSet<>(request.flashcardItem_Ids());
+
+
+            List<FlashcardItem> flashcardItems = uniqueIds.stream()
                     .map(flashcardService::getFlashcardItemEntity)
                     .toList();
+
+            if (flashcardItems.contains(null)) {
+                throw new FlashcardNotFoundException("One or more flashcard items do not exist");
+            }
 
             flashcardGroup.getFlashcardItems().clear();
             flashcardGroup.getFlashcardItems().addAll(flashcardItems);

@@ -73,9 +73,9 @@ public class FlashcardController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateFlashcard(@PathVariable Long id, @RequestBody FlashcardItemRequest data) {
+    public ResponseEntity<?> updateFlashcard(@PathVariable Long id, @RequestBody FlashcardItemRequest request) {
 
-        FlashcardItem updatedFlashcard = flashcardService.updateFlashcardItem(data, id);
+        FlashcardItem updatedFlashcard = flashcardService.updateFlashcardItem(request, id);
         if (updatedFlashcard != null) {
 
             return ResponseEntity.status(HttpStatus.OK).body(FlashcardService.toResponse(updatedFlashcard));
@@ -96,5 +96,20 @@ public class FlashcardController {
 
     }
 
+    @PostMapping("/review/{id}")
+    public ResponseEntity<?> reviewFlashcard(@PathVariable Long id, @RequestParam("quality") int quality) {
+        try {
+
+            if (quality < 0 || quality > 5) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            flashcardService.processReview(id, quality);
+
+            return ResponseEntity.status(HttpStatus.OK).body("Flashcard reviewed successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not review flashcard: " + e.getMessage());
+        }
+    }
 
 }

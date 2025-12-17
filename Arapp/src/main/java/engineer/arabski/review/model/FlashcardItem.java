@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +20,11 @@ public class FlashcardItem {
     @Column(nullable = false)
     private Long id;
 
-//    private String wordArabic;
-//    private String wordTranslation;
-//    private String Transliteration;
+    private Integer repetitions = 0;
+    private Integer intervalDays = 0;
+    private Double easeFactor = 2.5;
+
+    private LocalDateTime nextReviewDate = LocalDateTime.now();
 
     public FlashcardItem(User owner, TemporaryWord temporaryWord) {
         this.flashcardOwner = owner;
@@ -32,18 +35,17 @@ public class FlashcardItem {
     @JoinColumn(name = "temporary_word_id")
     private TemporaryWord word;
 
+//    private Long source_sentence_id;
+//    private String context_fragment;
+
     @ManyToOne
     @JoinColumn(name = "flashcard_owner_id")
     private User flashcardOwner;
 
-   @ManyToMany(mappedBy = "flashcardItems")
+    @ManyToMany(mappedBy = "flashcardItems")
     private List<FlashcardGroup> flashcardGroup = new ArrayList<>();
 
-/// TODO zastanowic sie nad typem danych dla interwału!
-    private Long repetitionInterval = 0L;
 
-//    private Long source_sentence_id;
-//    private String context_fragment;
 
 
 }

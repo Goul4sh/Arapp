@@ -3,16 +3,14 @@ package engineer.arabski.review.controller;
 import engineer.arabski.common.security.CustomUserDetails;
 import engineer.arabski.review.dto.FlashcardGroupRequest;
 import engineer.arabski.review.dto.FlashcardGroupResponse;
-import engineer.arabski.review.dto.FlashcardItemResponse;
+import engineer.arabski.review.exception.FlashcardNotFoundException;
 import engineer.arabski.review.service.FlashcardGroupService;
-import engineer.arabski.task.dto.TaskData;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/flashcard-groups")
@@ -36,7 +34,7 @@ public class FlashcardGroupController {
             return ResponseEntity.status(HttpStatus.OK).body(group);
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
+        return ResponseEntity.status(HttpStatus.OK).body("No groups found");
 
     }
 
@@ -52,7 +50,7 @@ public class FlashcardGroupController {
         if (!flashcards.isEmpty()) {
             return ResponseEntity.ok(flashcards);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Flashcards not found for user");
+            return ResponseEntity.status(HttpStatus.OK).body("No flashcard groups found for user");
         }
     }
 
@@ -93,5 +91,10 @@ public class FlashcardGroupController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not update flashcard group");
     }
 
+
+    @ExceptionHandler(FlashcardNotFoundException.class)
+    public ResponseEntity<String> handleFlashcardNotFound(FlashcardNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 
 }
