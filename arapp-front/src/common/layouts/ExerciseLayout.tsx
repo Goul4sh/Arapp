@@ -1,9 +1,9 @@
-import ExerciseWrapperPage from "../../features/exercises/pages/ExerciseWrapperPage.tsx";
+import {Outlet} from "react-router-dom";
 
 const ExerciseLayout = () => {
     return (
         <div>
-            <ExerciseWrapperPage/>
+            <Outlet/>
         </div>
     );
 }

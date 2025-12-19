@@ -1,0 +1,181 @@
+.practicePage {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: 60px;
+
+}
+
+
+.progressBarContainer {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+
+}
+
+.flashcardCounter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+}
+
+.buttonsContainer {
+
+    display: flex;
+    justify-content: center;
+}
+
+
+.qualityButtonsContainer {
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+
+}
+
+
+.flashcardContainer {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 10px;
+
+
+}
+
+
+.answerButton {
+
+    box-sizing: border-box;
+    height: 40px;
+    line-height: 40px;
+    width: 160px;
+    padding: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #e6e6e6;
+
+    color: #4cae4f;
+
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+    font-size: 18px;
+    border-radius: 10px;
+    border: 3px solid;
+
+    box-shadow: 0 3px 0 0 rgba(0, 0, 0, 0.12);
+
+}
+
+.answerButton:disabled {
+    background-color: #cccccc;
+    border-color: #bbbbbb;
+    box-shadow: none;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+.answerButton:hover {
+    background-color: #d4d4d4;
+}
+
+.answerButton:active {
+    box-shadow: none;
+    transform: translateY(3px);
+}
+
+
+.showButton {
+
+    composes: answerButton;
+
+    font-size: 16px;
+
+}
+
+.whiteButton {
+
+    composes: answerButton;
+
+    background-color: white;
+    border-color: #ddd;
+    box-shadow: 0 3px 0 0 rgba(0, 0, 0, 0.08);
+    color: #4cae4f;
+
+}
+
+.whiteButton:hover {
+    background-color:  #ddd;
+}
+
+.mildButton {
+
+    composes: answerButton;
+
+    background-color: #ffebcc;
+    border-color: #ffdd99;
+    color: #cc9900;
+
+}
+
+.mildButton:hover {
+background-color: #ffdca6;}
+
+.hotButton {
+    composes: answerButton;
+
+    background-color: #ffcccc;
+    border-color: #ff9999;
+    color: #cc0000;
+}
+.hotButton:hover {
+    background-color: #ff9999;
+}
+
+.flashcardItem {
+
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+
+
+    min-width: 400px;
+    width: 400px;
+    height: 240px;
+    flex-shrink: 0;
+
+
+    font-size: 18px;
+    text-align: center;
+
+
+}
+
+.flashcardItem h1 {
+    margin: 0;
+}

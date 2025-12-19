@@ -9,6 +9,7 @@ import ProtectedDashboardLayout from '../common/layouts/ProtectedDashboardLayout
 import ExerciseSelector from "../features/exercises/pages/ExerciseSelector.tsx";
 import ProtectedExerciseLayout from "../common/layouts/ProtectedExerciseLayout.tsx";
 import ExerciseWrapperPage from "../features/exercises/pages/ExerciseWrapperPage.tsx";
+import ReviewPracticePage from "../features/review/pages/ReviewPracticePage.tsx";
 
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
                 <Route path={"/"} element={<Home/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/signup" element={<Signup/>}/>
-                
+
                 {/*Trasy dostepne po logowaniu, uzywajace widoku dashboard (header)*/}
                 <Route element={<ProtectedDashboardLayout />}>
                     <Route path="/dashboard" element={<Dashboard />} />
@@ -38,6 +39,9 @@ function App() {
                     <Route path="/lessons/:lesson_id" element={<ExerciseWrapperPage/>} />
                 </Route>
 
+                <Route element={<ProtectedExerciseLayout />}>
+                    <Route path="/review/:groupId" element={<ReviewPracticePage/>} />
+                </Route>
 
                 <Route path={"*"} element={<Navigate to="/" replace/>}/>
             </Routes>

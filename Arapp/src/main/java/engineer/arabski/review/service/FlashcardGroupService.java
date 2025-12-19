@@ -37,6 +37,7 @@ public class FlashcardGroupService {
 
 
         return new FlashcardGroupResponse(
+                flashcardGroup.getId(),
                 flashcardGroup.getName(),
                 flashcardGroup.getDescription(),
                 flashcardGroup.getCategory(),

@@ -50,6 +50,9 @@ function ExerciseWrapperPage() {
 
 
         } else {
+
+            if (!id) return;
+
             api.get(`/api/exercises/${id}`, {withCredentials: true})
                 .then(resp => {
 

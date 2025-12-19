@@ -1,5 +1,6 @@
 export interface FlashcardItem {
 
+    id: string;
     word: TemporaryWord;
     nextReviewDate: string;
 }
@@ -15,6 +16,7 @@ export interface TemporaryWord {
 
 export interface FlashcardsGroup {
 
+    id: string
     name: string;
     description: string;
     category: string;

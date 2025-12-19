@@ -39,6 +39,19 @@ public class FlashcardController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Flashcard not found");
 
     }
+//
+    @GetMapping("/group/{group_id}")
+    public ResponseEntity<?> findDueByGroupId(@PathVariable Long group_id) {
+
+      List <FlashcardItemResponse> flashcardItems = flashcardService.getFlashcardItemsForReview(group_id);
+        if (!flashcardItems.isEmpty()) {
+
+            return ResponseEntity.status(HttpStatus.OK).body(flashcardItems);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body("No flashcards found for group");
+        }
+    }
+
 
 
     @GetMapping({"/user", "/user/{userId}"})

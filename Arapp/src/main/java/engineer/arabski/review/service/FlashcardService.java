@@ -31,7 +31,7 @@ public class FlashcardService {
 
     public static FlashcardItemResponse toResponse(FlashcardItem flashcardItem) {
 
-        return new FlashcardItemResponse(
+        return new FlashcardItemResponse(flashcardItem.getId(),
                 TemporaryWordService.toResponse(flashcardItem.getWord()),
                 flashcardItem.getNextReviewDate()
 //                        ,
@@ -110,6 +110,15 @@ public class FlashcardService {
         return null;
 
     }
+
+    public List<FlashcardItemResponse> getFlashcardItemsForReview(Long group) {
+        List<FlashcardItem> flashcardItems = flashcardRepository.findDueFlashcardsInGroup(
+                group,
+                LocalDateTime.now()
+        );
+        return flashcardItems.stream().map(FlashcardService::toResponse).toList();
+    }
+
 
     public List<FlashcardItemResponse> getFlashcardItemsByOwnerId(Long id) {
         List<FlashcardItem> flashcardItems = flashcardRepository.getAllByFlashcardOwner_Id(id);

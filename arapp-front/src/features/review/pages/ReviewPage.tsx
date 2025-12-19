@@ -2,14 +2,11 @@ import styles from './Review.module.css';
 import {useEffect, useState} from "react";
 import api from "../../auth/api.ts";
 import type {FlashcardItem, FlashcardsGroup, TemporaryWord} from "../reviewTypes.ts";
+import {Link} from "react-router-dom";
 
 
-//TODO pobieranie slow z bazy - na razie wszystkich. spokojnie.
-//TODO pobieranie grup usera i wyswietlanie ich po lewej
-//TODO wyswietlanie fiszek dla wybranej polewej grupy
-//TODO dodanie przejscia do treningu wybranej grupy
 //TODO dodanie widoku dodawania grupy i edycji / dodawani fiszek
-
+//TODO wyczyszczenie bazy i dodanie nowych fiszek zeby nie robic sprawdzania typow co chwile
 
 function ReviewPage() {
 
@@ -23,7 +20,6 @@ function ReviewPage() {
 
 
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
 
@@ -32,14 +28,25 @@ function ReviewPage() {
             try {
 
                 setIsLoading(true);
-                setError(null);
+                // setError(null);
 
                 const [groupsResp, wordsResp] = await Promise.all([
                     api.get('/api/flashcard-groups/user', {withCredentials: true}),
                     api.get('/api/words', {withCredentials: true})
                 ]);
 
+                const [firstGroup] = groupsResp.data;
+                const flashcardsToReview = firstGroup?.flashcardItems.filter(
+                    (f: { nextReviewDate: string | number | Date; }) => new Date(f.nextReviewDate) <= new Date()
+                ).length || 0;
+
                 setFlashcardGroups(groupsResp.data);
+                setSelectedGroup(firstGroup);
+                setSelectedGroupIndex(0);
+                setSelectedFlashcards(firstGroup?.flashcardItems || []);
+                setFlashcardsToReview(flashcardsToReview);
+
+
                 setRecentlyEncounteredWords(wordsResp.data);
 
                 console.log(groupsResp.data);
@@ -47,7 +54,7 @@ function ReviewPage() {
 
             } catch (err) {
 
-                setError('Błąd w pobieraniu danych');
+                // setError('Błąd w pobieraniu danych');
                 console.error('Failed to fetch data:', err);
 
             } finally {
@@ -151,29 +158,25 @@ function ReviewPage() {
 
                     <div className={styles.topRow}>
 
-                        <button
-                            className={styles.startPracticeButton}
-                            onClick={() => {
 
-
-                            }}
+                        <Link to={`/review/${selectedGroup?.id}`}
+                        className ={styles.startPracticeButton}
                         >Trenuj
-                        </button>
-
+                        </Link>
 
                     </div>
 
                     <div className={styles.middleRow}>
 
                         <div className={styles.rowText}>
-                            <h2> Fiszunie do powtórki ( {selectedGroup?.flashcardItems.length} ) </h2>
+                            <h2> Fiszunie do powtórki ( {selectedGroup?.flashcardItems.filter(f => new Date(f.nextReviewDate) <= new Date()).length} ) </h2>
                             <p> Zobacz wszystkie fiszki</p>
                         </div>
 
                         <div className={styles.flashcardsSlider}>
 
-
-                            {selectedGroup?.flashcardItems.map((flashcard, index) => (
+                            {selectedGroup?.flashcardItems.filter(f => new Date(f.nextReviewDate) <= new Date())
+                                .map((flashcard, index)  => (
                                 <div
                                     className={styles.flashcardItem}
                                     key={index}
@@ -183,13 +186,12 @@ function ReviewPage() {
                                     <p>{flashcard.word.Transliteration}</p>
                                     <h2>{flashcard.word.wordTranslation}</h2>
                                 </div>
-                            ))}
-
+                            ))
+                            }
 
                         </div>
 
                     </div>
-
 
                     <div className={styles.bottomRow}>
 
