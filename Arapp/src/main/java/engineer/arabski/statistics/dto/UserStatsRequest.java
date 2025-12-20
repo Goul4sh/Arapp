@@ -7,6 +7,5 @@ public record UserStatsRequest (
         Long incorrectAnswers,
         Long durationSeconds
 
-
 ) {
 }

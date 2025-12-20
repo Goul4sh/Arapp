@@ -84,11 +84,6 @@ function ReviewPage() {
         return <div className={styles.message}>Ładowanie...</div>;
     }
 
-    // if (error) {
-    //     return <div className={styles.error}>{error}</div>;
-    //
-    // }
-
 
     return (
         <div>

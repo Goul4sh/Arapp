@@ -1,45 +1,77 @@
 package engineer.arabski.statistics.controller;
 
 import engineer.arabski.common.security.CustomUserDetails;
+import engineer.arabski.statistics.dto.GlobalStatsResponse;
 import engineer.arabski.statistics.dto.UserStatsRequest;
 import engineer.arabski.statistics.dto.UserStatsResponse;
-import engineer.arabski.statistics.service.UserStatsService;
+import engineer.arabski.statistics.service.StatsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/statistics")
 public class UserStatsController {
 
+    //TODO przetestowac
 
-    private final UserStatsService userStatsService;
+    private final StatsService statsService;
 
-    public UserStatsController(UserStatsService userStatsService) {
-        this.userStatsService = userStatsService;
+    public UserStatsController(StatsService statsService) {
+        this.statsService = statsService;
     }
 
+//    @GetMapping
+//    public ResponseEntity<?> getUserStats( @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+//
+//        System.out.print(customUserDetails.getUsername());
+//        System.out.print(customUserDetails.getId());
+//        UserStatsResponse stats = (statsService.getUserStats(customUserDetails.getId()));
+//
+//
+//        return ResponseEntity.ok(stats);
+//    }
+//
+//    @PostMapping
+//    public ResponseEntity<?> addUserStats(@RequestBody UserStatsRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails
+//    ) {
+//
+//        UserStatsResponse response= statsService.addUserStats(request, customUserDetails.getId());
+//
+//        return ResponseEntity.ok("User stats added successfully. " + response );
+//    }
+
+
     @GetMapping
-    public ResponseEntity<?> getUserStats( @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<?> getDashboardUserStats(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
         System.out.print(customUserDetails.getUsername());
         System.out.print(customUserDetails.getId());
-        UserStatsResponse stats = (userStatsService.getUserStats(customUserDetails.getId()));
+        GlobalStatsResponse stats = statsService.getUserDashboardStats(customUserDetails.getId());
 
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/daily")
+    public ResponseEntity<?> getDailyUserStats( @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        System.out.print(customUserDetails.getUsername());
+        System.out.print(customUserDetails.getId());
+        UserStatsResponse stats = statsService.getDailyUserStats(customUserDetails.getId(), LocalDate.now());
 
         return ResponseEntity.ok(stats);
     }
 
     @PostMapping
-    public ResponseEntity<?> addUserStats(@RequestBody UserStatsRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails
+    public ResponseEntity<?> saveSessionStats(@RequestBody UserStatsRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
 
-        System.out.println("Jestem w addUserStats");
-        System.out.println(request.toString());
-        System.out.println(customUserDetails.getUsername());
-        System.out.println(customUserDetails.getId());
-        UserStatsResponse response= userStatsService.addUserStats(request, customUserDetails.getId());
+        statsService.saveSessionStats(customUserDetails.getId(), request);
 
-        return ResponseEntity.ok("User stats added successfully. " + response );
+        return ResponseEntity.ok("Statystyki sesji zapisane pomyślnie.");
     }
+
 }

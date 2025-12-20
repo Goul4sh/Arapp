@@ -38,7 +38,6 @@ public class UserStats {
 
     }
 
-
     @ManyToOne(optional = true)
     private Lesson lesson;
 

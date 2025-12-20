@@ -1,5 +1,125 @@
 .dashboardPage {
     height: 100%;
-    padding-top: 100px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     box-sizing: border-box;
+}
+
+.separator {
+    gap: 20px;
+    width: 60%;
+    height: 2px;
+    background-color: #4cae4f;
+    margin: 1px 0;
+    border-radius: 5px;
+
+}
+
+.statsContainer {
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 20px;
+
+
+}
+.contentContainer {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+}
+
+
+.overallBox {
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+
+}
+
+.columnsContainer {
+
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+    gap: 40px;
+
+}
+
+.leftColumn {
+
+    width: 30%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    background-color: #ffffff;
+    padding: 20px;
+
+}
+
+
+.cardTitle {
+
+    margin-top: 0;
+    margin-bottom: 0;
+
+}
+
+
+.columnStatContent {
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.rightColumn {
+
+    width: 70%;
+
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+
+
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    background-color: #ffffff;
+    padding: 20px;
+
+}
+
+.statItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    min-width: 150px;
+    min-height: 50px;
+
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    background-color: #ffffff;
+    padding: 20px;
+
 }
