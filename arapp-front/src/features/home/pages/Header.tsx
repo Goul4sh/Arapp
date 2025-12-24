@@ -5,9 +5,13 @@ import {Link} from "react-router-dom";
 
 function Header() {
 
-    const {user} = useAuth();
+    const {user, logout} = useAuth();
     const name = user?.name || 'Uzytkownik';
 
+    const handleLogout = async () => {
+        logout();
+
+    };
 
     return (
         <header className={styles.header}>
@@ -21,6 +25,7 @@ function Header() {
                         <li className={styles.listItem}><Link className={styles.link} to="/review">Fiszunie</Link></li>
                         <li className={styles.listItem}><Link className={styles.link} to="/quiz">Quizy</Link></li>
                         <li className={styles.listItem}><Link className={styles.link} to="/exercises">Ćwiczenia</Link></li>
+                        <li className={styles.listItem}><Link className={styles.link} to="/dashboard" > Statystyki</Link> </li>
 
                     </ul>
 
@@ -28,9 +33,12 @@ function Header() {
                 <div className={styles.user}>
                     <div className={styles.userPhoto}></div>
                     <div className={styles.userName}>
-                        <Link to="/dashboard" className={styles.userLink}>
-                            {name}</Link>
+                       placeholder: {name}
                     </div>
+                    <button className={styles.logoutButton} onClick={handleLogout}>
+                        Wyloguj się
+                    </button>
+
                 </div>
             </div>
 

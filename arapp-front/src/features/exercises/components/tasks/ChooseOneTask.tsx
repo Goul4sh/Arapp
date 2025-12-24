@@ -12,15 +12,52 @@ function ChooseOneTask({task}: { task: ChooseOneTaskType }) {
             [task.decoyAnswers, task.answer]);
 
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
+    const [status, setStatus] = useState<'idle' | 'correct' | 'wrong'>('idle');
+
 
     const handleOptionClick = (option: string) => {
+        if (status !== "idle") return;
         setSelectedOption(option);
     }
 
     const handleCheck = () => {
+        if (!selectedOption || status !== "idle") return;
+
         const isCorrect = selectedOption === task.answer;
-        submitAnswer(isCorrect);
+
+        setStatus(isCorrect ? 'correct' : 'wrong');
+
+        setTimeout(() => {
+            submitAnswer(isCorrect);
+            setSelectedOption(null);
+            setStatus('idle');
+        }, 1500);
+
     }
+
+    const buttonStyling = (option: string) => {
+        let className = styles.answerButton;
+
+        if (status === 'idle') {
+            if (selectedOption === option) {
+                className += ` ${styles.selected}`;
+            }
+        }
+        else {
+            if (option === task.answer) {
+                className += ` ${styles.correct}`;
+            }
+            else if (selectedOption === option && status === 'wrong') {
+                className += ` ${styles.wrong}`;
+            }
+            else {
+                className += ` ${styles.dimmed}`;
+            }
+        }
+
+        return className;
+    };
+
 
     return (
         <div className={styles.taskContainer}>
@@ -30,9 +67,10 @@ function ChooseOneTask({task}: { task: ChooseOneTaskType }) {
 
                 {options.map((option, index) => (
                     <button
-                        className={`${styles.answerButton} ${selectedOption === option ? styles.selected : ''}`}
+                        className={buttonStyling(option)}
                         key={index}
                         onClick={() => handleOptionClick(option)}
+                        disabled={status !== 'idle'}
                     >
                         {option}
                     </button>
@@ -42,9 +80,9 @@ function ChooseOneTask({task}: { task: ChooseOneTaskType }) {
             <div className={styles.checkButtonContainer}>
                 <button
                     className={styles.checkButton}
-                    disabled={selectedOption === null}
+                    disabled={selectedOption === null || status !== 'idle'}
                     onClick={() => handleCheck()}>
-                    Zatwierdź
+                    {status == 'idle' ?  'Zatwierdź' : (status == 'correct' ? 'Świetnie!' : 'Błąd!' )}
                 </button>
             </div>
 

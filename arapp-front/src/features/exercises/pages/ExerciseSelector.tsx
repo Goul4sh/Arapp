@@ -77,8 +77,6 @@ function ExerciseSelector() {
 
                     </div>
 
-                    
-
 
                     <div className={styles.exerciseCard}>
 
@@ -86,7 +84,7 @@ function ExerciseSelector() {
                         <p> Kliknij aby rozpocząć lekcję!</p>
                         <p style={{color: "blueviolet"}}> Lekcja </p>
 
-                        <Link to={"/lessons/4"} className={styles.startLink}>
+                        <Link to={"/lessons/50"} className={styles.startLink}>
                             <button className={styles.startButton}>
                                 <FontAwesomeIcon icon={faPlay}/> Start
                             </button>

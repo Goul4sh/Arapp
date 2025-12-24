@@ -13,6 +13,8 @@ function MultipleChoiceTask ({task}: { task: MultipleChoiceTaskType }) {
         [task.decoyAnswers, task.answers]);
 
     const [selectedOptions, setSelectedOptions] = useState<string[] | null>(null);
+    const [status, setStatus] = useState<'idle' | 'correct' | 'wrong'>('idle');
+
 
     const handleOptionClick = (option: string) => {
 
@@ -27,16 +29,54 @@ function MultipleChoiceTask ({task}: { task: MultipleChoiceTaskType }) {
     }
 
     const handleCheck = () => {
+        if (!selectedOptions || status !== "idle") return;
 
         if (!selectedOptions || selectedOptions.length !== task.answers.length) {
-            submitAnswer(false);
+            setStatus( 'wrong');
+
+            setTimeout(() => {
+                submitAnswer(false);
+                setSelectedOptions(null);
+                setStatus('idle');
+            }, 1500);
             return;
         }
 
         const isCorrect = task.answers.every(answer => selectedOptions.includes(answer));
-        submitAnswer(isCorrect);
+        setStatus(isCorrect ? 'correct' : 'wrong');
+
+        setTimeout(() => {
+            submitAnswer(isCorrect);
+            setSelectedOptions(null);
+            setStatus('idle');
+        }, 1500);
+
+
     }
 
+
+    const buttonStyling = (option: string) => {
+        let className = styles.answerButton;
+
+        if (status === 'idle') {
+            if (selectedOptions?.includes(option)) {
+                className += ` ${styles.selected}`;
+            }
+        }
+        else {
+            if (task.answers?.includes(option)) {
+                className += ` ${styles.correct}`;
+            }
+            else if (selectedOptions?.includes(option) && status === 'wrong') {
+                className += ` ${styles.wrong}`;
+            }
+            else {
+                className += ` ${styles.dimmed}`;
+            }
+        }
+
+        return className;
+    };
 
 
     return (
@@ -47,9 +87,10 @@ function MultipleChoiceTask ({task}: { task: MultipleChoiceTaskType }) {
 
                 {options.map((option, index) => (
                     <button
-                        className={`${styles.answerButton} ${selectedOptions?.includes(option)  ? styles.selected : ''}`}
+                        className={buttonStyling(option)}
                         key={index}
                         onClick={() => handleOptionClick(option)}
+                        disabled={status !== 'idle'}
                     >
                         {option}
                     </button>
@@ -59,9 +100,9 @@ function MultipleChoiceTask ({task}: { task: MultipleChoiceTaskType }) {
             <div className={styles.checkButtonContainer}>
                 <button
                     className={styles.checkButton}
-                    disabled={selectedOptions === null}
+                    disabled={selectedOptions === null || status !== 'idle'}
                     onClick={() => handleCheck()}>
-                    Zatwierdź
+                    {status == 'idle' ?  'Zatwierdź' : (status == 'correct' ? 'Świetnie!' : 'Błąd!' )}
                 </button>
             </div>
 

@@ -5,6 +5,7 @@ import engineer.arabski.statistics.dto.GlobalStatsResponse;
 import engineer.arabski.statistics.dto.UserStatsRequest;
 import engineer.arabski.statistics.dto.UserStatsResponse;
 import engineer.arabski.statistics.service.StatsService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +49,6 @@ public class UserStatsController {
     @GetMapping
     public ResponseEntity<?> getDashboardUserStats(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        System.out.print(customUserDetails.getUsername());
         System.out.print(customUserDetails.getId());
         GlobalStatsResponse stats = statsService.getUserDashboardStats(customUserDetails.getId());
 
@@ -57,13 +57,22 @@ public class UserStatsController {
 
     @GetMapping("/daily")
     public ResponseEntity<?> getDailyUserStats( @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-
-        System.out.print(customUserDetails.getUsername());
         System.out.print(customUserDetails.getId());
         UserStatsResponse stats = statsService.getDailyUserStats(customUserDetails.getId(), LocalDate.now());
 
         return ResponseEntity.ok(stats);
     }
+
+    // format to YYYY-MM-DD
+    @GetMapping("/history/{date}")
+    public ResponseEntity<?> getHistoryUserStats(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date , @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        System.out.print(customUserDetails.getId());
+        UserStatsResponse stats = statsService.getDailyUserStats(customUserDetails.getId(), date);
+
+        return ResponseEntity.ok(stats);
+    }
+
 
     @PostMapping
     public ResponseEntity<?> saveSessionStats(@RequestBody UserStatsRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails

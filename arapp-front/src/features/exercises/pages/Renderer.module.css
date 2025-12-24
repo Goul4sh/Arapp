@@ -7,16 +7,23 @@
 
     max-width: 1260px;
     margin: 0 auto;
+    height: 100vh;
+
+}
 
 
+.exerciseContainer {
+
+
+    height: 90vh;
 }
 
 .topBar {
 
     width: 100%;
     max-width: 1260px;
-    height: 60px;
-
+    /*height: 60px;*/
+    height: 10vh;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -24,13 +31,10 @@
 
     margin: 20px 50px;
 
-    /*background-color: #ff0000;*/
-
 }
 
 
 .completionBar {
-
 
     width: 100%;
 

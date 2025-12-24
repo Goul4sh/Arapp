@@ -1,0 +1,58 @@
+/*TODO popracować na elementem wizualnym komponentu, poprawic kolory*/
+
+.weekContainer {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.dayColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+}
+
+.dayName {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.dayCircle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f3f4f6;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.active {
+    background-color: #dcfce7;
+    color: #166534; 
+    border-color: #16a34a;
+}
+
+.today .dayName {
+    color: green;
+}
+
+.today .dayCircle {
+    border: 2px dashed  green;
+}
+
+.today .dayCircle.active {
+    border: 2px solid #16a34a;
+}

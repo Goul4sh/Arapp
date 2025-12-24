@@ -6,6 +6,7 @@ import api from "../../auth/api.ts";
 import type {Task} from "../taskTypes.ts";
 import ProgressBar from "../components/ProgressBar.tsx";
 import {LessonContext} from "../components/LessonContext.tsx";
+import SessionSummary from "../components/SessionSummary.tsx";
 
 
 // Komponent opakowujący komponent ćwiczenia. Pobiera dane na podstawie ID z url.
@@ -18,6 +19,7 @@ function ExerciseWrapperPage() {
     const [totalTasks, setTotalTasks] = useState<number>(0);
     const [completedTasks, setCompletedTasks] = useState<number>(0);
     const [loading, setLoading] = useState(true);
+    const [isSessionFinished, setIsSessionFinished] = useState<boolean>(false);
     const navigate = useNavigate();
 
 
@@ -29,6 +31,7 @@ function ExerciseWrapperPage() {
         correctAnswers: 0,
         incorrectAnswers: 0,
         startTime: Date.now(),
+        finalDuration: 0,
         completedTasksCount: 0
     });
 
@@ -68,7 +71,7 @@ function ExerciseWrapperPage() {
     // Oblicza postęp paska na podstawie odpowiedzi
     function submitAnswer(answer: boolean) {
         if (answer) {
-            alert("Dobrze!")
+            // alert("Dobrze!")
 
             const newCompletedCount = sessionStats.completedTasksCount + 1;
             const newCorrectAnswers = sessionStats.correctAnswers + 1;
@@ -88,17 +91,13 @@ function ExerciseWrapperPage() {
                 setCurrentTask(newQueue[0]);
 
             } else {
-                // Wszystkie zadania ukończone!
 
-                //Wysyłanie statystyk po zakończeniu lekcji
-                submitSessionStats(newCompletedCount, newCorrectAnswers, sessionStats.incorrectAnswers)
-                    .finally(() => {navigate("/exercises");})
-                alert("Wszsystkie zadania ukończone!");
+                finishSession(newCompletedCount, newCorrectAnswers, sessionStats.incorrectAnswers);
 
             }
 
         } else {
-            alert("źle!")
+            // alert("źle!")
 
             const newIncorrectAnswers = sessionStats.incorrectAnswers + 1;
 
@@ -118,9 +117,19 @@ function ExerciseWrapperPage() {
 
     }
 
-    const submitSessionStats = async (completedCount: number, correctAnswers: number, incorrectAnswers: number) => {
-        const duration = Math.floor((Date.now() - sessionStats.startTime) / 1000); // w sekundach
 
+    const finishSession = (completedCount: number, correctAnswers: number, incorrectAnswers: number) => {
+        const duration = Math.floor((Date.now() - sessionStats.startTime) / 1000);
+
+        setSessionStats(prev => ({...prev, finalDuration: duration}));
+
+        submitSessionStats(completedCount, correctAnswers, incorrectAnswers, duration);
+
+        setIsSessionFinished(true);
+    };
+
+
+    const submitSessionStats = async (completedCount: number, correctAnswers: number, incorrectAnswers: number, duration: number) => {
 
         try {
             await api.post('/api/statistics', {
@@ -128,20 +137,36 @@ function ExerciseWrapperPage() {
                 correctAnswers: correctAnswers,
                 incorrectAnswers: incorrectAnswers,
                 durationSeconds: duration,
-
-            }, { withCredentials: true });
+            }, {withCredentials: true});
         } catch (error) {
             console.error('Failed to submit stats:', error);
         }
     };
 
 
+    const handleExit = () => {
+        navigate("/exercises");
+    }
+
     if (loading) {
         return <div>Loading...</div>;
     }
 
+    if (isSessionFinished) {
+        return (
+            <div className={styles.exercisePage}>
+                <SessionSummary
+                    correct={sessionStats.correctAnswers}
+                    incorrect={sessionStats.incorrectAnswers}
+                    duration={sessionStats.finalDuration}
+                    onExit={handleExit}
+                />
+            </div>
+        );
+    }
+
     if (!currentTask) {
-        return <div>Task not found. Koniec zadań!</div>;
+        return <div>Task not found. Error</div>;
     }
 
 
@@ -160,10 +185,12 @@ function ExerciseWrapperPage() {
 
                 </div>
 
-                <LessonContext.Provider value={{submitAnswer}}>
+                <div className={styles.exerciseContainer}>
+                    <LessonContext.Provider value={{submitAnswer}}>
 
-                    <ExerciseRenderer currentTask={currentTask}/>
-                </LessonContext.Provider>
+                        <ExerciseRenderer currentTask={currentTask}/>
+                    </LessonContext.Provider>
+                </div>
 
             </div>
 
