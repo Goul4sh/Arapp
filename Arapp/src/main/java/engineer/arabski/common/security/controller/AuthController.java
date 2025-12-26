@@ -2,9 +2,11 @@ package engineer.arabski.common.security.controller;
 
 import engineer.arabski.common.security.CustomUserDetails;
 import engineer.arabski.common.security.EmailVerificationToken;
+import engineer.arabski.common.security.dto.ErrorResponse;
 import engineer.arabski.common.security.dto.UserDataResponse;
 import engineer.arabski.common.security.dto.LoginRequest;
 import engineer.arabski.common.security.dto.RegisterRequest;
+import engineer.arabski.common.security.exception.UserAlreadyExistsException;
 import engineer.arabski.common.security.service.EmailService;
 import engineer.arabski.common.security.service.EmailVerificationService;
 import engineer.arabski.user.model.User;
@@ -13,9 +15,13 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +39,9 @@ public class AuthController {
     private final EmailVerificationService emailVerificationService;
     private final EmailService emailService;
 
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
+
     public AuthController(UserService userService, EmailVerificationService emailVerificationService, EmailService emailService) {
         this.userService = userService;
         this.emailVerificationService = emailVerificationService;
@@ -47,47 +56,59 @@ public class AuthController {
         }
 
         try {
+
             String jwt = userService.authenticateUser(loginRequest.email(), loginRequest.password());
-            User user = userService.getUserByEmail(loginRequest.email()).get();
-
-            if (!user.isEnabled()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Email not verified");
-            }
-
-            Cookie cookie = new Cookie("jwt", jwt);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
-            cookie.setPath("/");
-            cookie.setMaxAge(24 * 60 * 60);
-            response.addCookie(cookie);
+            User user = userService.getUserByEmail(loginRequest.email()).orElseThrow();
 
 
-            return ResponseEntity.ok(new UserDataResponse(user.getId(), user.getUsername(), user.getEmail(), "USER"));
+            ResponseCookie jwtCookie = ResponseCookie.from("jwt", jwt)
+                    .httpOnly(true)
+                    .secure(false) //localhost
+                    .path("/")
+                    .maxAge(24 * 60 * 60)
+                    .sameSite("Strict")
+                    .build();
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                    .body(new UserDataResponse(user.getId(), user.getUsername(), user.getEmail(), "USER"));
+
+
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            System.out.println("Failed login attempt for email: " + loginRequest.email());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("Nieprawidłowy e-mail lub hasło"));
+
+        } catch (DisabledException e) {
+            System.out.println("Konto nieaktywne");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ErrorResponse("Konto nieaktywne. Sprawdź skrzynkę mailową."));
         }
 
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
-        if (registerRequest.email() == null || registerRequest.password() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email and password are required");
-        }
+//        if (registerRequest.email() == null || registerRequest.password() == null) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email and password are required");
+//        }
 
         try {
-            Optional<User> newUser = userService.createUser(registerRequest);
+            User newUser = userService.createUser(registerRequest);
 
-            if (newUser.isEmpty()) {
-                throw new IllegalArgumentException("User registration failed");
-            }
-
-            EmailVerificationToken token = emailVerificationService.createToken(newUser.get());
-            emailService.sendVerificationEmail(newUser.get(), token.getToken());
+            EmailVerificationToken token = emailVerificationService.createToken(newUser);
+            emailService.sendVerificationEmail(newUser, token.getToken());
 
             return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (UserAlreadyExistsException e) {
+            System.out.println("User already exists");
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ErrorResponse("Konto z tym adresem e-mail już istnieje."));
+
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Wystąpił błąd serwera przy rejestracji."));
         }
     }
 
@@ -96,24 +117,24 @@ public class AuthController {
 
         try {
             SecurityContextHolder.clearContext();
-
             HttpSession session = request.getSession(false);
             if (session != null) {
                 session.invalidate();
             }
 
-            Cookie cookie = new Cookie("jwt", "");
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
-            cookie.setPath("/");
-            cookie.setMaxAge(0);
-            response.addCookie(cookie);
 
-            // hmmmmmmm
-            String header = "jwt=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=None";
-            response.addHeader("Set-Cookie", header);
+            ResponseCookie jwtCookie = ResponseCookie.from("jwt", "")
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .maxAge(0)
+                    .sameSite("Strict")
+                    .build();
 
-            return ResponseEntity.ok("Logged out successfully");
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                    .body("Logged out successfully");
+
         } catch (Exception e) {
 
             System.err.println("Error logging out: " + e.getMessage());
@@ -140,10 +161,8 @@ public class AuthController {
         System.out.println("Validated user: " + userDetails.getUsername());
         return ResponseEntity.ok(userData);
 
-
     }
 
-    //TODO poprawic obsluge bledow, dodac przekierowania
     @GetMapping("/verify-email")
     public ResponseEntity<?> verifyEmail(@RequestParam String token) {
 
@@ -165,7 +184,8 @@ public class AuthController {
         }
 
         return ResponseEntity.status(HttpStatus.OK)
-                .location(URI.create("http://localhost:5173/api/auth/login"))
+
+                .location(URI.create(frontendUrl + "/api/auth/login"))
                 .body("Email zweryfikowany pomyślnie. Możesz teraz zamknąć tę stronę.");
     }
 

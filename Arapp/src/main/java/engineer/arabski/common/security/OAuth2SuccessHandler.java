@@ -6,6 +6,7 @@ import engineer.arabski.user.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
@@ -22,8 +23,14 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
+
+
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
+
+    @Value("${app.security.cookie.secure}")
+    private boolean isCookieSecure;
 
     public OAuth2SuccessHandler(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
@@ -42,14 +49,14 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         ResponseCookie cookie = ResponseCookie.from("jwt", jwt)
                 .httpOnly(true)
-                .secure(true)
+                .secure(isCookieSecure)
                 .sameSite("Lax")
                 .path("/")
                 .maxAge(Duration.ofDays(1))
                 .build();
+
         response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-        //TODO zmienne?
-        response.sendRedirect("http://localhost:5173/dashboard");
+        response.sendRedirect(frontendUrl + "/dashboard");
     }
 }

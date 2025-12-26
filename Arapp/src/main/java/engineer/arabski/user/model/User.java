@@ -35,4 +35,13 @@ public class User {
         }
     }
 
+    public User(RegisterRequest registerRequest, String role) {
+        this.role = role;
+        this.email = registerRequest.email();
+        this.username = registerRequest.username();
+        this.password = registerRequest.password();
+
+    }
+
+
 }

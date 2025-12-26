@@ -7,6 +7,7 @@ import engineer.arabski.task.dto.FillInTheBlankTaskData;
 import engineer.arabski.task.dto.MatchPairsTaskData;
 import engineer.arabski.task.dto.MultipleChoiceTaskData;
 import engineer.arabski.task.service.TaskService;
+import engineer.arabski.user.service.UserService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
@@ -21,9 +22,12 @@ public class DataInitializer {
 
     private final LessonService lessonService;
 
-    public DataInitializer(TaskService taskService, LessonService lessonService) {
+    private final UserService userService;
+
+    public DataInitializer(TaskService taskService, LessonService lessonService, UserService userService) {
         this.taskService = taskService;
         this.lessonService = lessonService;
+        this.userService = userService;
     }
 
 
@@ -62,6 +66,8 @@ public class DataInitializer {
 //                        "Francja", "Paryż"
 //                )
 //        ));
+
+        userService.createAdminUserIfNotExists();
 
 
     }

@@ -1,11 +1,13 @@
 package engineer.arabski.user.service;
 
 import engineer.arabski.common.security.dto.RegisterRequest;
+import engineer.arabski.common.security.exception.UserAlreadyExistsException;
 import engineer.arabski.common.security.jwt.JwtUtil;
 import engineer.arabski.user.model.User;
 import engineer.arabski.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -29,20 +31,32 @@ public class UserService {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    public Optional<User> createUser(RegisterRequest registerRequest) {
-        try {
-            User user = new User(registerRequest);
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            User savedUser = userRepository.save(user);
-            System.out.println(savedUser.getPassword());
+    public User createUser(RegisterRequest registerRequest) {
 
-            return Optional.of(savedUser);
-        } catch (Exception e) {
-            System.out.println(e);
-            return Optional.empty();
+        if (userRepository.existsByEmail(registerRequest.email())) {
+            throw new UserAlreadyExistsException("Konto z tym adresem e-mail już istnieje");
         }
+
+        User user = new User(registerRequest);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        return userRepository.save(user);
+
     }
 
+    public void createAdminUserIfNotExists() {
+        String adminEmail = "admin@admin.com";
+        if (!userRepository.existsByEmail(adminEmail)) {
+            User adminUser = new User();
+            adminUser.setEmail(adminEmail);
+            adminUser.setUsername("admin");
+            adminUser.setPassword(passwordEncoder.encode("admin123"));
+            adminUser.setRole("ADMIN");
+            adminUser.setEnabled(true);
+            userRepository.save(adminUser);
+            System.out.println("Admin user created with email: " + adminEmail + " and password: admin123");
+        }
+    }
 
     public User getUserById(Long id) {
         return userRepository.findUserById(id)
@@ -69,10 +83,16 @@ public class UserService {
         userRepository.save(user);
     }
 
+    //TODO authentication manager
     public String authenticateUser(String email, String password) {
 
 
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
+
+        if (!user.isEnabled()) {
+            throw new DisabledException("Account is not activated");
+        }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadCredentialsException("Invalid email or password");

@@ -5,6 +5,7 @@ import * as React from "react";
 import api from "../api";
 import {useAuth} from "../auth";
 import {Link, useNavigate} from "react-router-dom";
+
 // TODO dodac komunikaty o bledach podczas logowania
 function Login(): JSX.Element {
 
@@ -12,6 +13,7 @@ function Login(): JSX.Element {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const {setUser} = useAuth();
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const navigate = useNavigate();
 
 
@@ -33,9 +35,26 @@ function Login(): JSX.Element {
 
             navigate("/dashboard");
 
+        } catch (error: any) {
 
-        } catch (error) {
-            console.error('Login failed:', error);
+            if (error.response) {
+
+                const backendMessage = error.response.data?.message;
+
+                if (backendMessage) {
+                    setErrorMessage(backendMessage);
+                } else if (error.response.status === 401) {
+                    setErrorMessage("Nieprawidłowe dane logowania.");
+                } else {
+                    setErrorMessage("Wystąpił błąd logowania.");
+                }
+            } else if (error.request) {
+
+                setErrorMessage("Brak połączenia z serwerem.");
+            } else {
+                setErrorMessage("Wystąpił nieoczekiwany błąd.");
+            }
+
         }
     }
 
@@ -77,6 +96,13 @@ function Login(): JSX.Element {
                                onChange={(e) => setPassword(e.target.value)}/>
                     </div>
                     <div className={styles.submitContainer}>
+
+                        {errorMessage && (
+                            <div style={{ color: 'red', marginBottom: '15px',marginTop: '0px' }}>
+                                {errorMessage}
+                            </div>
+                        )}
+
                         <button type="submit" className={`${styles.button} ${styles.login}`}>Zaloguj się</button>
                     </div>
 
@@ -92,8 +118,7 @@ function Login(): JSX.Element {
                 </button>
 
                 <div className={styles.register}>
-                     <p>Nie masz konta? </p> <Link to={"/signup"}>Zarejestruj się </Link>
-
+                    <p>Nie masz konta? </p> <Link to={"/signup"}>Zarejestruj się </Link>
 
                 </div>
             </div>

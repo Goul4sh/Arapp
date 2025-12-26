@@ -1,4 +1,4 @@
-import {type JSX} from "react";
+import {type JSX, useState} from "react";
 import * as React from "react";
 import styles from './Signup.module.css'
 import api from "../api.ts";
@@ -15,6 +15,8 @@ function Signup(): JSX.Element {
     const [username, setUsername] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
     const [error, setError] = React.useState('');
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
 
     const navigate = useNavigate();
 
@@ -35,13 +37,30 @@ function Signup(): JSX.Element {
             if (resp.status === 201) {
                 console.log("User created successfully");
 
-
                 navigate("/login");
 
             }
 
-        } catch (error) {
-            console.error('Signup failed:', error);
+        } catch (error : any) {
+
+            if (error.response) {
+
+                const backendMessage = error.response.data?.message;
+
+                if (backendMessage) {
+                    setErrorMessage(backendMessage);
+                } else if (error.response.status === 409) {
+                    setErrorMessage("Konto z podanym adresem email już istnieje.");
+                } else {
+                    setErrorMessage("Wystąpił błąd rejestracji.");
+                }
+            } else if (error.request) {
+
+                setErrorMessage("Brak połączenia z serwerem.");
+            } else {
+                setErrorMessage("Wystąpił nieoczekiwany błąd.");
+            }
+
         }
 
     }
@@ -118,6 +137,13 @@ function Signup(): JSX.Element {
                     </div>
 
                     <div className={styles.submitContainer}>
+
+                        {errorMessage && (
+                            <div style={{ color: 'red', marginBottom: '15px',marginTop: '0px' }}>
+                                {errorMessage}
+                            </div>
+                        )}
+
                         <button
                             type="submit"
                             className={`${styles.button} ${styles.signup}`}

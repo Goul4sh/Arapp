@@ -2,6 +2,7 @@ package engineer.arabski.common.security.service;
 
 import engineer.arabski.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -12,9 +13,12 @@ public class EmailService {
     @Autowired
     private JavaMailSender sender;
 
+    @Value("${app.backend.url}")
+    private String backendUrl;
+
     // TODO zmienic na zmienna srodowiskowa?
     public void sendVerificationEmail(User user, String token) {
-        String link = "http://localhost:8080/api/auth/verify-email?token=" + token;
+        String link = backendUrl + "/api/auth/verify-email?token=" + token;
 
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(user.getEmail());
