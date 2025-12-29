@@ -1,11 +1,13 @@
 package engineer.arabski.lesson.controller;
 
-import engineer.arabski.lesson.dto.LessonResponse;
+import engineer.arabski.lesson.dto.LessonRequest;
+import engineer.arabski.lesson.dto.LessonTasksResponse;
 import engineer.arabski.lesson.model.Lesson;
 import engineer.arabski.lesson.service.LessonService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class LessonController {
     public ResponseEntity<?> findById(@PathVariable Long id) {
 
         try {
-            LessonResponse lesson = lessonService.findbyId(id);
+            LessonTasksResponse lesson = lessonService.findById(id);
             return ResponseEntity.status(HttpStatus.OK).body(lesson);
 
         } catch (IllegalArgumentException e) {
@@ -42,18 +44,29 @@ public class LessonController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createLesson(@RequestBody List<Long> taskIds) {
+    public ResponseEntity<?> createLesson(@RequestBody LessonRequest lessonRequest) {
 
         try {
-            Lesson lesson = new Lesson();
-            lessonService.addLesson(taskIds, lesson);
+            lessonService.addLesson(lessonRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body("Lesson created successfully");
 
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not create lesson");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not create lesson: ");
         }
 
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteLesson(@PathVariable Long id) {
+        try {
+            lessonService.deleteLesson(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lesson not found");
+        }
+    }
+
 
 
 }

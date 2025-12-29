@@ -16,8 +16,6 @@ import java.util.List;
 @RequestMapping("/api/flashcards")
 public class FlashcardController {
 
-    //TODO trzeba dodać obliczanie nastepnej powtorki flashcarda
-
     private final FlashcardService flashcardService;
 
 

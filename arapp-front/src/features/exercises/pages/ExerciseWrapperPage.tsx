@@ -132,20 +132,25 @@ function ExerciseWrapperPage() {
     const submitSessionStats = async (completedCount: number, correctAnswers: number, incorrectAnswers: number, duration: number) => {
 
         try {
-            await api.post('/api/statistics', {
-                completedTasks: completedCount,
-                correctAnswers: correctAnswers,
-                incorrectAnswers: incorrectAnswers,
-                durationSeconds: duration,
-            }, {withCredentials: true});
+            await Promise.all([
+                api.post('/api/statistics', {
+                    completedTasks: completedCount,
+                    correctAnswers: correctAnswers,
+                    incorrectAnswers: incorrectAnswers,
+                    durationSeconds: duration,
+                }, {withCredentials: true}),
+
+                api.post(`/api/lessons/complete/${lesson_id}`, {}, {withCredentials: true})
+            ]);
         } catch (error) {
             console.error('Failed to submit stats:', error);
         }
+
     };
 
 
     const handleExit = () => {
-        navigate("/exercises");
+        navigate("/letters", { replace: true });
     }
 
     if (loading) {

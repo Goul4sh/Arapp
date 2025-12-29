@@ -81,6 +81,36 @@ function ExerciseSelector() {
                     <div className={styles.exerciseCard}>
 
                         <FontAwesomeIcon icon={faBook}/>
+                        <p> Kliknij aby rozpocząć ćwiczenie</p>
+                        <p style={{color: "red"}}> Morphology form </p>
+
+                        <Link to={"/exercises/2"} className={styles.startLink}>
+                            <button className={styles.startButton}>
+                                <FontAwesomeIcon icon={faPlay}/> Start
+                            </button>
+
+                        </Link>
+
+                    </div>
+
+                    <div className={styles.exerciseCard}>
+
+                        <FontAwesomeIcon icon={faBook}/>
+                        <p> Kliknij aby rozpocząć ćwiczenie</p>
+                        <p style={{color: "red"}}> Morphology parts </p>
+
+                        <Link to={"/exercises/3"} className={styles.startLink}>
+                            <button className={styles.startButton}>
+                                <FontAwesomeIcon icon={faPlay}/> Start
+                            </button>
+
+                        </Link>
+
+                    </div>
+
+                    <div className={styles.exerciseCard}>
+
+                        <FontAwesomeIcon icon={faBook}/>
                         <p> Kliknij aby rozpocząć lekcję!</p>
                         <p style={{color: "blueviolet"}}> Lekcja </p>
 

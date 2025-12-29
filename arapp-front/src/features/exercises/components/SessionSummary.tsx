@@ -41,7 +41,7 @@ const SessionSummary = ({correct, incorrect, duration,  onExit}: {
             </div>
 
             <button className={styles.finishButton} onClick={onExit}>
-                Wróć do listy ćwiczeń
+                Kontynuuj
             </button>
         </div>
     );

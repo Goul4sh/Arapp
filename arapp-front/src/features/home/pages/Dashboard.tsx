@@ -87,9 +87,6 @@ function Dashboard(): JSX.Element {
         }
     };
 
-    // const totalAnswers = stats.correctAnswers + stats.incorrectAnswers;
-    // const accuracy = totalAnswers > 0 ? Math.round((stats.correctAnswers / totalAnswers) * 100) : 0;
-
     return (
 
         <>
@@ -236,8 +233,8 @@ function Dashboard(): JSX.Element {
 
                                 <div className={styles.detailsCard}>
 
-                                    <h1 className={styles.detailstTitle}
-                                    >{selectedDate ? `Szczegóły z dnia ${selectedDate}` : 'Kliknij na dzień, aby zobaczyć szczegóły'}</h1>
+                                    <h2 className={styles.detailstTitle}
+                                    >{selectedDate ? `Szczegóły z dnia ${selectedDate}` : 'Kliknij na dzień, aby zobaczyć szczegóły'}</h2>
                                     <div className={styles.detailsContent}>
 
                                         {dailyDetails ? (
@@ -245,7 +242,7 @@ function Dashboard(): JSX.Element {
                                             <div className={styles.columnStatItem}>
                                                 <div className={styles.columnStatContent}><p
                                                     className={styles.statText}>Czas nauki:</p>
-                                                    <p className={styles.statValue}> {dailyDetails.durationSeconds}</p>
+                                                    <p className={styles.statValue}> {formatTime(dailyDetails.durationSeconds)}</p>
                                                 </div>
 
                                             </div>

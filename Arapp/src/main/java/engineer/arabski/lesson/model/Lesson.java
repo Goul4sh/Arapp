@@ -15,9 +15,24 @@ import java.util.List;
 @NoArgsConstructor
 public class Lesson {
 
+
+
+    public Lesson(String name, String description, String icon) {
+        this.name = name;
+        this.description = description;
+        this.icon = icon;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+
+
+    private String name;
+    private String description;
+
+    private String icon;
+
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -26,5 +41,9 @@ public class Lesson {
             inverseJoinColumns = @JoinColumn(name = "task_id")
     )
     private List<Task> tasks = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "chapter_id")
+    private Chapter chapter;
 
 }

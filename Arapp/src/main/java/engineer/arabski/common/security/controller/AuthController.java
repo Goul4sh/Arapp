@@ -49,7 +49,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
 
         if (loginRequest.email() == null || loginRequest.password() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email and password are required");
@@ -97,6 +97,7 @@ public class AuthController {
             User newUser = userService.createUser(registerRequest);
 
             EmailVerificationToken token = emailVerificationService.createToken(newUser);
+
             emailService.sendVerificationEmail(newUser, token.getToken());
 
             return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");

@@ -5,6 +5,9 @@ import MultipleChoiceTask from "../components/tasks/MultipleChoiceTask.tsx";
 import MatchPairsTask from "../components/tasks/MatchPairsTask.tsx";
 import FillInTheBlankTask from "../components/tasks/FillInTheBlankTask.tsx";
 import ChooseOneTask from "../components/tasks/ChooseOneTask.tsx";
+import MorphologyFormTask from "../components/tasks/MorphologyFormTask.tsx";
+import MorphologyPartsTask from "../components/tasks/MorphologyPartsTask.tsx";
+import TheoryTask from "../components/tasks/TheoryTask.tsx";
 
 
 // Komponent odpowiedzialny za wybór i renderowanie odpowiedniego typu zadania
@@ -25,6 +28,12 @@ function ExerciseRenderer({currentTask}: { currentTask: Task }) {
                 return <MatchPairsTask task={task}/>;
             case 'choose-one':
                 return <ChooseOneTask task={task}/>;
+            case "morphology-form":
+                return <MorphologyFormTask task={task}/>;
+            case "morphology-parts":
+                return <MorphologyPartsTask task={task}/>;
+            case "theory":
+                return <TheoryTask task={task}/>;
 
             default:
                 return <div>Unknown task type</div>;

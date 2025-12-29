@@ -10,6 +10,7 @@ import ExerciseSelector from "../features/exercises/pages/ExerciseSelector.tsx";
 import ProtectedExerciseLayout from "../common/layouts/ProtectedExerciseLayout.tsx";
 import ExerciseWrapperPage from "../features/exercises/pages/ExerciseWrapperPage.tsx";
 import ReviewPracticePage from "../features/review/pages/ReviewPracticePage.tsx";
+import WritingCoursePage from "../features/writing/pages/WritingCoursePage.tsx";
 
 
 function App() {
@@ -27,7 +28,7 @@ function App() {
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/review" element={<ReviewPage />} />
                     <Route path="/quiz" element={<div>Quiz Page</div>} />
-                    <Route path="/letters" element={<div>Arabic symbols</div>} />
+                    <Route path="/letters" element={<WritingCoursePage/>} />
                     <Route path="/words" element={<div>Some words</div>} />
                     <Route path="/grammar" element={<div>Grammar Page</div>} />
                     <Route path="/exercises" element={<ExerciseSelector/>} />
@@ -42,6 +43,8 @@ function App() {
                 <Route element={<ProtectedExerciseLayout />}>
                     <Route path="/review/:groupId" element={<ReviewPracticePage/>} />
                 </Route>
+
+
 
                 <Route path={"*"} element={<Navigate to="/" replace/>}/>
             </Routes>
