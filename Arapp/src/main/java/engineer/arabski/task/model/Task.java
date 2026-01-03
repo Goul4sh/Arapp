@@ -20,7 +20,6 @@ import java.util.Set;
 
 
 @Table(name = "tasks")
-//@Inheritance(strategy = InheritanceType.JOINED)
 public class Task {
 
     @Id
@@ -31,7 +30,6 @@ public class Task {
     @Column(name="task_type")
     private String taskType;
 
-//    @Convert(converter = TaskDataConverter.class)
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb", nullable = false)
     private TaskData taskData;

@@ -8,10 +8,10 @@ import ChooseOneTask from "../components/tasks/ChooseOneTask.tsx";
 import MorphologyFormTask from "../components/tasks/MorphologyFormTask.tsx";
 import MorphologyPartsTask from "../components/tasks/MorphologyPartsTask.tsx";
 import TheoryTask from "../components/tasks/TheoryTask.tsx";
+import AssistedWritingTask from "../components/tasks/AssistedWritingTask.tsx";
 
 
 // Komponent odpowiedzialny za wybór i renderowanie odpowiedniego typu zadania
-// na podstawie przekazanego obiektu zadania (currentTask).
 
 function ExerciseRenderer({currentTask}: { currentTask: Task }) {
 
@@ -34,6 +34,8 @@ function ExerciseRenderer({currentTask}: { currentTask: Task }) {
                 return <MorphologyPartsTask task={task}/>;
             case "theory":
                 return <TheoryTask task={task}/>;
+            case "writing-assisted":
+                return <AssistedWritingTask task={task}/>
 
             default:
                 return <div>Unknown task type</div>;
@@ -43,13 +45,11 @@ function ExerciseRenderer({currentTask}: { currentTask: Task }) {
 
     return (<>
 
-
             <div className={styles.rendererContainer}>
 
                 <TaskSelector task={currentTask}/>
 
             </div>
-
 
         </>
 

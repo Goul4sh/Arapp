@@ -1,5 +1,6 @@
 package engineer.arabski.lesson.service;
 
+import engineer.arabski.lesson.dto.LessonPreviewResponse;
 import engineer.arabski.lesson.model.Lesson;
 import engineer.arabski.lesson.model.UserCompleteLesson;
 import engineer.arabski.lesson.repository.UserCompletedLessonRepository;
@@ -43,4 +44,25 @@ public class UserLessonService {
     }
 
 
+    // Zwraca null, jeśli nie ma kolejnej lekcji do ukończenia
+    public LessonPreviewResponse getNextLessonToComplete(Long id) {
+
+        Long lastCompletedLessonId = completedLessonRepository.findLastCompletedLessonByUserId(id);
+        if (lastCompletedLessonId == null) {
+            Lesson firstLesson = lessonService.findByIdEntityOrNull(1L);
+            if (firstLesson != null) {
+                return lessonService.toPreviewResponse(firstLesson);
+            }
+
+        } else {
+            Long nextLessonId = lastCompletedLessonId + 1;
+            Lesson nextLesson = lessonService.findByIdEntityOrNull(nextLessonId);
+            if (nextLesson != null) {
+                return lessonService.toPreviewResponse(nextLesson);
+            } else return null;
+        }
+
+
+        return null;
+    }
 }

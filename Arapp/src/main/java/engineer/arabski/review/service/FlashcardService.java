@@ -120,11 +120,22 @@ public class FlashcardService {
     }
 
 
+    public List<FlashcardItemResponse> getFlashcardItemsByGroup(Long group) {
+        List<FlashcardItem> flashcardItems = flashcardRepository.getAllByFlashcardGroup_Id(group);
+        return flashcardItems.stream().map(FlashcardService::toResponse).toList();
+    }
+
     public List<FlashcardItemResponse> getFlashcardItemsByOwnerId(Long id) {
         List<FlashcardItem> flashcardItems = flashcardRepository.getAllByFlashcardOwner_Id(id);
         return flashcardItems.stream().map(FlashcardService::toResponse).toList();
 
     }
+
+
+    public Long countDueFlashcardsForUser(Long id) {
+        return flashcardRepository.countDueFlashcardsByOwner_Id(id, LocalDateTime.now());
+    }
+
 
     @Transactional
     public void processReview (Long flashcardId, int quality) {

@@ -64,6 +64,9 @@ public class LessonService {
 
     }
 
+    public Lesson findByIdEntityOrNull(Long lessonId) {
+        return lessonRepository.findById(lessonId).orElse(null);
+    }
 
 
     @Transactional

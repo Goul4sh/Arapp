@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;800&display=swap');
+
 :root {
     line-height: 1.5;
     font-weight: 400;
@@ -18,7 +20,7 @@ html, body, #root {
     text-align: center;
     color: green;
     width: 100%;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana,'Noto Sans Arabic', sans-serif;
 }
 
 
@@ -41,6 +43,13 @@ button {
     font-family: inherit;
     cursor: pointer;
     transition: border-color 0.25s;
+}
+
+
+:lang(ar) {
+    font-family: 'Noto Sans Arabic', sans-serif;
+    font-size: 1.1em;
+    line-height: 1.6;
 }
 
 

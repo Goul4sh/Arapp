@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -21,22 +23,29 @@ public class User {
     private String email;
     private String username;
     private String password;
-    private String role;
+
+
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
 
     // powiązane z aktywacją konta w mailu
     private boolean enabled = false;
+
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
+
+    @Column(name = "reset_password_token_expiry")
+    private LocalDateTime resetPasswordTokenExpiry;
 
     public User(RegisterRequest registerRequest) {
         this.email = registerRequest.email();
         this.username = registerRequest.username();
         this.password = registerRequest.password();
-        if (this.role == null) {
-            this.role = "USER";
-        }
+
     }
 
     public User(RegisterRequest registerRequest, String role) {
-        this.role = role;
+//        this.role = role;
         this.email = registerRequest.email();
         this.username = registerRequest.username();
         this.password = registerRequest.password();

@@ -31,9 +31,19 @@ function Login(): JSX.Element {
             };
 
             setUser(userData);
+
+            console.log("Jestem wynikiem logowania: " + JSON.stringify(userData));
+
             localStorage.setItem("user", JSON.stringify(userData));
 
-            navigate("/dashboard");
+
+            if (userData.role === "ADMIN") {
+                navigate("/admin/dashboard");
+                return;
+            } else {
+                navigate("/dashboard");
+            }
+
 
         } catch (error: any) {
 
@@ -98,7 +108,7 @@ function Login(): JSX.Element {
                     <div className={styles.submitContainer}>
 
                         {errorMessage && (
-                            <div style={{ color: 'red', marginBottom: '15px',marginTop: '0px' }}>
+                            <div style={{color: 'red', marginBottom: '15px', marginTop: '0px'}}>
                                 {errorMessage}
                             </div>
                         )}
@@ -107,8 +117,8 @@ function Login(): JSX.Element {
                     </div>
 
                 </form>
-                <div className={styles.forgotPassword}>
-                    <a>Zapomniałeś hasła?</a>
+                <div className={styles.register}>
+                    <Link to={"/forgot-password"}>Zapomniałeś hasła?</Link>
                 </div>
                 <div className={styles.separator}></div>
 

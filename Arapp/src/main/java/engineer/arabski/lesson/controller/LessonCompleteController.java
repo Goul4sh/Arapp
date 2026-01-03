@@ -1,6 +1,7 @@
 package engineer.arabski.lesson.controller;
 
 import engineer.arabski.common.security.CustomUserDetails;
+import engineer.arabski.lesson.dto.LessonPreviewResponse;
 import engineer.arabski.lesson.service.UserLessonService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,5 +35,11 @@ public class LessonCompleteController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @GetMapping("/next")
+    public ResponseEntity<?> getNextLessonToComplete(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+        LessonPreviewResponse nextLessonPreview = userLessonService.getNextLessonToComplete(customUserDetails.getId());
+        return ResponseEntity.status(HttpStatus.OK).body(nextLessonPreview);
+    }
 
 }

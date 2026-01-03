@@ -53,6 +53,20 @@ public class ChapterService {
                 .toList();
     }
 
+    public void editChapter(Long id, ChapterRequest request) {
+
+        Chapter chapter = chapterRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Chapter not found with id: " + id));
+
+        if (request.title() != null) {
+            chapter.setName(request.title());
+        }
+        if (request.description() != null) {
+            chapter.setDescription(request.description());
+        }
+
+        chapterRepository.save(chapter);
+    }
+
     public Chapter addChapter(Chapter chapter) {
         return chapterRepository.save(chapter);
     }
@@ -62,12 +76,15 @@ public class ChapterService {
 
         Chapter chapter = new Chapter(chapterRequest.title(), chapterRequest.description());
 
-        List<Lesson> lessons = lessonService.findAllById(chapterRequest.lessonIds());
+        if (!(chapterRequest.lessonIds() == null)) {
 
-        chapter.setLessons(lessons);
+            List<Lesson> lessons = lessonService.findAllById(chapterRequest.lessonIds());
+            chapter.setLessons(lessons);
+        } else {
+            chapter.setLessons(List.of());
+        }
 
         chapterRepository.save(chapter);
-
         //return toResponse(chapterRepository.save(chapter));
 
     }

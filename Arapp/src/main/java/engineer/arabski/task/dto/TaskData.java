@@ -19,13 +19,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = TheoryTaskData.class, name = "theory"),
         @JsonSubTypes.Type(value = MorphologyFormTaskData.class, name = "morphology-form"),
         @JsonSubTypes.Type(value = MorphologyPartsTaskData.class, name = "morphology-parts"),
+        @JsonSubTypes.Type(value = AssistedWritingTaskData.class, name = "writing-assisted")
 
 })
 
 public sealed interface TaskData
-        permits ChooseOneTaskData, FillInTheBlankTaskData,
-        MatchPairsTaskData, MorphologyFormTaskData, MorphologyPartsTaskData,
-        MultipleChoiceTaskData, TheoryTaskData {
+        permits AssistedWritingTaskData, ChooseOneTaskData, FillInTheBlankTaskData, MatchPairsTaskData, MorphologyFormTaskData, MorphologyPartsTaskData, MultipleChoiceTaskData, TheoryTaskData {
 
     String type();
 

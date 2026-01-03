@@ -33,6 +33,9 @@ function Compendium() {
 
                 ]);
 
+                console.log("Wszystkie tagi:", compendiumTagsResp.data);
+                console.log("Wpisy do kompendium:", compendiumEntriesResp.data);
+
                 setAllEntries(compendiumEntriesResp.data);
                 setAllTags(compendiumTagsResp.data);
                 setCompletedLessonIds(completeResp.data);
@@ -82,7 +85,7 @@ function Compendium() {
 
     const filteredEntries = allEntries.filter(entry => {
         if (activeTag === 'all') return true;
-        return entry.tags.includes(activeTag);
+        return entry.tags.some(tag => tag.name === activeTag);
     });
 
     const activeTagName = activeTag === 'all'

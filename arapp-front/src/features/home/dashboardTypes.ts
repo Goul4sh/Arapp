@@ -13,3 +13,12 @@ export interface DailyDashboardData {
     incorrectAnswers: number;
     durationSeconds: number;
 }
+
+export interface NextLessonData {
+    id: string;
+    title: string;
+    icon: string;
+    description: string;
+    chapterTitle: string;
+}
+

@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useMemo, useState} from "react";
 import {LessonContext} from "../LessonContext.tsx";
 import taskStyles from "../Tasks.module.css";
 import localStyles from "./MorphologyForm.module.css";
@@ -10,6 +10,8 @@ function MorphologyFormTask ({task}: { task: MorphologyFormTaskType }) {
 
     const { submitAnswer } = useContext(LessonContext);
 
+    const [hasMistake, setHasMistake] = useState(false);
+
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [constructedWord, setConstructedWord] = useState<string[]>([]);
     const [errorId, setErrorId] = useState<string | null>(null);
@@ -19,15 +21,20 @@ function MorphologyFormTask ({task}: { task: MorphologyFormTaskType }) {
     const currentStep = task.steps[currentStepIndex];
     const isFinished = currentStepIndex >= task.steps.length;
 
+    const currentOptions = useMemo(() => {
+        if (!currentStep) return [];
+        return [...currentStep.options].sort(() => Math.random() - 0.5);
+    }, [currentStep]);
+
     useEffect(() => {
         if (isFinished && status === 'idle') {
             setStatus('correct');
 
             setTimeout(() => {
-                submitAnswer(true);
+                submitAnswer(!hasMistake);
             }, 1500);
         }
-    }, [isFinished, status, submitAnswer]);
+    }, [hasMistake, isFinished, status, submitAnswer]);
 
     const handleOptionClick = (option: MorphologyOption) => {
 
@@ -39,8 +46,9 @@ function MorphologyFormTask ({task}: { task: MorphologyFormTaskType }) {
             setCurrentStepIndex((prev) => prev + 1);
         } else {
 
+            setHasMistake(true);
             setErrorId(option.id);
-            setTimeout(() => setErrorId(null), 1500);
+            setTimeout(() => setErrorId(null), 1000);
             //TODO Cos mozna dodac pozniej - dzwiek?
 
         }
@@ -78,7 +86,7 @@ function MorphologyFormTask ({task}: { task: MorphologyFormTaskType }) {
             </div>
 
             <div className={taskStyles.buttonsContainer}>
-                {!isFinished && currentStep && currentStep.options.map((option) => (
+                {!isFinished && currentOptions.map((option) => (
                     <button
                         key={option.id}
                         className={getButtonClass(option.id)}

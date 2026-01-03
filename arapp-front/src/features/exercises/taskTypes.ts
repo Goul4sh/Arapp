@@ -1,6 +1,7 @@
 
 export interface BaseTask {
-    id: string;
+    // id: string;
+    id: number;
     type: string;
     description: string;
 }
@@ -68,23 +69,30 @@ export interface MorphologyOption {
 }
 
 
-export interface LetterFormSingleTaskType extends BaseTask {
-    type: 'letter-form-single';
-    letter: string;
+export interface AssistedWritingTaskType {
+    type: 'writing-assisted';
+    description: string;
+    svgPathStrokes: string[];
+    viewBox: string;
 }
 
-export interface LetterDrawTaskType extends BaseTask {
-    type: 'letter-draw';
-    prompt: string;
+// Work in progress!
+
+export interface FreehandWritingTaskType {
+    type: 'writing-freehand';
+    description: string;
+    strokes: Array<Array<{ x: number; y: number }>>;
 }
 
 export type Task =
-    ChooseOneTaskType
+  (  ChooseOneTaskType
     | MultipleChoiceTaskType
     | FillInTheBlankTaskType
     | MatchPairsTaskType
-    | LetterFormSingleTaskType
-    | LetterDrawTaskType
     | MorphologyFormTaskType
     | MorphologyPartsTaskType
-    | TheoryTaskType;
+    | TheoryTaskType
+    | AssistedWritingTaskType
+    | FreehandWritingTaskType)
+    // & { id: number }
+    ;

@@ -2,8 +2,8 @@ import {createContext, useContext} from 'react';
 
 type AuthContextType = {
 
-    user: { id: string; name: string } | null;
-    setUser: (user: { id: string; name: string } | null) => void;
+    user: { id: string; name: string; role: string } | null;
+    setUser: (user: { id: string; name: string; role: string } | null) => void;
     logout: () => void;
     loading: boolean;
 

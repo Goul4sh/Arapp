@@ -34,7 +34,7 @@ export interface CompendiumEntry {
     title: string;
     description: string;
     requiredLessonId: number;
-    tags: string[];
+    tags: CompendiumTag[];
 
 
 }

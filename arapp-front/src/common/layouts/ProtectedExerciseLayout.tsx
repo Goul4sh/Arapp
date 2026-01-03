@@ -3,8 +3,7 @@ import ExerciseLayout from "./ExerciseLayout.tsx";
 
 const ProtectedExerciseLayout = () => (
 
-
-    <ProtectedRoute>
+    <ProtectedRoute requiredRole={"USER"}>
 
         <ExerciseLayout/>
 

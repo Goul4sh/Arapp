@@ -11,10 +11,10 @@ import engineer.arabski.common.security.service.EmailService;
 import engineer.arabski.common.security.service.EmailVerificationService;
 import engineer.arabski.user.model.User;
 import engineer.arabski.user.service.UserService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -32,6 +31,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 
 public class AuthController {
 
@@ -41,12 +41,6 @@ public class AuthController {
 
     @Value("${app.frontend.url}")
     private String frontendUrl;
-
-    public AuthController(UserService userService, EmailVerificationService emailVerificationService, EmailService emailService) {
-        this.userService = userService;
-        this.emailVerificationService = emailVerificationService;
-        this.emailService = emailService;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
@@ -71,7 +65,7 @@ public class AuthController {
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                    .body(new UserDataResponse(user.getId(), user.getUsername(), user.getEmail(), "USER"));
+                    .body(new UserDataResponse(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name()));
 
 
         } catch (BadCredentialsException e) {

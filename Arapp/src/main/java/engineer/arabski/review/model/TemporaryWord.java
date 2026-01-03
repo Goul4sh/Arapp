@@ -14,6 +14,7 @@ public class TemporaryWord {
     @Column(nullable = false)
     private Long id;
     private String wordArabic;
+    private String wordArabicWithHarakat;
     private String wordTranslation;
     private String Transliteration;
 

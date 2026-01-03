@@ -24,6 +24,9 @@ export function AuthProvider({children}: { children: ReactNode }) {
 
     useEffect(() => {
         const fetchUser = async () => {
+
+            // if (user){}
+
             try {
                 const resp = await api.get("/api/auth/validate", {withCredentials: true});
                 setUser(resp.data);
@@ -32,6 +35,7 @@ export function AuthProvider({children}: { children: ReactNode }) {
             } finally {
                 setLoading(false);
             }
+            
         }
 
         fetchUser();

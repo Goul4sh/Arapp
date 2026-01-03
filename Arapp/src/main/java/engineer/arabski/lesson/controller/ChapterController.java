@@ -40,6 +40,20 @@ public class ChapterController {
 
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateChapter(@PathVariable Long id ,@RequestBody ChapterRequest chapterRequest) {
+
+        try {
+
+            chapterService.editChapter(id, chapterRequest);
+            return ResponseEntity.status(HttpStatus.OK).body("Chapter updated successfully");
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not update chapter");
+        }
+
+    }
+
     @PostMapping
     public ResponseEntity<?> createChapter(@RequestBody ChapterRequest chapterRequest) {
 

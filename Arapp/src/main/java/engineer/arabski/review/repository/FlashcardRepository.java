@@ -14,6 +14,12 @@ import java.util.List;
 public interface FlashcardRepository extends JpaRepository<FlashcardItem,Long> {
     List<FlashcardItem> getAllByFlashcardOwner_Id(Long flashcardOwnerId);
 
+    List<FlashcardItem> getAllByFlashcardGroup_Id(Long flashcardGroupId);
+
     @Query("SELECT f FROM FlashcardItem f JOIN f.flashcardGroup g WHERE g.id = :groupId AND f.nextReviewDate <= :now")
     List<FlashcardItem> findDueFlashcardsInGroup(@Param("groupId") Long groupId, @Param("now") LocalDateTime now);
+
+    @Query("SELECT count(f) FROM FlashcardItem f WHERE f.flashcardOwner.id = :ownerId AND f.nextReviewDate <= :now")
+    Long countDueFlashcardsByOwner_Id(@Param("ownerId") Long ownerId, @Param("now") LocalDateTime now);
+
 }

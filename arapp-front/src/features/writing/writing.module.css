@@ -240,7 +240,7 @@
 }
 
 .dotColumnCompleted::before {
-    background-color: #4cae4f;
+    background-color: green;
 
 }
 
@@ -274,7 +274,7 @@
 
 .dotCompleted {
     background: #ecfdf5;
-    border-color: #4cae4f;
+    border-color: green;
     color: green;
 }
 
@@ -513,8 +513,9 @@
 
 .gridItem:hover:not(.locked) {
     border-color: #4cae4f;
-    transform: translateY(-4px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+
 }
 
 .itemHeader {
@@ -524,7 +525,13 @@
     margin-bottom: 1rem;
 }
 
-.itemTitle { font-weight: 700; font-size: 1.1rem; color: #1f2937; }
+.itemTitle {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1f2937;
+    text-align: left;
+    flex: 1;
+}
 
 
 .itemDesc { font-size: 0.9rem; color: #6b7280; line-height: 1.5; }

@@ -50,7 +50,24 @@ public class FlashcardController {
         }
     }
 
+    @GetMapping("/group/{group_id}/all")
+    public ResponseEntity<?> findAllByGroupId(@PathVariable Long group_id) {
 
+        List <FlashcardItemResponse> flashcardItems = flashcardService.getFlashcardItemsByGroup(group_id);
+        if (!flashcardItems.isEmpty()) {
+
+            return ResponseEntity.status(HttpStatus.OK).body(flashcardItems);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body("No flashcards found for group");
+        }
+    }
+
+    @GetMapping("/due/count")
+    public ResponseEntity<?> countDueFlashcards(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long userId = customUserDetails.getId();
+        Long dueCount = flashcardService.countDueFlashcardsForUser(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(dueCount);
+    }
 
     @GetMapping({"/user", "/user/{userId}"})
     public ResponseEntity<?> findByUserId(

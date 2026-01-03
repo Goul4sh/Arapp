@@ -33,13 +33,164 @@
     gap: 50px;
 }
 
+.actionsContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+.actionCard {
+
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    border-radius: 15px;
+    background-color: #ffffff;
+    padding: 20px;
+
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+
+.lessonCard {
+
+    composes: actionCard;
+
+    border: 1px solid #fff;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 2rem;
+    margin-bottom: 0;
+
+}
+
+
+.reviewCard {
+
+    composes: actionCard;
+
+    border: 1px solid #fff;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    /*gap: 60px;*/
+    margin-bottom: 0;
+
+}
+
+.noFlashcardsText {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+
+}
+
+.reviewCardContent {
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.reviewCardContent h2 {
+    margin: 0;
+
+    /*font-size: 20px;*/
+
+}
+
+.reviewCardContent p {
+
+    font-size: 15px;
+    margin: 0;
+}
+
+
+.contentText {
+
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+
+}
+
+.actionLink {
+
+
+}
+
+
+
+@keyframes shine-sweep {
+    0% {
+        left: -100%;
+    }
+    60% {
+        left: 200%;
+    }
+    100% {
+        left: 200%;
+    }
+}
+
+.actionLink {
+    margin-left: 15px;
+    background-color: #4cae4f;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(76, 174, 79, 0.3);
+    transition: background-color 0.2s;
+
+    position: relative;
+    overflow: hidden;
+}
+
+.actionLink::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+
+    background: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.4) 50%,
+            rgba(255, 255, 255, 0) 100%
+    );
+
+    transform: skewX(-25deg);
+
+    animation: shine-sweep 4s infinite;
+}
+
+.actionLink:hover {
+    background-color: #439a46;
+
+}
 
 .overallBox {
 
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: 30px;
 
 }

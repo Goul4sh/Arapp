@@ -2,12 +2,21 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "./auth";
 import type {JSX} from "react";
 
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-    const { user , loading} = useAuth();
+interface ProtectedRouteProps {
+    children: JSX.Element;
+    requiredRole?: 'ADMIN' | 'USER';
+}
 
+const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
+    const { user , loading} = useAuth();
+console.log("Jestem w protectedRoute, user:", user);
     if (loading) return <div></div>;
     if (!user) {
         return <Navigate to="/login" replace />;
+    }
+
+    if (requiredRole && user.role !== requiredRole) {
+        return <Navigate to={user.role === 'ADMIN' ? "/admin/dashboard" : "/dashboard"} replace />;
     }
 
     return children;

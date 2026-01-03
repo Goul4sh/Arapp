@@ -4,7 +4,7 @@ import DashboardLayout from './DashboardLayout';
 import ProtectedRoute from "../../features/auth/Protectedroute";
 
 const ProtectedDashboardLayout: React.FC = () => (
-    <ProtectedRoute>
+    <ProtectedRoute requiredRole={"USER"}>
         <DashboardLayout>
             <Outlet />
         </DashboardLayout>

@@ -3,6 +3,7 @@ package engineer.arabski.user.service;
 import engineer.arabski.common.security.dto.RegisterRequest;
 import engineer.arabski.common.security.exception.UserAlreadyExistsException;
 import engineer.arabski.common.security.jwt.JwtUtil;
+import engineer.arabski.user.model.Role;
 import engineer.arabski.user.model.User;
 import engineer.arabski.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class UserService {
             adminUser.setEmail(adminEmail);
             adminUser.setUsername("admin");
             adminUser.setPassword(passwordEncoder.encode("admin123"));
-            adminUser.setRole("ADMIN");
+            adminUser.setRole(Role.ADMIN);
             adminUser.setEnabled(true);
             userRepository.save(adminUser);
             System.out.println("Admin user created with email: " + adminEmail + " and password: admin123");
@@ -114,7 +115,7 @@ public class UserService {
             User newUser = new User();
             newUser.setEmail(email);
             newUser.setUsername(oAuth2User.getAttribute("name"));
-            newUser.setRole("USER");
+            newUser.setRole(Role.USER);
             newUser.setEnabled(true);
 
             return userRepository.save(newUser);

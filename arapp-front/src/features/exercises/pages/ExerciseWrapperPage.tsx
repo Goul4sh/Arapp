@@ -1,4 +1,5 @@
 import styles from "./Renderer.module.css";
+import progressBarStyles from "../components/progressBar.module.css"
 import ExerciseRenderer from "./ExerciseRenderer.tsx";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
@@ -8,18 +9,21 @@ import ProgressBar from "../components/ProgressBar.tsx";
 import {LessonContext} from "../components/LessonContext.tsx";
 import SessionSummary from "../components/SessionSummary.tsx";
 
+type TaskWithId = Task & { id: number };
 
 // Komponent opakowujący komponent ćwiczenia. Pobiera dane na podstawie ID z url.
 
 function ExerciseWrapperPage() {
 
     const {id, lesson_id} = useParams();
-    const [taskQueue, setTaskQueue] = useState<Task[]>([]);
-    const [currentTask, setCurrentTask] = useState<Task | null>(null);
+    const [taskQueue, setTaskQueue] = useState<TaskWithId[]>([]);
+    const [currentTask, setCurrentTask] = useState<TaskWithId | null>(null);
     const [totalTasks, setTotalTasks] = useState<number>(0);
     const [completedTasks, setCompletedTasks] = useState<number>(0);
     const [loading, setLoading] = useState(true);
     const [isSessionFinished, setIsSessionFinished] = useState<boolean>(false);
+    const [mistakeTaskIds, setMistakeTaskIds] = useState<Set<string | number>>(new Set());
+
     const navigate = useNavigate();
 
 
@@ -43,10 +47,18 @@ function ExerciseWrapperPage() {
                 .then(resp => {
 
                     const tasks = resp.data.tasks;
-                    console.log(tasks);
-                    setTaskQueue(tasks);
-                    setCurrentTask(tasks[0]);
-                    setTotalTasks(tasks.length);
+
+                    console.log("Taski ktore dostalem to" , tasks);
+
+                    const tasksWithIds = tasks.map((task: Task, index: number) => ({
+                        ...task,
+                        id: index
+                    }));
+
+                    console.log(tasksWithIds);
+                    setTaskQueue(tasksWithIds);
+                    setCurrentTask(tasksWithIds[0]);
+                    setTotalTasks(tasksWithIds.length);
                     setLoading(false);
 
                 });
@@ -59,8 +71,11 @@ function ExerciseWrapperPage() {
             api.get(`/api/exercises/${id}`, {withCredentials: true})
                 .then(resp => {
 
-                    setTaskQueue(resp.data);
-                    setCurrentTask(resp.data);
+                    const rawTask = resp.data;
+                    const taskWithId = { ...rawTask, id: 0 };
+
+                    setTaskQueue([taskWithId]);
+                    setCurrentTask(taskWithId);
                     setTotalTasks(1);
                     setLoading(false);
 
@@ -68,13 +83,21 @@ function ExerciseWrapperPage() {
         }
     }, [id, lesson_id, workingMode]);
 
-    // Oblicza postęp paska na podstawie odpowiedzi
     function submitAnswer(answer: boolean) {
+        if (!currentTask) return;
+
+        const taskId = currentTask.id;
+
         if (answer) {
-            // alert("Dobrze!")
+
+            const previousMistake = mistakeTaskIds.has(taskId);
+
+            const newCorrectAnswers = previousMistake
+                ? sessionStats.correctAnswers
+                : sessionStats.correctAnswers + 1;
 
             const newCompletedCount = sessionStats.completedTasksCount + 1;
-            const newCorrectAnswers = sessionStats.correctAnswers + 1;
+            // const newCorrectAnswers = sessionStats.correctAnswers + 1;
 
             setSessionStats(prev => ({
                 ...prev,
@@ -93,11 +116,9 @@ function ExerciseWrapperPage() {
             } else {
 
                 finishSession(newCompletedCount, newCorrectAnswers, sessionStats.incorrectAnswers);
-
             }
 
         } else {
-            // alert("źle!")
 
             const newIncorrectAnswers = sessionStats.incorrectAnswers + 1;
 
@@ -107,7 +128,12 @@ function ExerciseWrapperPage() {
                 incorrectAnswers: newIncorrectAnswers
             }));
 
-            // Przeniesienie aktualnego zadania na koniec kolejki - nie zostało rozwiązane poprawnie
+            setMistakeTaskIds(prev => {
+                const newSet = new Set(prev);
+                newSet.add(taskId);
+                return newSet;
+            });
+
             const [first, ...rest] = taskQueue;
             const newQueue = [...rest, first];
             setTaskQueue(newQueue);
@@ -180,10 +206,10 @@ function ExerciseWrapperPage() {
 
             <div className={styles.exercisePage}>
 
-                <div className={styles.topBar}>
+                <div className={progressBarStyles.topBar}>
 
-                    <div className={styles.exitButton}>
-                        <Link to="/exercises">EXIT</Link>
+                    <div className={progressBarStyles.exitButton}>
+                        <Link to="/exercises">X</Link>
                     </div>
 
                     <ProgressBar progress={progress}/>

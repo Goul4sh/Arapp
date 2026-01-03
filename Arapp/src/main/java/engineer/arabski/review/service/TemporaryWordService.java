@@ -23,6 +23,7 @@ public class TemporaryWordService {
         return new WordResponse(
 
                 temporaryWord.getWordArabic(),
+                temporaryWord.getWordArabicWithHarakat(),
                 temporaryWord.getWordTranslation(),
                 temporaryWord.getTransliteration()
 

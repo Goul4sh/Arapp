@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import api from "../../auth/api.ts";
 import ProgressBar from "../../exercises/components/ProgressBar.tsx";
 
-import styles from './ReviewPage.module.css'
+import styles from './ReviewPractice.module.css'
 import {Link, useNavigate, useParams} from "react-router-dom";
 
 //TODO dodac kiedys klawiature do wpisywania odpowiedzi
@@ -17,18 +17,37 @@ function ReviewPracticePage() {
     const {groupId} = useParams();
     const navigate = useNavigate();
 
+    const [answeredFlashcardsIds, setAnsweredFlashcardsIds] = useState<Set<string>>(new Set());
+
+    const [searchParams] = useState(new URLSearchParams(window.location.search));
+    const isTrainingMode = searchParams.get("training") === "true";
+
     useEffect(() => {
 
-        api.get(`/api/flashcards/group/${groupId}`, {withCredentials: true})
-            .then(resp => {
-                setFlashcards(resp.data);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error(err);
-                setLoading(false);
-            });
+        if (isTrainingMode) {
 
+            api.get(`/api/flashcards/group/${groupId}/all`, {withCredentials: true})
+                .then(resp => {
+                    setFlashcards(resp.data);
+                    setLoading(false);
+                })
+                .catch(err => {
+                    console.error(err);
+                    setLoading(false);
+                });
+
+        } else {
+
+            api.get(`/api/flashcards/group/${groupId}`, {withCredentials: true})
+                .then(resp => {
+                    setFlashcards(resp.data);
+                    setLoading(false);
+                })
+                .catch(err => {
+                    console.error(err);
+                    setLoading(false);
+                });
+        }
 
     }, []);
 
@@ -37,6 +56,8 @@ function ReviewPracticePage() {
 
 
     function sendAnswer(quality: number, id: string) {
+
+        if (isTrainingMode) return;
 
         api.post(`/api/flashcards/review/${id}?quality=${quality}`, "", {withCredentials: true}).then(r => console.log(r));
 
@@ -47,15 +68,55 @@ function ReviewPracticePage() {
     }
 
     const handleNext = (quality: number) => {
-        sendAnswer(quality, flashcards[currentFlashcardIndex].id);
+
+        const currentCard = flashcards[currentFlashcardIndex];
+        if (quality === 0) {
+
+            setFlashcards(prev => [...prev, currentCard]);
+
+        }
+
+        if (!isTrainingMode) {
+
+            if (!answeredFlashcardsIds.has(currentCard.id)) {
+                sendAnswer(quality, currentCard.id);
+
+                setAnsweredFlashcardsIds(prev => {
+                    const newSet = new Set(prev);
+                    newSet.add(currentCard.id);
+                    return newSet;
+                });
+            }
+
+        }
+
         const nextIndex = currentFlashcardIndex + 1;
 
 
-        if (nextIndex >= flashcards.length) {
+        const currentLength = flashcards.length + (quality === 0 ? 1 : 0);
+
+        // zamiast flashcards.length uzywane jest current:lemgth, ze wzgledu na ponowne dodawanie fiszki do listy.
+        // moze nalezy to zmienic w przyszlosci?
+
+        if (nextIndex >= currentLength) {
             alert("Wszystkie fiszki powtorzone!")
 
-            navigate("/review");
-            return;
+            // navigate("/review");
+            return (
+
+                <div className={styles.flashcardsFinishedScreen}>
+
+                    <div>
+
+                        <h2>Gratulacje! Wszystkie fiszki zostały powtórzone.</h2>
+                        <button onClick={() => navigate("/review")}>Powrót do przeglądu fiszek</button>
+
+
+                    </div>
+
+                </div>
+
+            );
         }
 
         setCurrentFlashcardIndex(nextIndex % flashcards.length);
@@ -85,17 +146,17 @@ function ReviewPracticePage() {
 
                 {!showAnswer ? (
                     <div className={styles.flashcardItem}>
-                        <div className={styles.flashcardText}>
-                            <h1> {flashcards[currentFlashcardIndex].word.wordArabic}</h1>
-                            <p> {flashcards[currentFlashcardIndex].word.Transliteration}</p>
+                        <div className={styles.flashcardContent}>
+                            <h1 lang="ar"> {flashcards[currentFlashcardIndex].word.wordArabic}</h1>
+                            <p className={styles.transliteration}> {flashcards[currentFlashcardIndex].word.Transliteration}</p>
 
                         </div>
                     </div>
                 ) : (
                     <div className={styles.flashcardItem}>
-                        <p className={styles.flashcardText}>
-                            <h2>  {flashcards[currentFlashcardIndex].word.wordTranslation} </h2>
-                        </p>
+                        <div className={styles.flashcardContent}>
+                            <h2> {flashcards[currentFlashcardIndex].word.wordTranslation} </h2>
+                        </div>
                     </div>
                 )
 
@@ -110,9 +171,9 @@ function ReviewPracticePage() {
                 ) : (
 
                     <div className={styles.qualityButtonsContainer}>
-                        <button className={styles.whiteButton} onClick={() => handleNext(0)}>Nie pamiętam</button>
+                        <button className={styles.hotButton} onClick={() => handleNext(0)}>Nie pamiętam</button>
                         <button className={styles.mildButton} onClick={() => handleNext(3)}>Trudno</button>
-                        <button className={styles.hotButton} onClick={() => handleNext(5)}>Pamiętam</button>
+                        <button className={styles.whiteButton} onClick={() => handleNext(5)}>Pamiętam</button>
                     </div>
                 )
                 }

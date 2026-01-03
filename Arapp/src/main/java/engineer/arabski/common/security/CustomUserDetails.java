@@ -1,5 +1,6 @@
 package engineer.arabski.common.security;
 
+import engineer.arabski.user.model.Role;
 import engineer.arabski.user.model.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,13 +34,19 @@ public class CustomUserDetails implements UserDetails {
 
     public static CustomUserDetails fromUser(User user) {
 
-        String role = user.getRole();
-        if (role == null || role.isEmpty()) {
-            role = "USER";
+        Role userRole = user.getRole();
+
+        String roleName;
+
+        if (userRole == null) {
+            roleName = "USER";
             System.out.println("No role found for user " + user.getEmail() + ", assigning default role USER");
+        } else {
+            roleName = userRole.name();
         }
 
-        List<GrantedAuthority> auth = List.of(new SimpleGrantedAuthority(role));
+        List<GrantedAuthority> auth =
+                List.of(new SimpleGrantedAuthority("ROLE_" + roleName));
         return new CustomUserDetails(
                 user.getId(),
                 user.getEmail(),
