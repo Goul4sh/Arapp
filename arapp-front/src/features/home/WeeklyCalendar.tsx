@@ -10,6 +10,7 @@ interface WeekStreak {
 
 function WeeklyCalendar ({ activityDates, onDateClick }: WeekStreak) {
     const [weekDays, setWeekDays] = useState<Date[]>([]);
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     useEffect(() => {
 
         const days = [];
@@ -20,6 +21,7 @@ function WeeklyCalendar ({ activityDates, onDateClick }: WeekStreak) {
         }
         setWeekDays(days);
     }, []);
+
 
     const isToday = (date: Date) => {
         return date.toLocaleDateString('en-CA') === new Date().toLocaleDateString('en-CA');
@@ -34,6 +36,8 @@ function WeeklyCalendar ({ activityDates, onDateClick }: WeekStreak) {
     };
 
     const handleDayClick = (date: Date) => {
+        setSelectedDate(date);
+
         const dateString = date.toLocaleDateString('en-CA');
         if (onDateClick) {
             onDateClick(dateString);
@@ -49,7 +53,10 @@ function WeeklyCalendar ({ activityDates, onDateClick }: WeekStreak) {
                 return (
                     <div
                         key={index}
-                        className={`${styles.dayColumn} ${today ? styles.today : ''}`}
+                        className={`${styles.dayColumn} 
+                        ${today ? styles.today : ''}
+                        ${selectedDate?.toDateString() === date.toDateString() ? styles.selected : ''}`}
+
                         onClick={() => handleDayClick(date)}
                         style={{ cursor: 'pointer' }}
                     >

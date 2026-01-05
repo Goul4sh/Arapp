@@ -9,13 +9,18 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana,'Noto Sans Arabic', sans-serif;
+
 }
 
 .modalContent {
     background: white;
-    border-radius: 8px;
-    max-width: 600px;
-    width: 90%;
+    border-radius: 25px;
+    /*max-width: 600px;*/
+    /*width: 90%;*/
+    width: fit-content;
+    max-width: 90vw;
     max-height: 80vh;
     overflow-y: auto;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -46,5 +51,8 @@
 }
 
 .modalBody {
-    padding: 20px;
+    padding: 25px;
 }
+
+.modalTitle {
+    font-family: inherit}

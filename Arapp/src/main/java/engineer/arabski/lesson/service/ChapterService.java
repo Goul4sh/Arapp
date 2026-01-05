@@ -5,7 +5,6 @@ import engineer.arabski.lesson.dto.ChapterResponse;
 import engineer.arabski.lesson.model.Chapter;
 import engineer.arabski.lesson.model.Lesson;
 import engineer.arabski.lesson.repository.ChapterRepository;
-import engineer.arabski.task.model.Task;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -40,10 +39,31 @@ public class ChapterService {
 
     }
 
+    public ChapterResponse toChapterResponsePublishedOnly(Chapter chapter) {
+
+        return new ChapterResponse(
+                chapter.getId(),
+                chapter.getName(),
+                chapter.getDescription(),
+                chapter.getLessons().stream()
+                        .filter(Lesson::isPublished)
+                        .map(lessonService::toPreviewResponse)
+                        .toList());
+
+    }
+
     public ChapterResponse findById(long id) {
         Chapter chapter = chapterRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Chapter not found with id: " + id));
+
         return toChapterResponse(chapter);
     }
+
+    public ChapterResponse findByIdPublishedOnly(long id) {
+        Chapter chapter = chapterRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Chapter not found with id: " + id));
+
+        return toChapterResponse(chapter);
+    }
+
 
     // mozliwe inne podejscie?
 
@@ -52,6 +72,14 @@ public class ChapterService {
                 .map(this::toChapterResponse)
                 .toList();
     }
+
+    public List<ChapterResponse> findAllPublished() {
+
+        return chapterRepository.findAll().stream()
+                .map(this::toChapterResponsePublishedOnly)
+                .toList();
+    }
+
 
     public void editChapter(Long id, ChapterRequest request) {
 
@@ -72,6 +100,21 @@ public class ChapterService {
     }
 
     @Transactional
+    public void addLessonToChapter(Long chapterId, Long lessonId) {
+
+        Chapter chapter = chapterRepository.findById(chapterId)
+                .orElseThrow(() -> new IllegalArgumentException("Chapter not found with id: " + chapterId));
+        Lesson lesson = lessonService.findByIdEntity(lessonId);
+
+        if (lesson == null) {
+            throw new IllegalArgumentException("Lesson not found with id: " + lessonId);
+        }
+
+        chapter.addLesson(lesson);
+        chapterRepository.save(chapter);
+    }
+
+    @Transactional
     public void addChapter(ChapterRequest chapterRequest) {
 
         Chapter chapter = new Chapter(chapterRequest.title(), chapterRequest.description());
@@ -85,7 +128,6 @@ public class ChapterService {
         }
 
         chapterRepository.save(chapter);
-        //return toResponse(chapterRepository.save(chapter));
 
     }
 

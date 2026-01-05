@@ -3,14 +3,20 @@ import type {FillInTheBlankFormType} from "./formTaskTypes.ts";
 import localStyles from "./TaskForms.module.css";
 
 
-const FillTheBlankForm = ({onDataChange}) => {
-    const [formData, setFormData] = useState<FillInTheBlankFormType>({
-        id: '',
+interface Props {
+    onDataChange: (data: FillInTheBlankFormType) => void;
+    initialData?: Partial<FillInTheBlankFormType>;
+}
+
+
+const FillTheBlankForm = ({onDataChange, initialData} : Props) => {
+    const [formData, setFormData] = useState<FillInTheBlankFormType>(() => ({
+        id: initialData?.id || 0,
         type: 'fill-in-the-blank',
-        sentenceWithBlank: '',
-        description: '',
-        answer: '',
-    })
+        sentenceWithBlank: initialData?.sentenceWithBlank || '',
+        description: initialData?.description || '',
+        answer: initialData?.answer || '',
+    }));
 
     useEffect(() => {
         onDataChange(formData)
@@ -20,7 +26,7 @@ const FillTheBlankForm = ({onDataChange}) => {
     return (
 
         <div className={localStyles.formSection}>
-            <h3>Choose One Task</h3>
+            <h3>Fill in the gap</h3>
             <label>
                 Description:
                 <textarea

@@ -1,4 +1,5 @@
 import styles from './Tasks.module.css';
+
 const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -7,7 +8,7 @@ const formatTime = (seconds: number) => {
     return `${minutes}m ${seconds % 60}s`;
 };
 
-const SessionSummary = ({correct, incorrect, duration,  onExit}: {
+const SessionSummary = ({correct, incorrect, duration, onExit}: {
     correct: number,
     incorrect: number,
     duration: number,
@@ -19,30 +20,36 @@ const SessionSummary = ({correct, incorrect, duration,  onExit}: {
 
     return (
         <div className={styles.summaryContainer}>
-            <h2 className={styles.summaryTitle}>Lekcja ukończona</h2>
 
-            <div className={styles.statsContainer}>
-                <div className={styles.statItem}>
-                    <p className={styles.cardContent}>Poprawne odpowiedzi</p>
-                    <h2 className={styles.cardContent} style={{color: 'green'}}>{correct}</h2>
+            <div className={styles.summaryContent}>
+
+                <h2 className={styles.summaryTitle}>Lekcja ukończona!</h2>
+
+                <div className={styles.statsContainer}>
+                    <div className={styles.statItem}>
+                        <p className={styles.cardContent}>Poprawne odpowiedzi</p>
+                        <h2 className={styles.cardContent} style={{color: 'green'}}>{correct}</h2>
+                    </div>
+                    <div className={styles.statItem}>
+                        <p className={styles.statLabel}>Błędne odpowiedzi</p>
+                        <h2 className={styles.statValue} style={{color: 'red'}}>{incorrect}</h2>
+                    </div>
+                    <div className={styles.statItem}>
+                        <p className={styles.statLabel}>Skuteczność</p>
+                        <h2 className={styles.statValue}>{accuracy}%</h2>
+                    </div>
+                    <div className={styles.statItem}>
+                        <p className={styles.statLabel}>Czas</p>
+                        <h2 className={styles.statValue}>{formatTime(duration)}</h2>
+                    </div>
                 </div>
-                <div className={styles.statItem}>
-                    <p className={styles.statLabel}>Błędne odpowiedzi</p>
-                    <h2 className={styles.statValue} style={{color: 'red'}}>{incorrect}</h2>
-                </div>
-                <div className={styles.statItem}>
-                    <p className={styles.statLabel}>Skuteczność</p>
-                    <h2 className={styles.statValue}>{accuracy}%</h2>
-                </div>
-                <div className={styles.statItem}>
-                    <p className={styles.statLabel}>Czas</p>
-                    <h2 className={styles.statValue}>{formatTime(duration)}</h2>
-                </div>
+
+                <button className={styles.finishButton} onClick={onExit}>
+                    Kontynuuj
+                </button>
             </div>
 
-            <button className={styles.finishButton} onClick={onExit}>
-                Kontynuuj
-            </button>
+
         </div>
     );
 };

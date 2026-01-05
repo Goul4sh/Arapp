@@ -28,17 +28,29 @@ public class TaskService {
     }
 
 
+    public void deleteTask(Long taskId) {
+        taskRepository.deleteById(taskId);
+    }
+
+    public TaskData updateTask(Long taskId, TaskData newTaskData) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + taskId));
+
+        task.setTaskData(newTaskData);
+
+        Task updatedTask = taskRepository.save(task);
+        return updatedTask.getTaskData();
+    }
 
     @Transactional
-    public TaskData addTask(TaskData taskData) {
+    public Task addTask(TaskData taskData) {
         Task task = new Task();
 
         task.setTaskData(taskData);
 
         System.out.println("Adding task: " + task.getDescription() + " of type " + task.getTaskType());
 
-        Task savedTask = taskRepository.save(task);
-        return savedTask.getTaskData();
+        return taskRepository.save(task);
     }
 
 }

@@ -2,16 +2,20 @@ import {useEffect, useState} from "react";
 import localStyles from "./TaskForms.module.css"
 import type {MultipleChoiceFormType} from "./formTaskTypes.ts";
 
+interface Props {
+    onDataChange: (data: MultipleChoiceFormType) => void;
+    initialData?: Partial<MultipleChoiceFormType>;
+}
 
-const MultipleChoiceForm = ({onDataChange}) => {
+const MultipleChoiceForm = ({onDataChange, initialData}: Props) => {
 
-    const [formData, setFormData] = useState<MultipleChoiceFormType>({
-        id: "",
+    const [formData, setFormData] = useState<MultipleChoiceFormType>(() => ({
+        id: initialData?.id || 0,
         type: "multiple-choice",
-        description: "",
-        answers: [] as string[],
-        decoyAnswers: [] as string[],
-    })
+        description: initialData?.description || '',
+        answers: initialData?.answers || [''],
+        decoyAnswers: initialData?.decoyAnswers || [''],
+    }));
 
     useEffect(() => {
         onDataChange(formData)

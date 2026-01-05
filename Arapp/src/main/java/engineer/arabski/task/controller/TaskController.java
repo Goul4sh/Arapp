@@ -2,6 +2,7 @@ package engineer.arabski.task.controller;
 
 
 import engineer.arabski.task.dto.TaskData;
+import engineer.arabski.task.model.Task;
 import engineer.arabski.task.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public class TaskController {
     @PostMapping
     public ResponseEntity<?> createTask(@RequestBody TaskData data) {
 
-        TaskData createdTask = taskService.addTask(data);
+        Task createdTask = taskService.addTask(data);
         if (createdTask != null) {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
@@ -51,6 +52,17 @@ public class TaskController {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not create task");
 
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody TaskData data) {
+        TaskData updatedTask = taskService.updateTask(id, data);
+        if (updatedTask != null) {
+
+            return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not update task");
     }
 
 }

@@ -25,22 +25,33 @@ public class LessonService {
         this.lessonRepository = lessonRepository;
         this.taskRepository = taskRepository;
     }
+//
+//    private LessonTasksResponse toResponse(Lesson lesson) {
+//        List<Task> tasks = lesson.getTasks();
+//        List<TaskData> taskDataList = tasks.stream()
+//                .map(Task::getTaskData)
+//                .toList();
+//
+//        return new LessonTasksResponse(taskDataList);
+//    }
 
     private LessonTasksResponse toResponse(Lesson lesson) {
-        List<Task> tasks = lesson.getTasks();
-        List<TaskData> taskDataList = tasks.stream()
-                .map(Task::getTaskData)
+        List<LessonTasksResponse.TaskDataWithId> tasksWithIds = lesson.getTasks().stream()
+                .map(task -> new LessonTasksResponse.TaskDataWithId(task.getId(), task.getTaskData()))
                 .toList();
 
-        return new LessonTasksResponse(taskDataList);
+        return new LessonTasksResponse(tasksWithIds);
     }
+
 
     public LessonPreviewResponse toPreviewResponse(Lesson lesson) {
         return new LessonPreviewResponse(
                 lesson.getId(),
                 lesson.getName(),
                 lesson.getDescription(),
-                lesson.getIcon()
+                lesson.getIcon(),
+                lesson.isPublished(),
+                lesson.getTasks().size()
         );
     }
 
@@ -70,7 +81,25 @@ public class LessonService {
 
 
     @Transactional
-    public void addLesson(LessonRequest request) {
+    public void addTaskToLesson (Long lessonId, Long taskId) {
+
+        Lesson lesson = findByIdEntity(lessonId);
+
+        if (lesson == null) {
+            throw new IllegalArgumentException("Lesson not found with id " + lessonId);
+        }
+
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found with id " + taskId));
+
+        lesson.getTasks().add(task);
+
+        lessonRepository.save(lesson);
+
+    }
+
+    @Transactional
+    public LessonPreviewResponse addLesson(LessonRequest request) {
 
         System.out.println("Wszedlem do addLesson w LessonService");
 
@@ -81,14 +110,14 @@ public class LessonService {
 
         if (tasks.size() != request.taskIds().size()) {
             System.out.println("Requested Task IDs: " + request.taskIds());
-//            System.out.println("Found Tasks: " + tasks.stream().map(Task::getId).toList());
             throw new IllegalArgumentException("One or more Task IDs are invalid");
         }
 
         lesson.setTasks(tasks);
 
-        lessonRepository.save(lesson);
+        Lesson databaseLesson = lessonRepository.save(lesson);
 
+        return toPreviewResponse(databaseLesson);
     }
 
 

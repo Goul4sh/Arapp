@@ -13,7 +13,12 @@ import AssistedWritingTask from "../components/tasks/AssistedWritingTask.tsx";
 
 // Komponent odpowiedzialny za wybór i renderowanie odpowiedniego typu zadania
 
-function ExerciseRenderer({currentTask}: { currentTask: Task }) {
+interface ExerciseRendererProps {
+    id: number;
+    data: Task;
+}
+
+function ExerciseRenderer({currentTask}: { currentTask: ExerciseRendererProps }) {
 
 
     function TaskSelector({task}: { task: Task }) {
@@ -47,7 +52,7 @@ function ExerciseRenderer({currentTask}: { currentTask: Task }) {
 
             <div className={styles.rendererContainer}>
 
-                <TaskSelector task={currentTask}/>
+                <TaskSelector task={currentTask.data}/>
 
             </div>
 

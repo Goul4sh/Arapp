@@ -5,6 +5,8 @@ export interface Lesson {
     title: string;
     icon: string; // np. "ب ت ث"
     description: string;
+    isPublished: boolean;
+    taskCount: number;
 }
 
 export interface ProcessedLesson extends Lesson {

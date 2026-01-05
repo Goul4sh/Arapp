@@ -27,6 +27,13 @@ public class ChapterController {
 
     }
 
+    @GetMapping("/published")
+    public ResponseEntity<?> findAllPublished() {
+
+        return ResponseEntity.status(HttpStatus.OK).body(chapterService.findAllPublished());
+
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
 
@@ -53,6 +60,16 @@ public class ChapterController {
         }
 
     }
+
+    @PatchMapping("/{id}/lessons/{lessonId}")
+    public ResponseEntity<?> addLessonToChapter(@PathVariable Long id, @PathVariable Long lessonId) {
+        try {
+            chapterService.addLessonToChapter(id, lessonId);
+            return ResponseEntity.status(HttpStatus.OK).body("Lesson added to chapter successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not add lesson to chapter");
+        }
+        }
 
     @PostMapping
     public ResponseEntity<?> createChapter(@RequestBody ChapterRequest chapterRequest) {

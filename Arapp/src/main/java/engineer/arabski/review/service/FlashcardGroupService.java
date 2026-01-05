@@ -63,8 +63,6 @@ public class FlashcardGroupService {
             throw new FlashcardNotFoundException("One or more flashcard items do not exist");
         }
 
-        //TODO dodac mozliwosc dodawania bezpiecznie pustej grupy, a dopiero pozniej dodania do niej fiszek
-
         FlashcardGroup flashcardGroup = new FlashcardGroup(
                 request.name(),
                 request.description(),

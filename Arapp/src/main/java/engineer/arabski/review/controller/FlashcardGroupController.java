@@ -58,10 +58,10 @@ public class FlashcardGroupController {
     @PostMapping
     public ResponseEntity<?> createFlashcardGroup(@RequestBody FlashcardGroupRequest data, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        FlashcardGroupResponse createdTask = flashcardGroupService.createFlashcardGroup(data, customUserDetails.getId());
-        if (createdTask != null) {
+        FlashcardGroupResponse flashcardGroup = flashcardGroupService.createFlashcardGroup(data, customUserDetails.getId());
+        if (flashcardGroup != null) {
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
+            return ResponseEntity.status(HttpStatus.CREATED).body(flashcardGroup);
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not create task");

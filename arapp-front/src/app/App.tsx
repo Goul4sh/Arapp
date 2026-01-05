@@ -60,8 +60,8 @@ function App() {
                 <Route element={<ProtectedAdminDashboardLayout/>}>
                     <Route path="/admin/dashboard" element={<AdminDashboard/>}/>
                     <Route path="/admin/users" element={<UserManagementPage/>}/>
-                    <Route path="/admin/tasks" element={<TaskManagementPage/>}/>
-                    <Route path="/admin/lessons" element={<LessonManagement/>}/>
+                    <Route path="/admin/content" element={<TaskManagementPage/>}/>
+                    <Route path="/admin/course" element={<LessonManagement/>}/>
                     <Route path="/admin/words" element={<WordBankManagementPage/>}/>
                 </Route>
 

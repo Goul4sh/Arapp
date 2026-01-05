@@ -2,15 +2,21 @@ import {useEffect, useState} from "react";
 import localStyles from "./TaskForms.module.css"
 import type {ChooseOneFormType} from "./formTaskTypes.ts";
 
+interface Props {
+    onDataChange: (data: ChooseOneFormType) => void;
+    initialData?: Partial<ChooseOneFormType>;
+}
 
-const ChooseOneForm = ({onDataChange}) => {
-    const [formData, setFormData] = useState<ChooseOneFormType>({
-        id: '',
+const ChooseOneForm = ({onDataChange, initialData}: Props) => {
+
+    const [formData, setFormData] = useState<ChooseOneFormType>(() => ({
+        id: initialData?.id || 0,
         type: 'choose-one',
-        description: '',
-        answer: '',
-        decoyAnswers: ['']
-    })
+        description: initialData?.description || '',
+        answer: initialData?.answer || '',
+        decoyAnswers: initialData?.decoyAnswers || ['']
+    }));
+
 
     useEffect(() => {
         onDataChange(formData)

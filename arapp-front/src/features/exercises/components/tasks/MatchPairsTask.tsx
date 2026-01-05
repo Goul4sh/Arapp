@@ -1,10 +1,9 @@
 import type {MatchPairsTaskType} from '../../taskTypes.ts'
-import {useContext, useState} from "react";
+import {useContext, useMemo, useState} from "react";
 import {LessonContext} from "../LessonContext.tsx";
 import styles from '../Tasks.module.css'
-
-//TODO trzeba dodać submitAnswer w odpowiednich miejscah
-// i dodatkowo zastanowic sie jak to bedzie dzialac w przypadku zliczania statystyk.
+import taskStyles from "../Tasks.module.css";
+import localStyles from "./MorphologyForm.module.css";
 
 function MatchPairsTask({task}: { task: MatchPairsTaskType }) {
 
@@ -12,6 +11,21 @@ function MatchPairsTask({task}: { task: MatchPairsTaskType }) {
     const [selectedLeft, setSelectedLeft] = useState<string | null>(null);
     const [selectedRight, setSelectedRight] = useState<string | null>(null);
     const [matchedPairs, setMatchedPairs] = useState<string[]>([]);
+
+
+    const [errorIds, setErrorIds] = useState<string[] | null>(null);
+    const [hasMistake, setHasMistake] = useState(false);
+    const [status, setStatus] = useState<'idle' | 'finished'>('idle');
+
+
+    const leftItems = useMemo(() => {
+        return Object.keys(task.pairs).sort(() => Math.random() - 0.5);
+    }, [task]);
+
+    const rightItems = useMemo(() => {
+        return Object.values(task.pairs).sort(() => Math.random() - 0.5);
+    }, [task]);
+
 
     const handleClickLeft = (option: string) => {
 
@@ -48,14 +62,31 @@ function MatchPairsTask({task}: { task: MatchPairsTaskType }) {
             setSelectedLeft(null);
             setSelectedRight(null);
             if (newMatchedPairs.length === Object.keys(task.pairs).length * 2) {
-                submitAnswer( true);
+                setStatus('finished')
+                setTimeout(() => submitAnswer(!hasMistake), 1500);
             }
         } else {
+            setHasMistake(true);
+            setErrorIds([left, right]);
+            setTimeout(() => setErrorIds(null), 1000);
             setSelectedLeft(null);
             setSelectedRight(null);
         }
 
     }
+
+    const getButtonClass = (optionId: string) => {
+        let className = `${taskStyles.answerButton} `;
+
+        if (errorIds?.includes(optionId)) {
+            className += ` ${taskStyles.wrong}`;
+        } else if (matchedPairs.includes(optionId)) {
+
+            className += ` ${taskStyles.dimmed}`;
+        }
+
+        return className;
+    };
 
     return (<div>
             <h2>{task.description}</h2>
@@ -63,10 +94,10 @@ function MatchPairsTask({task}: { task: MatchPairsTaskType }) {
             <div className={styles.pairsContainer}>
 
                 <div className={styles.column}>
-                    {Object.keys(task.pairs).map((key, index) => (
+                    {leftItems.map((key, index) => (
                         <button
                             key={index}
-                            className={`${styles.answerButton} ${selectedLeft === key ? styles.selected : ''}`}
+                            className={`${getButtonClass(key)} ${selectedLeft === key ? styles.selected : ''}`}
                             onClick={() => handleClickLeft(key)}
                             disabled={matchedPairs.includes(key)}
                         >
@@ -76,10 +107,10 @@ function MatchPairsTask({task}: { task: MatchPairsTaskType }) {
                 </div>
 
                 <div className={styles.column}>
-                    {Object.values(task.pairs).map((value, index) => (
+                    {rightItems.map((value, index) => (
                         <button
                             key={index}
-                            className={`${styles.answerButton} ${selectedRight === value ? styles.selected : ''}`}
+                            className={`${getButtonClass(value)} ${selectedRight === value ? styles.selected : ''} ${localStyles.arabicBtnFont}`}
                             onClick={() => handleClickRight(value)}
                             disabled={matchedPairs.includes(value)}
                         >
@@ -88,8 +119,14 @@ function MatchPairsTask({task}: { task: MatchPairsTaskType }) {
                     ))}
                 </div>
 
-
             </div>
+
+            {status === 'finished' && (
+                <div style={{color: '#4cae4f', fontWeight: 'bold', fontSize: '1.5rem'}}>
+                    Świetnie!
+                </div>
+            )}
+
         </div>
     );
 }

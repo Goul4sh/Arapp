@@ -73,15 +73,6 @@ function MorphologyPartsTask({task}: { task: MorphologyPartsTaskType }) {
         return className;
     };
 
-    // const getButtonClass = (optionId: string) => {
-    //     let className = `${taskStyles.answerButton} ${localStyles.arabicBtnFont}`;
-    //
-    //     if (errorId === optionId) {
-    //         className += ` ${taskStyles.wrong}`;
-    //     }
-    //
-    //     return className;
-    // };
 
     return (
         <div className={taskStyles.taskContainer}>
@@ -103,8 +94,6 @@ function MorphologyPartsTask({task}: { task: MorphologyPartsTaskType }) {
                     {!isFinished && <span className={localStyles.cursor}>_</span>}
                 </div>
             </div>
-
-            {/* TODO Zamiast znikania ustawic wygaszanie wykorzystanych czesci?*/}
 
             <div className={taskStyles.buttonsContainer}>
                 {allOptions.map((option) => (

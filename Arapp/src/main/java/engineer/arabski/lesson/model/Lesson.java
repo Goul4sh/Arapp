@@ -15,8 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class Lesson {
 
-
-
     public Lesson(String name, String description, String icon) {
         this.name = name;
         this.description = description;
@@ -33,6 +31,7 @@ public class Lesson {
 
     private String icon;
 
+    private boolean isPublished = false;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(

@@ -292,7 +292,7 @@ function Dashboard(): JSX.Element {
 
                                 <div className={styles.contentBox}>
 
-                                    Placeholder! Tutaj mozna cos dodac albo zmienic uklad strony.
+                                    {/*Placeholder! Tutaj mozna cos dodac albo zmienic uklad strony.*/}
 
                                 </div>
 
@@ -359,6 +359,14 @@ function Dashboard(): JSX.Element {
                                     </div>
 
                                 </div>
+
+                            </div>
+
+
+                            <div className={styles.rightMostColumn}>
+
+                                to jest dopiero placeholder!
+
 
                             </div>
 

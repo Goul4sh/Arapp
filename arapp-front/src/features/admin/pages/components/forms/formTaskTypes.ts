@@ -1,6 +1,6 @@
 
 export interface BaseTask {
-    id: string;
+    id: number;
     type: string;
     description: string;
 }

@@ -197,6 +197,8 @@
 
 .columnsContainer {
 
+
+
     display: flex;
     flex-direction: row;
     align-items: stretch;
@@ -207,7 +209,7 @@
 
 .leftColumn {
 
-    width: 30%;
+    width: 33%;
 
     display: flex;
     flex-direction: column;
@@ -241,7 +243,8 @@
 
 .rightColumn {
 
-    width: 70%;
+    /*width: 70%;*/
+    width: 33%;
 
 
     display: flex;
@@ -304,4 +307,20 @@
 
     margin-top: 5px;
     margin-bottom: 0;
+}
+.rightMostColumn {
+
+    width: 33%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    background-color: #ffffff;
+    padding: 20px;
+
 }

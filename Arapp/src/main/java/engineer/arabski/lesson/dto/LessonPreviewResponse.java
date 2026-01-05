@@ -4,5 +4,7 @@ public record LessonPreviewResponse(
         Long id,
         String title,
         String icon,
-        String description) {
+        String description,
+        boolean isPublished,
+        int taskCount) {
 }

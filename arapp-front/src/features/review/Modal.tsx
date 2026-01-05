@@ -7,12 +7,12 @@ interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
+    headerClassName?: string;
     children: React.ReactNode;
-
 
 }
 
-function Modal({isOpen, onClose, title, children}: ModalProps) {
+function Modal({isOpen, onClose, title, children, headerClassName}: ModalProps) {
 
     useEffect(() => {
 
@@ -34,7 +34,8 @@ function Modal({isOpen, onClose, title, children}: ModalProps) {
     return createPortal(
         <div className={styles.modalOverlay} onClick={onClose}>
             <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                <div className={styles.modalHeader}>
+                <div className={`${styles.modalHeader} ${headerClassName || ''}`}>
+
                     <h2 className={styles.modalTitle}>{title}</h2>
                     <button className={styles.closeButton} onClick={onClose}>&times;</button>
                 </div>

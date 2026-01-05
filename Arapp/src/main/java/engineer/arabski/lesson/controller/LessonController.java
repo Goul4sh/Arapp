@@ -1,5 +1,6 @@
 package engineer.arabski.lesson.controller;
 
+import engineer.arabski.lesson.dto.LessonPreviewResponse;
 import engineer.arabski.lesson.dto.LessonRequest;
 import engineer.arabski.lesson.dto.LessonTasksResponse;
 import engineer.arabski.lesson.model.Lesson;
@@ -25,6 +26,10 @@ public class LessonController {
     @GetMapping
     public ResponseEntity<?> findAll() {
 
+//        List<LessonPreviewResponse> lessons = lessonService.findAll();
+//        if (!lessons.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.OK).body(lessons);
+//        }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
 
@@ -43,12 +48,24 @@ public class LessonController {
 
     }
 
+    @PatchMapping("/{id}/exercises/{taskId}")
+    public ResponseEntity<?> addTaskToLesson(@PathVariable Long id, @PathVariable Long taskId) {
+        try {
+
+            lessonService.addTaskToLesson(id, taskId);
+            return ResponseEntity.status(HttpStatus.OK).body("Task added to lesson successfully");
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not add task to lesson");
+        }
+    }
+
     @PostMapping
     public ResponseEntity<?> createLesson(@RequestBody LessonRequest lessonRequest) {
 
         try {
-            lessonService.addLesson(lessonRequest);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Lesson created successfully");
+            LessonPreviewResponse lesson = lessonService.addLesson(lessonRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(lesson);
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not create lesson: ");

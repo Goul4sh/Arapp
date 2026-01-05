@@ -21,7 +21,7 @@ function AlphabetPath() {
         const fetchLessons = async () => {
             try {
                 const [chaptersResp, completeResp] = await Promise.all([
-                    api.get<Chapter[]>('/api/chapters', {withCredentials: true}),
+                    api.get<Chapter[]>('/api/chapters/published', {withCredentials: true}),
                     api.get<number[]>('/api/lessons/complete', {withCredentials: true})
 
                 ]);

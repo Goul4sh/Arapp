@@ -207,11 +207,23 @@
 }
 
 .summaryContainer {
-    height: 100vh;
+    /*height: 100vh;*/
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.summaryContent {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+
+    margin-bottom: 80px;
+
 }
 
 .correct {
@@ -298,11 +310,14 @@
 }
 
 .statsContainer {
-    display: flex;
-    flex-direction: row;
+    /*display: flex;*/
+    /*flex-direction: row;*/
     gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
 
-    padding: 30px;
+    flex-wrap: wrap;
+    padding: 20px;
 
 }
 
@@ -314,4 +329,46 @@
 .statLabel {
 
     padding: 0;
+}
+
+
+
+.virtualKeyboard {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f3f4f6;
+    border-radius: 8px;
+    direction: rtl;
+}
+
+.keyButton {
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 1.2rem;
+    font-family: "Noto Sans Arabic", serif;
+    cursor: pointer;
+    transition: transform 0.1s, background-color 0.2s;
+    min-width: 40px;
+}
+
+.keyButton:active {
+    transform: scale(0.95);
+    background-color: #e5e7eb;
+}
+
+.spaceKey {
+    width: 150px;
+    font-size: 1rem;
+}
+
+.actionKey {
+    background-color: #fee2e2;
+    border-color: #fca5a5;
+    color: #b91c1c;
 }

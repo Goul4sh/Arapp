@@ -1,4 +1,4 @@
-/*TODO popracować na elementem wizualnym komponentu, poprawic kolory*/
+/*TODO popracować na elementem wizualnym komponentu,  poprawic kolory*/
 
 .weekContainer {
     display: flex;
@@ -7,7 +7,12 @@
     background: #ffffff;
     border-radius: 12px;
     border: 1px solid #e5e7eb;
+
+    gap: 10px;
 }
+
+
+
 
 .dayColumn {
     display: flex;
@@ -16,6 +21,57 @@
     gap: 0.5rem;
     position: relative;
 }
+
+.dayColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.dayColumn:hover .dayCircle {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dayColumn:hover .dayName {
+    color: #16a34a;
+}
+
+.dayCircle:hover {
+    background-color: #e5e7eb;
+    border-color: #9ca3af;
+}
+
+.dayCircle.active:hover {
+    background-color: #bbf7d0;
+    border-color: #15803d;
+}
+
+
+.selected .dayCircle {
+    background-color: #16a34a;
+    color: white;
+    border-color: #15803d;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
+}
+
+.selected .dayName {
+    color: #16a34a;
+    font-weight: 700;
+}
+
+.selected:hover .dayCircle {
+    background-color: #15803d;
+}
+
+.selected.today .dayCircle {
+    border: 2px solid white;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.3);
+}
+
 
 .dayName {
     font-size: 0.75rem;
