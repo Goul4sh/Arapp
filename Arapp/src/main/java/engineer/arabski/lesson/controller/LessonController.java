@@ -48,6 +48,16 @@ public class LessonController {
 
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateLesson(@PathVariable Long id, @RequestBody LessonRequest lessonRequest) {
+        try {
+            LessonPreviewResponse updatedLesson = lessonService.updateLesson(id, lessonRequest);
+            return ResponseEntity.status(HttpStatus.OK).body(updatedLesson);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not update lesson");
+        }
+    }
+
     @PatchMapping("/{id}/exercises/{taskId}")
     public ResponseEntity<?> addTaskToLesson(@PathVariable Long id, @PathVariable Long taskId) {
         try {
@@ -57,6 +67,16 @@ public class LessonController {
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not add task to lesson");
+        }
+    }
+
+    @PatchMapping("/{id}/publish/{isPublished}")
+    public ResponseEntity<?> publishLesson(@PathVariable Long id, @PathVariable boolean isPublished) {
+        try {
+            lessonService.publishLesson(id, isPublished);
+            return ResponseEntity.status(HttpStatus.OK).body("Lesson published successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not publish lesson");
         }
     }
 

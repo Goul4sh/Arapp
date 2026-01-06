@@ -55,6 +55,31 @@ public class LessonService {
         );
     }
 
+
+    public LessonPreviewResponse updateLesson(Long lessonId, LessonRequest request) {
+
+        Lesson lesson = findByIdEntity(lessonId);
+
+        if (lesson == null) {
+            throw new IllegalArgumentException("Lesson not found with id " + lessonId);
+        }
+
+        if (request.title() != null) {
+            lesson.setName(request.title());
+        }
+
+        if (request.description() != null) {
+            lesson.setDescription(request.description());
+        }
+        if (request.icon() != null) {
+            lesson.setIcon(request.icon());
+        }
+        // Taski są zmieniane innym endpointem
+
+        Lesson updatedLesson = lessonRepository.save(lesson);
+        return toPreviewResponse(updatedLesson);
+    }
+
     public void deleteLesson(Long lessonId) {
         lessonRepository.deleteById(lessonId);
     }
@@ -79,9 +104,23 @@ public class LessonService {
         return lessonRepository.findById(lessonId).orElse(null);
     }
 
+    public void publishLesson(Long lessonId, boolean published) {
+
+        Lesson lesson = findByIdEntity(lessonId);
+
+        if (lesson == null) {
+            throw new IllegalArgumentException("Lesson not found with id " + lessonId);
+        }
+
+        lesson.setPublished(published);
+
+        lessonRepository.save(lesson);
+
+    }
+
 
     @Transactional
-    public void addTaskToLesson (Long lessonId, Long taskId) {
+    public void addTaskToLesson(Long lessonId, Long taskId) {
 
         Lesson lesson = findByIdEntity(lessonId);
 
@@ -100,8 +139,6 @@ public class LessonService {
 
     @Transactional
     public LessonPreviewResponse addLesson(LessonRequest request) {
-
-        System.out.println("Wszedlem do addLesson w LessonService");
 
         Lesson lesson = new Lesson(request.title(), request.description(), request.icon());
 

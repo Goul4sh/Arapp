@@ -534,7 +534,6 @@ function ReviewPage() {
                 }}
                 title={"Edytuj grupę fiszek"}>
                 <div>
-                    {/*TODO formularz edycji grupy fiszek*/}
 
                     {!isDeleteGroupButtonClicked ? (
                         <div className={styles.editGrouModalContent}>
