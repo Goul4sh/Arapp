@@ -7,3 +7,348 @@
 
 
 }
+
+
+.lessonContainer {
+    width: 100%;
+}
+
+.expandedLessonContent {
+    display: grid;
+    grid-template-columns: 350px 1fr 1fr;
+    gap: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+    animation: slideDown 0.3s ease-out forwards;
+}
+
+@keyframes slideDown {
+
+    from {
+        opacity: 0;
+        max-height: 0;
+        padding: 0 1rem;
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+        padding: 1rem;
+    }
+}
+
+
+.tasksColumn,
+.editorColumn,
+.previewColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tasksColumn {
+    border-right: 1px solid #e0e0e0;
+    padding-right: 1rem;
+}
+
+.editorColumn {
+    border-right: 1px solid #e0e0e0;
+    padding: 0 1rem;
+}
+
+.previewColumn {
+    padding-left: 1rem;
+}
+
+.taskRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.taskRow:hover {
+    background: #f3f4f6;
+}
+
+.taskRow.selected {
+    background: #e0e7ff;
+    border-color: #4f46e5;
+    font-weight: 600;
+}
+
+.taskInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.taskNumber {
+    font-weight: 600;
+    color: #64748b;
+    min-width: 2rem;
+}
+
+.taskType {
+    background: #e0e7ff;
+    color: #4f46e5;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.taskActions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.emptyState {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    color: #64748b;
+    font-style: italic;
+    text-align: center;
+}
+
+.taskEditor {
+    padding: 1rem;
+}
+
+.editorActions {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.loadingTasks,
+.noTasks {
+    padding: 2rem;
+    text-align: center;
+    color: #64748b;
+}
+
+.addLessonRow {
+    padding: 10px 20px 10px 20px;
+}
+
+.typeSelectionContainer {
+    background-color: #f9fafb;
+    padding: 15px;
+    border: 1px dashed #d1d5db;
+    border-radius: 8px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.typeSelectionHeader {
+    margin: 0 0 10px 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.typeButtonsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.typeButton {
+    padding: 8px 12px;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #374151;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+.typeButton:hover {
+    border-color: #3b82f6;
+    color: #3b82f6;
+    background-color: #eff6ff;
+}
+
+.cancelTypeSelectionBtn {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+
+
+/*TODO ustalić ujednolicone kolory */
+.vocabularyModalContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+}
+
+.vocabularyModalContainer > div:first-child {
+    background-color: #f9fafb;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.vocabularyModalContainer > div:first-child p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #374151;
+    line-height: 1.5;
+}
+
+.vocabularyTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+
+.vocabularyTable td:nth-child(2),
+.vocabularyTable td:nth-child(3),
+.vocabularyTable td:nth-child(4) {
+    font-size: 1.1rem;
+    font-weight: 500;
+    direction: rtl;
+    text-align: right;
+}
+
+
+
+.vocabularyTable thead {
+    background-color: #f3f4f6;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.vocabularyTable th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vocabularyTable tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s;
+}
+
+.vocabularyTable tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.vocabularyTable tbody tr:last-child {
+    border-bottom: none;
+}
+
+.vocabularyTable td {
+    padding: 12px 15px;
+    font-size: 0.9rem;
+    color: #374151;
+}
+
+.vocabularyTable td[lang="ar"] {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.vocabularyTable input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #4cae4f;
+}
+
+
+.tableIcon {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+}
+
+.translationInput {
+    /*width: 100%;*/
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #374151;
+    transition: all 0.2s;
+}
+
+.translationInput:focus {
+    outline: none;
+    border-color: #4cae4f;
+    box-shadow: 0 0 0 3px rgba(76, 174, 79, 0.1);
+}
+
+.translationInput:hover {
+    border-color: #9ca3af;
+}
+
+.buttonsContainer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.buttonsContainer button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.buttonsContainer button:first-child {
+    background-color: #ffffff;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.buttonsContainer button:first-child:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.buttonsContainer button:last-child {
+    background-color: #4cae4f;
+    color: white;
+    box-shadow: 0 2px 4px rgba(76, 174, 79, 0.2);
+}
+
+.buttonsContainer button:last-child:hover {
+    background-color: #3d8b3d;
+    box-shadow: 0 4px 8px rgba(76, 174, 79, 0.3);
+}
+
+

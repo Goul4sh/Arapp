@@ -1,5 +1,7 @@
 package engineer.arabski.task.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import engineer.arabski.languageProcessing.model.DictionaryWord;
 import engineer.arabski.lesson.model.Lesson;
 import engineer.arabski.task.dto.TaskData;
 import jakarta.persistence.*;
@@ -9,7 +11,6 @@ import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -17,7 +18,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 
 @Table(name = "tasks")
 public class Task {
@@ -27,7 +27,7 @@ public class Task {
     @Column(nullable = false)
     private Long id;
 
-    @Column(name="task_type")
+    @Column(name = "task_type")
     private String taskType;
 
     @JdbcTypeCode(SqlTypes.JSON)
@@ -36,8 +36,14 @@ public class Task {
 
     private String description;
 
-    @ManyToMany(mappedBy = "tasks")
-    private List<Lesson> lessons = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lesson_id")
+    @JsonIgnore
+    private Lesson lesson;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "task", orphanRemoval = true)
+    private List<TaskWordReference> wordReferences = new ArrayList<>();
 
 
     public void setTaskData(TaskData data) {
@@ -46,5 +52,6 @@ public class Task {
         this.taskType = data != null ? data.type() : null;
         this.description = data != null ? data.description() : null;
     }
+
 
 }

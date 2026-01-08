@@ -33,16 +33,21 @@ public class Lesson {
 
     private boolean isPublished = false;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "lesson_task",
-            joinColumns = @JoinColumn(name = "lesson_id"),
-            inverseJoinColumns = @JoinColumn(name = "task_id")
-    )
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "chapter_id")
     private Chapter chapter;
+
+    public void addTask(Task task) {
+        tasks.add(task);
+        task.setLesson(this);
+    }
+
+    public void removeTask(Task task) {
+        tasks.remove(task);
+        task.setLesson(null);
+    }
 
 }

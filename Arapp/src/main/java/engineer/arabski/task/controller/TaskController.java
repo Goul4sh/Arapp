@@ -2,6 +2,7 @@ package engineer.arabski.task.controller;
 
 
 import engineer.arabski.task.dto.TaskData;
+import engineer.arabski.task.dto.vocabulary.EnrichedTaskRequest;
 import engineer.arabski.task.model.Task;
 import engineer.arabski.task.service.TaskService;
 import org.springframework.http.HttpStatus;
@@ -54,6 +55,21 @@ public class TaskController {
 
     }
 
+
+    @PostMapping("/with-vocab")
+    public ResponseEntity<?> createTaskWithVocabData(@RequestBody EnrichedTaskRequest data) {
+
+        Task createdTask = taskService.addTaskWithVocab(data);
+        if (createdTask != null) {
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not create task with vocabulary data");
+
+    }
+//TODO zrobic to do konca!
+
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody TaskData data) {
         TaskData updatedTask = taskService.updateTask(id, data);
@@ -65,4 +81,10 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not update task");
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+    }
 }

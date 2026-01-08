@@ -251,7 +251,7 @@ function Dashboard(): JSX.Element {
                                 </div>
                                 <div className={styles.cardContent}>
                                     <h2> {stats.totalIncorrectAnswers}</h2>
-                                    <p className={styles.statsTitle}>placeholder!</p>
+                                    <p className={styles.statsTitle}>Powtórzone fiszki</p>
                                 </div>
                             </div>
 

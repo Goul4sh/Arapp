@@ -15,11 +15,11 @@ import ForgotPasswordPage from "../features/auth/pages/ForgotPasswordPage.tsx";
 import ResetPasswordPage from "../features/auth/pages/ResetPasswordPage.tsx";
 import ProtectedAdminDashboardLayout from "../common/layouts/ProtectedAdminDashboardLayout.tsx";
 import AdminDashboard from "../features/admin/pages/AdminDashboard.tsx";
-import UserManagementPage from "../features/admin/pages/UserManagementPage.tsx";
 import TaskManagementPage from "../features/admin/pages/TaskManagementPage.tsx";
 import WordBankManagementPage from "../features/admin/pages/WordBankManagementPage.tsx";
 import WordBank from "../features/wordBank/pages/WordBank.tsx";
 import LessonManagement from "../features/admin/pages/LessonManagement.tsx";
+import CompendiumDataManagement from "../features/admin/pages/CompendiumDataManagement.tsx";
 
 
 function App() {
@@ -59,10 +59,11 @@ function App() {
                 {/*Trasy tylko dla administratora*/}
                 <Route element={<ProtectedAdminDashboardLayout/>}>
                     <Route path="/admin/dashboard" element={<AdminDashboard/>}/>
-                    <Route path="/admin/users" element={<UserManagementPage/>}/>
                     <Route path="/admin/content" element={<TaskManagementPage/>}/>
                     <Route path="/admin/course" element={<LessonManagement/>}/>
                     <Route path="/admin/words" element={<WordBankManagementPage/>}/>
+                    <Route path="/admin/compendium" element={<CompendiumDataManagement/>}/>
+
                 </Route>
 
                 <Route path={"*"} element={<Navigate to="/" replace/>}/>

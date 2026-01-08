@@ -28,9 +28,9 @@
 
 .modalHeader {
     display: flex;
-    justify-content: space-between;
+    justify-content: right;
     align-items: center;
-    padding: 20px;
+    /*padding: 20px;*/
     border-bottom: 1px solid #e0e0e0;
 }
 
@@ -44,6 +44,7 @@
     font-size: 24px;
     cursor: pointer;
     color: #666;
+    padding: 10px 20px 10px 10px;
 }
 
 .closeButton:hover {
@@ -51,7 +52,7 @@
 }
 
 .modalBody {
-    padding: 25px;
+    padding: 0 25px 25px 25px;
 }
 
 .modalTitle {

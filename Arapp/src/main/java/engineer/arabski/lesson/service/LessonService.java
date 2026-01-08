@@ -5,7 +5,6 @@ import engineer.arabski.lesson.dto.LessonRequest;
 import engineer.arabski.lesson.dto.LessonTasksResponse;
 import engineer.arabski.lesson.model.Lesson;
 import engineer.arabski.lesson.repository.LessonRepository;
-import engineer.arabski.task.dto.TaskData;
 import engineer.arabski.task.model.Task;
 import engineer.arabski.task.repository.TaskRepository;
 import jakarta.transaction.Transactional;
@@ -25,15 +24,6 @@ public class LessonService {
         this.lessonRepository = lessonRepository;
         this.taskRepository = taskRepository;
     }
-//
-//    private LessonTasksResponse toResponse(Lesson lesson) {
-//        List<Task> tasks = lesson.getTasks();
-//        List<TaskData> taskDataList = tasks.stream()
-//                .map(Task::getTaskData)
-//                .toList();
-//
-//        return new LessonTasksResponse(taskDataList);
-//    }
 
     private LessonTasksResponse toResponse(Lesson lesson) {
         List<LessonTasksResponse.TaskDataWithId> tasksWithIds = lesson.getTasks().stream()
@@ -74,6 +64,7 @@ public class LessonService {
         if (request.icon() != null) {
             lesson.setIcon(request.icon());
         }
+
         // Taski są zmieniane innym endpointem
 
         Lesson updatedLesson = lessonRepository.save(lesson);
@@ -123,7 +114,6 @@ public class LessonService {
     public void addTaskToLesson(Long lessonId, Long taskId) {
 
         Lesson lesson = findByIdEntity(lessonId);
-
         if (lesson == null) {
             throw new IllegalArgumentException("Lesson not found with id " + lessonId);
         }
@@ -131,9 +121,8 @@ public class LessonService {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found with id " + taskId));
 
-        lesson.getTasks().add(task);
-
-        lessonRepository.save(lesson);
+        lesson.addTask(task);
+        taskRepository.save(task);
 
     }
 

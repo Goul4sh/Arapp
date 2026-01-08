@@ -4,7 +4,7 @@ import {useContext, useState} from "react";
 import {LessonContext} from "../LessonContext.tsx";
 
 
-function FillInTheBlankTask({task}: { task: FillInTheBlankTaskType }) {
+function FillInTheBlankOptionsTask({task}: { task: FillInTheBlankTaskType }) {
 
     const {submitAnswer} = useContext(LessonContext);
     const [userInput, setUserInput] = useState<string>('');
@@ -65,4 +65,4 @@ function FillInTheBlankTask({task}: { task: FillInTheBlankTaskType }) {
     );
 }
 
-export default FillInTheBlankTask
+export default FillInTheBlankOptionsTask
