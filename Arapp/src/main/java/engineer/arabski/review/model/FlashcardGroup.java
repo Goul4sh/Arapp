@@ -41,6 +41,7 @@ public class FlashcardGroup {
     private String name;
     private String description;
     private String category;
+    private boolean isDefault = false;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")

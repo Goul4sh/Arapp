@@ -15,7 +15,6 @@ import {TaskCreator} from "./components/taskCreation/TaskCreator.tsx"
 import VocabularyModal from "./components/modals/VocabularyModal.tsx";
 
 
-// TODO po zmianach na backendzie uzywac zwyklego Lesson
 
 // interface LessonResponse {
 //
@@ -59,27 +58,27 @@ type VocabularyItem = {
 
 }
 
-
-type VocabularyItemToSave = {
-    original: string;
-    lemma: string,
-    partOfSpeech: string,
-    root: string,
-    wordId: number,
-    translation: string
-    endIndex: number;
-    startIndex: number;
-
-}
+//
+// type VocabularyItemToSave = {
+//     original: string;
+//     lemma: string,
+//     partOfSpeech: string,
+//     root: string,
+//     wordId: number,
+//     translation: string
+//     endIndex: number;
+//     startIndex: number;
+//
+// }
 
 
 const AVAILABLE_TASK_TYPES = [
-    {type: 'choose-one', label: 'Wybierz jedno (Quiz)'},
+    {type: 'choose-one', label: 'Wybierz jedno'},
     {type: 'multiple-choice', label: 'Wielokrotny wybór'},
     {type: 'fill-in-the-blank', label: 'Uzupełnij lukę'},
     {type: 'match-pairs', label: 'Dopasuj pary'},
-    {type: 'morphology-form', label: 'Morfologia - Forma'},
-    {type: 'morphology-parts', label: 'Morfologia - Części'},
+    {type: 'morphology-form', label: 'Morfologia - Formy liter'},
+    {type: 'morphology-parts', label: 'Morfologia - Części słowa'},
     {type: 'theory', label: 'Teoria'},
 ];
 
@@ -408,7 +407,7 @@ function TaskManagementPage() {
     };
 
     const handleDeleteTask = async (lessonId: number, taskId: number) => {
-
+//TODO tudaj dodac popup inny niz alertxd
         alert("Jesteś pewien, że chcesz usunąć to zadanie?");
 
         try {

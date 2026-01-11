@@ -8,9 +8,5 @@ public record FlashcardItemResponse(
         WordResponse word,
         LocalDateTime nextReviewDate
 
-//        Integer repetitions,
-//        Integer intervalDays,
-//        Double easeFactor
-
 ) {
 }

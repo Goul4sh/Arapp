@@ -1,6 +1,7 @@
 package engineer.arabski.task.controller;
 
 
+import engineer.arabski.task.dto.CreateTheoryTaskCompendiumRequest;
 import engineer.arabski.task.dto.TaskData;
 import engineer.arabski.task.dto.vocabulary.EnrichedTaskRequest;
 import engineer.arabski.task.model.Task;
@@ -13,8 +14,6 @@ import java.util.Optional;
 
 //Uwaga! Na ten moment sciezka zawiera exercises zamiast tasks.
 // Bedzie to zmienione w przyszlosci, tak jak pozostale nazwy klas
-
-//TODO obsluga wyjatkow
 
 @RestController
 @RequestMapping("/api/exercises")
@@ -55,6 +54,18 @@ public class TaskController {
 
     }
 
+    @PostMapping("/theory")
+    public ResponseEntity<?> createTask(@RequestBody CreateTheoryTaskCompendiumRequest data) {
+
+        Task createdTask = taskService.addTheoryTask(data);
+        if (createdTask != null) {
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not create task");
+
+    }
 
     @PostMapping("/with-vocab")
     public ResponseEntity<?> createTaskWithVocabData(@RequestBody EnrichedTaskRequest data) {

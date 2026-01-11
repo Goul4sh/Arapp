@@ -459,7 +459,7 @@ function LessonManagement() {
 
                                             {isEditing ?
                                                 (
-                                                    <div>
+                                                    <>
                                                         <button
                                                             className={styles.actionBtnSave}
                                                             onClick={(e) => editChapter(chapter.id, e)}
@@ -474,31 +474,31 @@ function LessonManagement() {
                                                         >
                                                             <FontAwesomeIcon icon={faTimes}/>
                                                         </button>
-                                                    </div>
+                                                    </>
 
                                                 ) : (
 
-                                                    <div>
+                                                    <>
                                                         <button onClick={() => moveChapter(chIndex, 'up')}
                                                                 disabled={chIndex === 0}
-                                                                className={styles.iconBtn}>
+                                                                className={styles.smallActionBtn}>
                                                             <FontAwesomeIcon icon={faArrowUp}/>
                                                         </button>
                                                         <button onClick={() => moveChapter(chIndex, 'down')}
                                                                 disabled={chIndex === chapters.length - 1}
-                                                                className={styles.iconBtn}>
+                                                                className={styles.smallActionBtn}>
                                                             <FontAwesomeIcon icon={faArrowDown}/>
                                                         </button>
                                                         <div className={styles.verticalDivider}></div>
                                                         <button onClick={(e) => startEditingChapter(chapter, e)}
-                                                                className={styles.actionBtnSecondary}
+                                                                className={styles.smallActionBtn}
                                                                 title="Edytuj rozdział">
                                                             <FontAwesomeIcon icon={faPen}/></button>
-                                                        <button className={styles.actionBtnDelete}
+                                                        <button className={styles.smallActionBtn}
                                                                 onClick={() => handleDeleteChapter(chapter.id)}
                                                                 title="Usuń Rozdział"><FontAwesomeIcon icon={faTrash}/>
                                                         </button>
-                                                    </div>
+                                                    </>
                                                 )
                                             }
                                         </div>

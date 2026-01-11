@@ -7,7 +7,9 @@ public record FlashcardGroupResponse (
         String name,
         String description,
         String category,
-        List<FlashcardItemResponse> flashcardItems
+        List<FlashcardItemResponse> flashcardItems,
+        boolean isDefault
 
 ) {
 }
+

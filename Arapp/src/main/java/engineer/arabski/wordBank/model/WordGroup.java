@@ -24,10 +24,12 @@ public class WordGroup {
     @Column(nullable = false)
     Long id;
 
-    String name;
-    String description;
-    String icon;
-    String imageUrl;
+    private String name;
+    private String description;
+    private String icon;
+    private String imageUrl;
+
+    private boolean isPublished = false;
 
     @ManyToMany
     @JoinTable(

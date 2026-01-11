@@ -33,6 +33,14 @@ export interface TheoryFormType extends BaseTask {
     content: string;
 }
 
+export interface TheoryFormExtendedType extends TheoryFormType{
+
+    createCompendiumEntry: boolean;
+    compendiumTitle?: string;
+    compendiumIcon?: string;
+    tagNames: string[];
+}
+
 export interface MorphologyPartsFormType extends BaseTask {
     type: 'morphology-parts';
     question: string;

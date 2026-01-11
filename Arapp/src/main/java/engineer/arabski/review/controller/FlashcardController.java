@@ -1,6 +1,7 @@
 package engineer.arabski.review.controller;
 
 import engineer.arabski.common.security.CustomUserDetails;
+import engineer.arabski.review.dto.AddFlashcardRequest;
 import engineer.arabski.review.dto.FlashcardItemRequest;
 import engineer.arabski.review.dto.FlashcardItemResponse;
 import engineer.arabski.review.model.FlashcardItem;
@@ -88,9 +89,11 @@ public class FlashcardController {
 
 
     @PostMapping
-    public ResponseEntity<?> createFlashcard(@RequestBody Long word_id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<?> createFlashcard(@RequestBody AddFlashcardRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        FlashcardItem createdFlashcard = flashcardService.createFlashcardItem(word_id, customUserDetails.getId());
+        System.out.println("Uwaga dostałem coś!");
+
+        FlashcardItem createdFlashcard = flashcardService.createFlashcardItem(request.word_id(), customUserDetails.getId());
         if (createdFlashcard != null) {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(FlashcardService.toResponse(createdFlashcard));
@@ -113,13 +116,26 @@ public class FlashcardController {
 
     }
 
+    @DeleteMapping("/{id}/word")
+    public ResponseEntity<?> deleteFlashcardByOwnerAndWordId(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        try {
+            System.out.println("Wszedlem do usuwania flashcarda");
+            flashcardService.deleteFlashcardItemByOwnerAndWordId(customUserDetails.getId(), id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not delete flashcard" + e.getMessage());
+        }
+
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFlashcard(@PathVariable Long id) {
         try {
             flashcardService.deleteFlashcardItemById(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not delete flashcard");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not delete flashcard" + e.getMessage());
         }
 
     }

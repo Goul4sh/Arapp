@@ -1,43 +1,43 @@
 package engineer.arabski.review.service;
 
+import engineer.arabski.languageProcessing.model.DictionaryWord;
+import engineer.arabski.languageProcessing.service.DictionaryWordFlashcardService;
 import engineer.arabski.review.dto.FlashcardItemRequest;
 import engineer.arabski.review.dto.FlashcardItemResponse;
+import engineer.arabski.review.model.FlashcardGroup;
 import engineer.arabski.review.model.FlashcardItem;
-import engineer.arabski.review.model.TemporaryWord;
+import engineer.arabski.review.repository.FlashcardGroupRepository;
 import engineer.arabski.review.repository.FlashcardRepository;
 import engineer.arabski.user.model.User;
 import engineer.arabski.user.service.UserService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class FlashcardService {
 
     private final FlashcardRepository flashcardRepository;
 
-    private final TemporaryWordService temporaryWordService;
+    private final FlashcardGroupRepository flashcardGroupRepository;
+
+    private final DictionaryWordFlashcardService dictionaryWordService;
     private final UserService userService;
     private final Sm2Algorithm sm2Algorithm = new Sm2Algorithm();
-
-    public FlashcardService(FlashcardRepository flashcardRepository, TemporaryWordService temporaryWordService, UserService userService) {
-        this.flashcardRepository = flashcardRepository;
-        this.temporaryWordService = temporaryWordService;
-        this.userService = userService;
-    }
 
 
     public static FlashcardItemResponse toResponse(FlashcardItem flashcardItem) {
 
+        System.out.println("flashcardItem = " + flashcardItem.getWord());
+
         return new FlashcardItemResponse(flashcardItem.getId(),
-                TemporaryWordService.toResponse(flashcardItem.getWord()),
+                DictionaryWordFlashcardService.toResponseFlashcard(flashcardItem.getWord()),
                 flashcardItem.getNextReviewDate()
-//                        ,
-//                flashcardItem.getRepetitions(),
-//                flashcardItem.getIntervalDays(),
-//                flashcardItem.getEaseFactor()
+
         );
     }
 
@@ -46,18 +46,41 @@ public class FlashcardService {
     }
 
 
+    @Transactional
     public FlashcardItem createFlashcardItem(Long word_id, Long owner_id) {
 
-        TemporaryWord temporaryWord = temporaryWordService.getTemporaryWordEntity(word_id);
-
-        if (temporaryWord == null) throw new RuntimeException("Word not found");
+        DictionaryWord dictionaryWord = dictionaryWordService.getWordEntity(word_id);
+        if (dictionaryWord == null) throw new RuntimeException("Word not found");
 
         User user = userService.getUserById(owner_id);
         if (user == null) throw new RuntimeException("User not found");
 
-        FlashcardItem flashcardItem = new FlashcardItem(user, temporaryWord);
+        FlashcardItem flashcardItem = new FlashcardItem(user, dictionaryWord);
 
-        return flashcardRepository.save(flashcardItem);
+        FlashcardItem  saved =  flashcardRepository.save(flashcardItem);
+
+        FlashcardGroup defaultGroup = getOrCreateDefaultGroup(user);
+        if (defaultGroup != null) {
+            defaultGroup.getFlashcardItems().add(saved);
+            flashcardGroupRepository.save(defaultGroup);
+        }
+        return saved;
+
+
+    }
+
+    private FlashcardGroup getOrCreateDefaultGroup(User user) {
+        return flashcardGroupRepository.findByOwner_IdAndIsDefaultTrue(user.getId())
+                .orElseGet(() -> {
+
+                    FlashcardGroup newGroup = new FlashcardGroup();
+                    newGroup.setName("Ogólna");
+                    newGroup.setDescription("Domyślna grupa dla wszystkich słówek");
+                    newGroup.setCategory("Ogólna");
+                    newGroup.setOwner(user);
+                    newGroup.setDefault(true);
+                    return flashcardGroupRepository.save(newGroup);
+                });
     }
 
     public FlashcardItem updateFlashcardItem(FlashcardItemRequest request, Long id) {
@@ -66,11 +89,11 @@ public class FlashcardService {
                 .orElseThrow(() -> new RuntimeException("FlashcardItem not found with id: " + id));
 
         if (request.word_id() != null) {
-            TemporaryWord temporaryWord = temporaryWordService.getTemporaryWordEntity(request.word_id());
-            if (temporaryWord == null) {
+            DictionaryWord dictionaryWord = dictionaryWordService.getWordEntity(request.word_id());
+            if (dictionaryWord == null) {
                 throw new RuntimeException("Word not found with id: " + request.word_id());
             }
-            flashcardItem.setWord(temporaryWord);
+            flashcardItem.setWord(dictionaryWord);
         }
 
 
@@ -78,18 +101,21 @@ public class FlashcardService {
     }
 
 
-    public void deleteFlashcardItem(FlashcardItem flashcardItem) {
-        flashcardRepository.delete(flashcardItem);
-    }
+    public void deleteFlashcardItemByOwnerAndWordId(Long owner_id, Long word_id) {
 
+        System.out.println("Jestem juz w usuwaniu flashcarda w serwisie");
+        try {
+            flashcardRepository.deleteByFlashcardOwner_IdAndWord_Id(owner_id, word_id);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Could not delete flashcard for owner " + owner_id + " and word " + word_id + ": " + e.getMessage());
+        }
+
+    }
 
     public void deleteFlashcardItemById(Long id) {
         flashcardRepository.deleteById(id);
     }
-
-    public void removeFlashcardItemFromOwner(Long ownerId, Long flashcardItemId) {
-    }
-
 
     public FlashcardItem getFlashcardItemEntity(Long id) {
 

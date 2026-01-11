@@ -18,8 +18,8 @@ export interface FlashcardsGroup {
 
     id: string
     name: string;
-    description: string;
     category: string;
     flashcardItems: FlashcardItem[];
+    isDefault: boolean;
 
 }

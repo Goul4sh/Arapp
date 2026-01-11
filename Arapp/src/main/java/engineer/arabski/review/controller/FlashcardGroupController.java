@@ -24,7 +24,6 @@ public class FlashcardGroupController {
     }
 
 
-
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
 
@@ -80,8 +79,28 @@ public class FlashcardGroupController {
 
     }
 
+    @PatchMapping("/{id}/add-flashcards")
+    public ResponseEntity<?> addFlashcardsToGroup(@PathVariable Long id, @RequestBody List<Long> flashcardIds) {
+        FlashcardGroupResponse updatedGroup = flashcardGroupService.addFlashcardItemsToGroup(id, flashcardIds);
+        if (updatedGroup != null) {
+
+            return ResponseEntity.status(HttpStatus.OK).body(updatedGroup);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not add flashcards to group");
+    }
+
+    @PatchMapping("/{id}/remove-flashcards")
+    public ResponseEntity<?> removeFlashcardsFromGroup(@PathVariable Long id, @RequestBody List<Long> flashcardIds) {
+        FlashcardGroupResponse updatedGroup = flashcardGroupService.removeFlashcardItemsFromGroup(id, flashcardIds);
+        if (updatedGroup != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(updatedGroup);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not remove flashcards from group");
+    }
+
+
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateFlashcardGroup(@PathVariable Long id ,@RequestBody FlashcardGroupRequest data) {
+    public ResponseEntity<?> updateFlashcardGroup(@PathVariable Long id, @RequestBody FlashcardGroupRequest data) {
         FlashcardGroupResponse updatedTask = flashcardGroupService.updateFlashcardGroup(data, id);
         if (updatedTask != null) {
 

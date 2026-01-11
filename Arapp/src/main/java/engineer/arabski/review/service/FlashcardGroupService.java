@@ -9,6 +9,7 @@ import engineer.arabski.review.repository.FlashcardGroupRepository;
 
 import engineer.arabski.user.model.User;
 import engineer.arabski.user.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -41,7 +42,8 @@ public class FlashcardGroupService {
                 flashcardGroup.getName(),
                 flashcardGroup.getDescription(),
                 flashcardGroup.getCategory(),
-                flashcardGroup.getFlashcardItems().stream().map(FlashcardService::toResponse).toList());
+                flashcardGroup.getFlashcardItems().stream().map(FlashcardService::toResponse).toList(),
+                flashcardGroup.isDefault());
     }
 
 
@@ -85,10 +87,12 @@ public class FlashcardGroupService {
         FlashcardGroup flashcardGroup = flashcardGroupRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("FlashcardGroup not found with id: " + id));
 
+
         flashcardGroup.setName(request.name());
         flashcardGroup.setDescription(request.description());
         flashcardGroup.setCategory(request.category());
 
+        // Jeżeli podano nowe flashcardItem_Ids, to aktualizuj powiązania
         if (request.flashcardItem_Ids() != null) {
 
             Set<Long> uniqueIds = new HashSet<>(request.flashcardItem_Ids());
@@ -148,6 +152,52 @@ public class FlashcardGroupService {
         }
 
         List<FlashcardGroup> flashcardGroups = flashcardGroupRepository.findAllByOwner_Id(ownerId);
+        if (flashcardGroups.isEmpty()) {
+            return List.of();
+        }
         return flashcardGroups.stream().map(FlashcardGroupService::toResponse).toList();
     }
+
+
+    @Transactional
+    public FlashcardGroupResponse addFlashcardItemsToGroup(Long groupId, List<Long> itemIds) {
+        FlashcardGroup flashcardGroup = flashcardGroupRepository.findById(groupId)
+                .orElseThrow(() -> new RuntimeException("FlashcardGroup not found with id: " + groupId));
+
+        List<FlashcardItem> flashcardItems = itemIds.stream()
+                .map(flashcardService::getFlashcardItemEntity)
+                .toList();
+
+        if (flashcardItems.contains(null)) {
+            throw new FlashcardNotFoundException("One or more flashcard items do not exist");
+        }
+
+        for (FlashcardItem item : flashcardItems) {
+            if (!flashcardGroup.getFlashcardItems().contains(item)) {
+                flashcardGroup.getFlashcardItems().add(item);
+            }
+        }
+
+        return toResponse(flashcardGroupRepository.save(flashcardGroup));
+
+    }
+
+    @Transactional
+    public FlashcardGroupResponse removeFlashcardItemsFromGroup(Long groupId, List<Long> itemIds) {
+        FlashcardGroup flashcardGroup = flashcardGroupRepository.findById(groupId)
+                .orElseThrow(() -> new RuntimeException("FlashcardGroup not found with id: " + groupId));
+
+        List<FlashcardItem> flashcardItems = itemIds.stream()
+                .map(flashcardService::getFlashcardItemEntity)
+                .toList();
+
+        if (flashcardItems.contains(null)) {
+            throw new FlashcardNotFoundException("One or more flashcard items do not exist");
+        }
+
+        flashcardGroup.getFlashcardItems().removeAll(flashcardItems);
+        return toResponse(flashcardGroupRepository.save(flashcardGroup));
+    }
+
+
 }

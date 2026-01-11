@@ -3,6 +3,10 @@ package engineer.arabski.task.service;
 import engineer.arabski.languageProcessing.dto.SaveDictionaryWordRequest;
 import engineer.arabski.languageProcessing.model.DictionaryWord;
 import engineer.arabski.languageProcessing.service.DictionaryService;
+import engineer.arabski.lesson.model.CompendiumEntry;
+import engineer.arabski.lesson.model.CompendiumTag;
+import engineer.arabski.lesson.repository.CompendiumRepository;
+import engineer.arabski.lesson.service.CompendiumTagService;
 import engineer.arabski.task.dto.*;
 import engineer.arabski.task.dto.vocabulary.EnrichedTaskRequest;
 import engineer.arabski.task.dto.vocabulary.LinkedVocabularyRequest;
@@ -13,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +25,8 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final DictionaryService dictionaryService;
+    private final CompendiumRepository compendiumRepository;
+    private final CompendiumTagService compendiumTagService;
 
 
     public Optional<TaskData> findById(Long id) {
@@ -48,6 +55,7 @@ public class TaskService {
         return updatedTask.getTaskData();
     }
 
+
     @Transactional
     public Task addTask(TaskData taskData) {
         Task task = new Task();
@@ -60,9 +68,59 @@ public class TaskService {
     }
 
     @Transactional
-    public Task addTaskWithVocab(EnrichedTaskRequest data) {
+    public Task addTheoryTask(CreateTheoryTaskCompendiumRequest theoryData) {
         Task task = new Task();
+        task.setTaskType("theory");
+        task.setDescription(theoryData.description());
 
+        CompendiumEntry linkedEntry = null;
+
+        if (theoryData.createCompendiumEntry()) {
+
+            linkedEntry = new CompendiumEntry();
+            linkedEntry.setTitle(theoryData.compendiumTitle());
+            linkedEntry.setContent(theoryData.compendiumContent());
+            linkedEntry.setIcon(theoryData.compendiumIcon());
+            linkedEntry.setDescription(theoryData.description());
+            linkedEntry.setRequiredLessonId(theoryData.requiredLessonId());
+
+            if (theoryData.tagNames() != null && !theoryData.tagNames().isEmpty()) {
+                Set<CompendiumTag> tags = compendiumTagService.getAllByName(theoryData.tagNames());
+                linkedEntry.setTags(tags);
+            }
+
+            linkedEntry = compendiumRepository.save(linkedEntry);
+
+        } else if (theoryData.existingCompendiumEntryId() != null) {
+            linkedEntry = compendiumRepository.findById(theoryData.existingCompendiumEntryId())
+                    .orElseThrow(() -> new IllegalArgumentException("Compendium entry not found with id: " + theoryData.existingCompendiumEntryId()));
+        }
+
+        task.setCompendiumEntry(linkedEntry);
+
+        String contentForJson = (linkedEntry != null) ? null : theoryData.compendiumContent();
+        Long linkedId = (linkedEntry != null) ? linkedEntry.getId() : null;
+
+        task.setTaskData(
+                new TheoryTaskData(
+                        theoryData.description(),
+                        contentForJson,
+                        linkedId
+                )
+        );
+
+        return taskRepository.save(task);
+    }
+
+    @Transactional
+    public Task addTaskWithVocab(EnrichedTaskRequest data) {
+
+        if (data.linkedVocabulary().words().isEmpty()) {
+            System.out.println("Brak słów w linkedVocabulary. Tworzę zadanie bez słów.");
+            return addTask(data.taskData());
+        }
+
+        Task task = new Task();
 
         System.out.println("Jestem w addTaskWithVocab");
 
@@ -73,28 +131,25 @@ public class TaskService {
 
         task.setTaskData(taskData);
 
-        if (vocabularyRequest != null) {
-            for (SaveDictionaryWordRequest word : vocabularyRequest.words()) {
+        for (SaveDictionaryWordRequest word : vocabularyRequest.words()) {
 
-                System.out.println("Przetwarzam słowo: " + word);
+            System.out.println("Przetwarzam słowo: " + word);
 
-                DictionaryWord dictionaryWord = dictionaryService.saveOrGetDictionaryWord(
-                        word.lemma(),
-                        word.root(),
-                        word.partOfSpeech(),
-                        word.translation()
-                );
+            DictionaryWord dictionaryWord = dictionaryService.saveOrGetDictionaryWord(
+                    word.lemma(),
+                    word.root(),
+                    word.partOfSpeech(),
+                    word.translation()
+            );
 
-                TaskWordReference reference = new TaskWordReference();
-                reference.setTask(task);
-                reference.setDictionaryWord(dictionaryWord);
+            TaskWordReference reference = new TaskWordReference();
+            reference.setTask(task);
+            reference.setDictionaryWord(dictionaryWord);
 
-                reference.setStartIndex(word.startIndex());
-                reference.setEndIndex(word.endIndex());
+            reference.setStartIndex(word.startIndex());
+            reference.setEndIndex(word.endIndex());
 
-                task.getWordReferences().add(reference);
-
-            }
+            task.getWordReferences().add(reference);
 
         }
 

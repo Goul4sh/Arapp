@@ -1,12 +1,16 @@
 package engineer.arabski.languageProcessing.service;
 
-import engineer.arabski.languageProcessing.dto.DictionaryWordResponse;
-import engineer.arabski.languageProcessing.dto.LemmaResponse;
-import engineer.arabski.languageProcessing.dto.WordBankListResponse;
+import engineer.arabski.languageProcessing.dto.*;
 import engineer.arabski.languageProcessing.model.DictionaryWord;
 import engineer.arabski.languageProcessing.repository.DictionaryWordRepository;
+
+import engineer.arabski.task.repository.TaskWordReferenceRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,17 +22,18 @@ public class DictionaryService {
 
     private final NLPService nlpService;
     private final DictionaryWordRepository dictionaryWordRepository;
-
+    private final TaskWordReferenceRepository taskWordReferenceRepository;
 
 
     private WordBankListResponse toWordBankListResponse(DictionaryWord word) {
         return new WordBankListResponse(
+
+                word.getId(),
                 word.getLemma(),
-                word.getPartOfSpeech(),
                 word.getRoot(),
                 word.getDiacritic(),
-                word.getId(),
-                word.getTranslation()
+                word.getTranslation(),
+                word.getPartOfSpeech()
         );
     }
 
@@ -57,6 +62,7 @@ public class DictionaryService {
                 .toList();
 
     }
+
 
     @Transactional
     public DictionaryWord saveOrGetDictionaryWord(String lemma, String root, String pos, String translation) {
@@ -96,5 +102,39 @@ public class DictionaryService {
                 .toList();
     }
 
+
+    public Page<WordBankListResponse> getDictionaryWordsPageable(int page, int size, String query) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Page<DictionaryWord> wordPage;
+
+        if (query != null && !query.isBlank()) {
+            wordPage = dictionaryWordRepository.searchDictionaryWords(query, pageable);
+        } else {
+            wordPage = dictionaryWordRepository.findAll(pageable);
+        }
+        return wordPage.map(this::toWordBankListResponse);
+
+    }
+
+
+    @Transactional
+    public void deleteDictionaryWord(Long id) {
+        taskWordReferenceRepository.deleteByDictionaryWord_Id(id);
+        dictionaryWordRepository.deleteById(id);
+    }
+
+    public void updateDictionaryWord(Long id, WordBankEditRequest request) {
+        DictionaryWord word = dictionaryWordRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Dictionary word not found with id: " + id));
+
+        word.setLemma(request.lemma());
+        word.setRoot(request.root());
+        word.setPartOfSpeech(request.partOfSpeech());
+        word.setTranslation(request.translation());
+
+        dictionaryWordRepository.save(word);
+    }
 
 }

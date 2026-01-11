@@ -2,6 +2,8 @@ package engineer.arabski.wordBank.service;
 
 import engineer.arabski.languageProcessing.model.DictionaryWord;
 import engineer.arabski.languageProcessing.repository.DictionaryWordRepository;
+import engineer.arabski.review.repository.FlashcardRepository;
+import engineer.arabski.review.service.FlashcardService;
 import engineer.arabski.wordBank.dto.WordGroupDetailResponse;
 import engineer.arabski.wordBank.dto.WordGroupItemResponse;
 import engineer.arabski.wordBank.dto.WordGroupRequest;
@@ -12,15 +14,17 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
 public class WordGroupService {
 
     private final WordGroupRepository wordGroupRepository;
+
+    private final FlashcardRepository flashcardRepository;
 
     private final DictionaryWordRepository dictionaryWordRepository;
 
@@ -31,8 +35,16 @@ public class WordGroupService {
 
     public WordGroupPreviewResponse toResponsePreview(WordGroup wordGroup) {
 
+        return new WordGroupPreviewResponse(
+                wordGroup.getId(),
+                wordGroup.getName(),
+                wordGroup.getDescription(),
+                wordGroup.getIcon(),
+                wordGroup.getImageUrl(),
+                "placeholder!",
+                wordGroup.getWords().size()
+        );
 
-        return null;
     }
 
     public WordGroupDetailResponse toResponseDetail(WordGroup wordGroup) {
@@ -53,7 +65,8 @@ public class WordGroupService {
                 word.getLemma(),
                 word.getTranslation(),
                 word.getTransliteration(),
-                word.getDiacritic()
+                word.getDiacritic(),
+                false
         );
     }
 
@@ -66,6 +79,14 @@ public class WordGroupService {
                 .toList();
     }
 
+    public List<WordGroupPreviewResponse> findAllPublished() {
+
+        List<WordGroup> wordGroups = wordGroupRepository.findAll();
+
+        return wordGroups.stream().filter(WordGroup::isPublished)
+                .map(this::toResponsePreview)
+                .toList();
+    }
 
     // Wykorzystuje detailed response.
     public WordGroupDetailResponse findById(Long groupId) {
@@ -77,6 +98,32 @@ public class WordGroupService {
         } else {
             return null;
         }
+
+    }
+
+    public WordGroupDetailResponse findByIdWithFlashcardInfo(Long groupId, Long userId) {
+
+        Set<DictionaryWord> wordsInGroup = wordGroupRepository.findById(groupId)
+                .map(WordGroup::getWords)
+                .orElse(new HashSet<>());
+
+        List<Long> wordIds = wordsInGroup.stream().map(DictionaryWord::getId).toList();
+        Set<Long> userFlashcardWordIds = flashcardRepository.findAllByWord_IdsAndFlashcardOwner_Id(wordIds, userId);
+
+        return new WordGroupDetailResponse(
+
+                groupId,
+                wordsInGroup.stream().map(word ->
+                        new WordGroupItemResponse(
+                                word.getId(),
+                                word.getLemma(),
+                                word.getTranslation(),
+                                word.getTransliteration(),
+                                word.getDiacritic(),
+                                userFlashcardWordIds.contains(word.getId())
+                        )).toList()
+
+        );
 
     }
 
@@ -142,17 +189,32 @@ public class WordGroupService {
 
             WordGroup newGroup = wordGroupRepository.save(existingGroup);
 
+            System.out.println("Liczba słów w grupie po usunięciu: " + newGroup.getWords().size());
+
             return toResponsePreview(newGroup);
         } else {
 
             existingGroup.getWords().addAll(wordsToAdd);
 
             WordGroup newGroup = wordGroupRepository.save(existingGroup);
+
+            System.out.println("Liczba słów w grupie po dodaniu: " + newGroup.getWords().size());
+
             return toResponsePreview(newGroup);
 
         }
 
 
+    }
+
+
+    public void publishWordGroup(Long groupId, boolean published) {
+        WordGroup wordGroup = wordGroupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("Word group not found with id " + groupId));
+
+        wordGroup.setPublished(published);
+
+        wordGroupRepository.save(wordGroup);
     }
 
 

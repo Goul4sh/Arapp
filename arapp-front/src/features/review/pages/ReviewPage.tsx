@@ -55,10 +55,25 @@ function ReviewPage() {
                     api.get('/api/words', {withCredentials: true})
                 ]);
 
-                setFlashcardGroups(Array.isArray(groupsResp.data) ? groupsResp.data : []);
 
-                const firstGroup = groupsResp.data[0] || null;
-                setSelectedGroup(firstGroup);
+                const userGroups = Array.isArray(groupsResp.data) ? groupsResp.data : [];
+
+                const defaultGroup : FlashcardsGroup = userGroups.find(g => g.isDefault);
+
+                const customDefaultGroup = defaultGroup ? {
+                    ...defaultGroup,
+                    name: 'Wszystkie fiszki',
+                    category: 'Zbiorcza'
+                } : null;
+
+
+                const filteredGroups = userGroups.filter(g => !g.isDefault);
+                const finalGroups = customDefaultGroup
+                    ? [customDefaultGroup, ...filteredGroups]
+                    : filteredGroups;
+
+                setFlashcardGroups(finalGroups);
+                setSelectedGroup(finalGroups[0] || null);
                 setSelectedGroupIndex(0);
 
                 setRecentlyEncounteredWords(wordsResp.data);
@@ -77,26 +92,32 @@ function ReviewPage() {
 
     }, []);
 
+    //
+    // const createAllFlashcardsGroup = (): FlashcardsGroup | null => {
+    //     if (!flashcardGroups || flashcardGroups.length === 0) {
+    //         return {
+    //             id: '0',
+    //             name: 'Wszystkie fiszki',
+    //             category: 'Zbiorcza',
+    //             isDefault: true,
+    //             flashcardItems: []
+    //         }
+    //     }
+    //     const allFlashcards = flashcardGroups.flatMap(group => group.flashcardItems);
+    //
+    //     const uniqueFlashcardsMap = Array.from(
+    //         new Map(allFlashcards.map(flashcard => [flashcard.id, flashcard])).values()
+    //     )
+    //
+    //     return {
+    //         id: '0',
+    //         name: 'Wszystkie fiszki',
+    //         category: 'Zbiorcza',
+    //         flashcardItems: uniqueFlashcardsMap
+    //     } as FlashcardsGroup;
+    // }
 
-    const createAllFlashcardsGroup = (): FlashcardsGroup | null => {
-        if (!flashcardGroups || flashcardGroups.length === 0) {
-            return null
-        }
-        const allFlashcards = flashcardGroups.flatMap(group => group.flashcardItems);
-
-        const uniqueFlashcardsMap = Array.from(
-            new Map(allFlashcards.map(flashcard => [flashcard.id, flashcard])).values()
-        )
-
-        return {
-            id: '0',
-            name: 'Wszystkie fiszki',
-            category: 'Zbiorcza',
-            flashcardItems: uniqueFlashcardsMap
-        } as FlashcardsGroup;
-    }
-
-    const allFlashcardsGroup = createAllFlashcardsGroup();
+    // const allFlashcardsGroup = createAllFlashcardsGroup();
 
     const handleGroupClick = (group: FlashcardsGroup, index: number) => {
         setSelectedGroup(group);
@@ -264,26 +285,26 @@ function ReviewPage() {
                         <h2> Twoje grupy fiszek </h2>
                         <div className={styles.separator}></div>
 
-                        {allFlashcardsGroup && (
+                        {flashcardGroups[0]?.isDefault && (
                             <div
                                 className={`${styles.groupItem} ${selectedGroupIndex === -1 ? styles.selectedGroup : ''}`}
-                                key={allFlashcardsGroup.id}
+                                key={flashcardGroups[0].id}
                                 onClick={() => {
-                                    setSelectedGroup(allFlashcardsGroup);
+                                    setSelectedGroup(flashcardGroups[0]);
                                     setSelectedGroupIndex(-1);
                                 }}
                             >
                                 <div className={styles.groupInfo}>
-                                    <p className={styles.groupName}> {allFlashcardsGroup.name} </p>
-                                    <p className={styles.groupCategory}>{allFlashcardsGroup.category}</p>
+                                    <p className={styles.groupName}> {flashcardGroups[0].name} </p>
+                                    <p className={styles.groupCategory}>{flashcardGroups[0].category}</p>
                                 </div>
                                 <div className={styles.groupStats}>
                                     <div className={styles.statBox}>
-                                        <h2 className={styles.statNumber}>{allFlashcardsGroup.flashcardItems.length}</h2>
+                                        <h2 className={styles.statNumber}>{flashcardGroups[0].flashcardItems.length}</h2>
                                         <p className={styles.statLabel}>Razem</p>
                                     </div>
                                     <div className={styles.statBox}>
-                                        <h2 className={`${styles.statNumber} ${styles.greenText}`}>{allFlashcardsGroup.flashcardItems.filter(f => isFlashcardDue(f.nextReviewDate)).length}</h2>
+                                        <h2 className={`${styles.statNumber} ${styles.greenText}`}>{flashcardGroups[0].flashcardItems.filter(f => isFlashcardDue(f.nextReviewDate)).length}</h2>
                                         <p className={styles.statLabel}>Do powtórki</p>
                                     </div>
                                 </div>
@@ -302,13 +323,14 @@ function ReviewPage() {
 
                             <div className={styles.emptyMessage}>Brak grup fiszek</div>
                         ) : (
-                            flashcardGroups.map((group, index) => {
+                            flashcardGroups.slice(1).map((group, index) => { // pomijamy wyswietlanie grupy ogolnej jeszcze raz.
+                                const newIndex = index + 1;
                                 const dueCount = group.flashcardItems.filter(f => isFlashcardDue(f.nextReviewDate)).length;
                                 return (
                                     <div
-                                        className={`${styles.groupItem} ${selectedGroupIndex === index ? styles.selectedGroup : ''}`}
-                                        key={index}
-                                        onClick={() => handleGroupClick(group, index)}
+                                        className={`${styles.groupItem} ${selectedGroupIndex === newIndex ? styles.selectedGroup : ''}`}
+                                        key={group.id}
+                                        onClick={() => handleGroupClick(group, newIndex)}
                                     >
                                         <div className={styles.groupInfo}>
                                             <p className={styles.groupName}> {group.name} </p>

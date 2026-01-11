@@ -12,5 +12,7 @@ public interface FlashcardGroupRepository extends JpaRepository<FlashcardGroup,L
 
     Optional<FlashcardGroup> findByOwner_Id(Long ownerId);
 
+    Optional<FlashcardGroup> findByOwner_IdAndIsDefaultTrue(Long ownerId);
+
     List<FlashcardGroup> findAllByOwner_Id(Long ownerId);
 }

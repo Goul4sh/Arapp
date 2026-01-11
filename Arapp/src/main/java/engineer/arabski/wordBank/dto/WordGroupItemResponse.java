@@ -6,7 +6,8 @@ public record WordGroupItemResponse(
         String wordArabic,
         String wordTranslation,
         String Transliteration,
-        String diacritic
+        String diacritic,
+        boolean isInUserFlashcards
         ) {
 
 }

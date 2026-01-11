@@ -16,10 +16,11 @@ import ResetPasswordPage from "../features/auth/pages/ResetPasswordPage.tsx";
 import ProtectedAdminDashboardLayout from "../common/layouts/ProtectedAdminDashboardLayout.tsx";
 import AdminDashboard from "../features/admin/pages/AdminDashboard.tsx";
 import TaskManagementPage from "../features/admin/pages/TaskManagementPage.tsx";
-import WordBankManagementPage from "../features/admin/pages/WordBankManagementPage.tsx";
 import WordBank from "../features/wordBank/pages/WordBank.tsx";
 import LessonManagement from "../features/admin/pages/LessonManagement.tsx";
 import CompendiumDataManagement from "../features/admin/pages/CompendiumDataManagement.tsx";
+import WordGroupManagementPage from "../features/admin/pages/WordGroupManagementPage.tsx";
+import WordBankManagementPage from "../features/admin/pages/WordBankManagementPage.tsx";
 
 
 function App() {
@@ -61,7 +62,8 @@ function App() {
                     <Route path="/admin/dashboard" element={<AdminDashboard/>}/>
                     <Route path="/admin/content" element={<TaskManagementPage/>}/>
                     <Route path="/admin/course" element={<LessonManagement/>}/>
-                    <Route path="/admin/words" element={<WordBankManagementPage/>}/>
+                    <Route path="/admin/word-groups" element={<WordGroupManagementPage/>}/>
+                    <Route path="/admin/word-bank" element={<WordBankManagementPage/>}/>
                     <Route path="/admin/compendium" element={<CompendiumDataManagement/>}/>
 
                 </Route>

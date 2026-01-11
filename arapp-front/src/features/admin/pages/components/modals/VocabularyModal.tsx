@@ -43,6 +43,11 @@ function VocabularyModal({isOpen, onClose, onSave, vocabularyItems}: ModalProps)
     }
 
     const handleCheckboxChange = (index: number) => {
+
+        if (items[index].root === "FOREIGN") {
+            return;
+        }
+
         const updatedItems = [...items];
         updatedItems[index].isIncluded = !updatedItems[index].isIncluded;
         setItems(updatedItems);
@@ -52,6 +57,17 @@ function VocabularyModal({isOpen, onClose, onSave, vocabularyItems}: ModalProps)
 
 
     const handleSave = () => {
+
+        const checkedWordsWithoutTranslation = items.filter(
+            item => item.isIncluded && (!item.translation || item.translation.trim() === "")
+        );
+
+
+        if (checkedWordsWithoutTranslation.length > 0) {
+            alert("Proszę podać tłumaczenie dla wszystkich zaznaczonych słów.");
+            return;
+        }
+
         onSave(items);
         onClose();
     }
@@ -69,7 +85,8 @@ function VocabularyModal({isOpen, onClose, onSave, vocabularyItems}: ModalProps)
 
                 <div>
                     <p> Zaznacz słowa, które mają być zawarte w referencji do zadania.</p>
-                    <p> Jezeli słowo nie znajduje się w bazie, dodanie go jako referencji spowoduje jednoczesne dodanie go do bazy.</p>
+                    <p> Jezeli słowo nie znajduje się w bazie, dodanie go jako referencji spowoduje jednoczesne dodanie
+                        go do bazy.</p>
 
 
                 </div>
@@ -87,38 +104,42 @@ function VocabularyModal({isOpen, onClose, onSave, vocabularyItems}: ModalProps)
                     </thead>
 
                     <tbody>
-                    {items.map((item, index) => (
+                    {items.map((item, index) =>
 
-                        <tr key={index}>
+                        (
+                            <tr key={index}>
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        checked={item.isIncluded}
+                                        onChange={() => handleCheckboxChange(index)}
+                                        disabled={item.root == "FOREIGN"}
 
-                            <td>
-                                <input
-                                    type="checkbox"
-                                    checked={item.isIncluded}
-                                    onChange={() => handleCheckboxChange(index)}
-                                />
-                            </td>
-                            <td>{item.lemma}</td>
-                            <td>{item.root}</td>
-                            <td>{item.original}</td>
-                            <td>
-                                <input
-                                    type="text"
-                                    value={item.translation}
-                                    onChange={(e) => handleTranslationChange(index, e.target.value)}
-                                    className={styles.translationInput}
-                                />
-                            </td>
-                            <td>
-                                {/*//TODO poprawic na kolory ktorych gdzies uzywam*/}
-                                <div className={styles.tableIcon}>
+                                    />
+                                </td>
+                                <td>{item.lemma}</td>
+                                <td>{item.root}</td>
+                                <td>{item.original}</td>
+                                <td>
+                                    <input
+                                        type="text"
+                                        value={item.translation}
+                                        onChange={(e) => handleTranslationChange(index, e.target.value)}
+                                        className={styles.translationInput}
+                                    />
+                                </td>
+                                <td>
+                                    {/*//TODO poprawic na kolory ktorych gdzies uzywam*/}
+                                    <div className={styles.tableIcon}>
 
-                                    {item.wordId > 0 ? (<FontAwesomeIcon icon={faCheck} style={{color:"green"}} />) : (<FontAwesomeIcon icon={faX} style={{color:"red"}}/>)}
-                                </div>
+                                        {item.wordId > 0 ? (
+                                            <FontAwesomeIcon icon={faCheck} style={{color: "green"}}/>) : (
+                                            <FontAwesomeIcon icon={faX} style={{color: "red"}}/>)}
+                                    </div>
 
-                            </td>
-                        </tr>
-                    ))}
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
                 <div className={styles.buttonsContainer}>

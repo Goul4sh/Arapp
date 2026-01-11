@@ -1,14 +1,11 @@
 package engineer.arabski.languageProcessing.dto;
 
-public record WordBankListResponse(
+public record WordBankEditRequest(
 
-        Long wordId,
         String lemma,
         String root,
         String diacritic,
         String translation,
         String partOfSpeech
-
 ) {
-
 }

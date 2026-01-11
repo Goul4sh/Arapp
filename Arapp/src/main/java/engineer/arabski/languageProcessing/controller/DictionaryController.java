@@ -1,16 +1,12 @@
 package engineer.arabski.languageProcessing.controller;
 
-import engineer.arabski.languageProcessing.dto.AnalyzeTextRequest;
-import engineer.arabski.languageProcessing.dto.DictionaryWordResponse;
-import engineer.arabski.languageProcessing.dto.SaveDictionaryWordRequest;
+import engineer.arabski.languageProcessing.dto.*;
 import engineer.arabski.languageProcessing.service.DictionaryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -45,6 +41,29 @@ public class DictionaryController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body("Words added/updated successfully.");
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getDictionaryWordsPageable(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String query
+    ) {
+        Page<WordBankListResponse> words = dictionaryService.getDictionaryWordsPageable(page, size, query);
+        return ResponseEntity.status(HttpStatus.OK).body(words);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteDictionaryWord(@PathVariable Long id) {
+        dictionaryService.deleteDictionaryWord(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Dictionary word deleted successfully.");
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateDictionaryWord(@PathVariable Long id, @RequestBody WordBankEditRequest request) {
+        dictionaryService.updateDictionaryWord(id, request);
+        return ResponseEntity.status(HttpStatus.OK).body("Dictionary word updated successfully.");
     }
 
 }

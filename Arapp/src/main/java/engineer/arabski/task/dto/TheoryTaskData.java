@@ -3,7 +3,8 @@ package engineer.arabski.task.dto;
 public record TheoryTaskData(
 
         String description,
-        String content
+        String content,
+        Long compendiumEntryId
 
 ) implements TaskData {
     @Override

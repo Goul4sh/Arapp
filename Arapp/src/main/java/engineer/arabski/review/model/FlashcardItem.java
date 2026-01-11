@@ -1,5 +1,6 @@
 package engineer.arabski.review.model;
 
+import engineer.arabski.languageProcessing.model.DictionaryWord;
 import engineer.arabski.user.model.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,15 +27,18 @@ public class FlashcardItem {
 
     private LocalDateTime nextReviewDate = LocalDateTime.now();
 
-    public FlashcardItem(User owner, TemporaryWord temporaryWord) {
+    public FlashcardItem(User owner, DictionaryWord word) {
         this.flashcardOwner = owner;
-        this.word = temporaryWord;
+        this.word = word;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "temporary_word_id")
-    private TemporaryWord word;
+//    @ManyToOne
+//    @JoinColumn(name = "temporary_word_id")
+//    private TemporaryWord word;
 
+    @ManyToOne
+    @JoinColumn(name = "dictionary_word_id")
+    private DictionaryWord word;
 //    private Long source_sentence_id;
 //    private String context_fragment;
 

@@ -8,7 +8,7 @@ public record WordGroupPreviewResponse(
         String icon,
         String imageUrl,
         String category,
-        Long wordsCount
+        int wordsCount
 
 ) {
 }
