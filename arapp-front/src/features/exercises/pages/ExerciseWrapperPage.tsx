@@ -1,7 +1,7 @@
 import styles from "./Renderer.module.css";
 import progressBarStyles from "../components/progressBar.module.css"
 import ExerciseRenderer from "./ExerciseRenderer.tsx";
-import {Link, useNavigate, useParams} from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import api from "../../auth/api.ts";
 import type {Task} from "../taskTypes.ts";
@@ -15,7 +15,7 @@ type TaskWithId = Task & { id: number };
 
 function ExerciseWrapperPage() {
 
-    const {id, lesson_id} = useParams();
+    const {id, lesson_id, groupId} = useParams();
     const [taskQueue, setTaskQueue] = useState<TaskWithId[]>([]);
     const [currentTask, setCurrentTask] = useState<TaskWithId | null>(null);
     const [totalTasks, setTotalTasks] = useState<number>(0);
@@ -26,9 +26,17 @@ function ExerciseWrapperPage() {
 
     const navigate = useNavigate();
 
+    const location = useLocation();
+
+    const source = location.state?.source || 'unknown';
+
 
     const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
-    const workingMode = !!lesson_id;
+    const workingMode = lesson_id
+        ? 'lesson-path'
+        : groupId
+            ? 'word-group'
+            : 'exercise';
 
 
     const [sessionStats, setSessionStats] = useState({
@@ -42,13 +50,17 @@ function ExerciseWrapperPage() {
     useEffect(() => {
         setLoading(true);
 
-        if (workingMode) {
+        console.log('Źródło:', source);
+        console.log('Tryb:', workingMode);
+
+        if (source === 'lesson-path') {
             api.get(`/api/lessons/${lesson_id}`, {withCredentials: true})
                 .then(resp => {
 
                     const tasks = resp.data.tasks;
 
-                    console.log("Taski ktore dostalem to" , tasks);
+                    console.log("Taski ktore dostalem od lekcji to", tasks);
+
 
                     const tasksWithIds = tasks.map((task: Task, index: number) => ({
                         ...task,
@@ -64,6 +76,32 @@ function ExerciseWrapperPage() {
                 });
 
 
+        } else if (source === 'word-group') {
+
+            api.get(`/api/task-generation/groups/${groupId}`, {withCredentials: true})
+                .then(resp => {
+
+                    const tasks = resp.data;
+
+                    console.log("Taski ktore dostalem to", tasks);
+
+
+                    const tasksWithIds = tasks.map((task: Task, index: number) => ({
+                        ...task,
+                        id: index
+                    }));
+
+                    console.log("Taski z id to ", tasksWithIds);
+                    setTaskQueue(tasksWithIds);
+                    setCurrentTask(tasksWithIds[0]);
+
+                    console.log("Obecny task to", tasksWithIds[0]);
+
+                    setTotalTasks(tasksWithIds.length);
+                    setLoading(false);
+
+                });
+
         } else {
 
             if (!id) return;
@@ -72,7 +110,7 @@ function ExerciseWrapperPage() {
                 .then(resp => {
 
                     const rawTask = resp.data;
-                    const taskWithId = { ...rawTask, id: 0 };
+                    const taskWithId = {...rawTask, id: 0};
 
                     setTaskQueue([taskWithId]);
                     setCurrentTask(taskWithId);
@@ -81,7 +119,7 @@ function ExerciseWrapperPage() {
 
                 });
         }
-    }, [id, lesson_id, workingMode]);
+    }, [groupId, id, lesson_id, source, workingMode]);
 
     function submitAnswer(answer: boolean) {
         if (!currentTask) return;
@@ -176,7 +214,18 @@ function ExerciseWrapperPage() {
 
 
     const handleExit = () => {
-        navigate("/letters", { replace: true });
+
+        switch (source) {
+            case 'lesson-path':
+                navigate(`/letters`, {replace: true});
+                break;
+            case 'word-group':
+                navigate(`/words`, {replace: true});
+                break;
+            default:
+                navigate("/exercises", {replace: true});
+
+        }
     }
 
     if (loading) {

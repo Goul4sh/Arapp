@@ -93,7 +93,8 @@ function AlphabetPath() {
 
     const handleLessonStart = (lesson: ProcessedLesson) => {
         if (!lesson.isLocked) {
-            navigate(`/lessons/${lesson.id}`);
+            navigate(`/lessons/${lesson.id}`, {state: {source: 'lesson-path'}}
+            );
         }
     };
 
@@ -153,7 +154,6 @@ function AlphabetPath() {
 
                 {/*Lista lekcji*/}
                 <div className={styles.scrollableLessonList}>
-
 
                     {activeChapter.lessons.map((lesson, index) => {
 

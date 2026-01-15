@@ -42,7 +42,8 @@ public class WordGroupService {
                 wordGroup.getIcon(),
                 wordGroup.getImageUrl(),
                 "placeholder!",
-                wordGroup.getWords().size()
+                wordGroup.getWords().size(),
+                wordGroup.isPublished()
         );
 
     }

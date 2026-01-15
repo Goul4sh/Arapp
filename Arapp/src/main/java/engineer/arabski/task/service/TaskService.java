@@ -1,6 +1,7 @@
 package engineer.arabski.task.service;
 
-import engineer.arabski.languageProcessing.dto.SaveDictionaryWordRequest;
+import engineer.arabski.languageProcessing.dto.NewDictionaryWordRequest;
+import engineer.arabski.languageProcessing.dto.SaveDictionaryWordWithReferenceRequest;
 import engineer.arabski.languageProcessing.model.DictionaryWord;
 import engineer.arabski.languageProcessing.service.DictionaryService;
 import engineer.arabski.lesson.model.CompendiumEntry;
@@ -131,15 +132,16 @@ public class TaskService {
 
         task.setTaskData(taskData);
 
-        for (SaveDictionaryWordRequest word : vocabularyRequest.words()) {
+        for (SaveDictionaryWordWithReferenceRequest word : vocabularyRequest.words()) {
 
             System.out.println("Przetwarzam słowo: " + word);
 
             DictionaryWord dictionaryWord = dictionaryService.saveOrGetDictionaryWord(
-                    word.lemma(),
+                    new NewDictionaryWordRequest(word.lemma(),
+                    "",
                     word.root(),
                     word.partOfSpeech(),
-                    word.translation()
+                    word.translation())
             );
 
             TaskWordReference reference = new TaskWordReference();

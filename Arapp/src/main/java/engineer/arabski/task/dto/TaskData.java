@@ -1,6 +1,7 @@
 package engineer.arabski.task.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -19,12 +20,14 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = TheoryTaskData.class, name = "theory"),
         @JsonSubTypes.Type(value = MorphologyFormTaskData.class, name = "morphology-form"),
         @JsonSubTypes.Type(value = MorphologyPartsTaskData.class, name = "morphology-parts"),
-        @JsonSubTypes.Type(value = AssistedWritingTaskData.class, name = "writing-assisted")
+        @JsonSubTypes.Type(value = AssistedWritingTaskData.class, name = "writing-assisted"),
+        @JsonSubTypes.Type(value = TranslateTaskData.class, name = "translate")
 
+//TODO naprawić widocznosc type na froncie
 })
 
 public sealed interface TaskData
-        permits AssistedWritingTaskData, ChooseOneTaskData, FillInTheBlankTaskData, MatchPairsTaskData, MorphologyFormTaskData, MorphologyPartsTaskData, MultipleChoiceTaskData, TheoryTaskData {
+        permits AssistedWritingTaskData, ChooseOneTaskData, FillInTheBlankTaskData, MatchPairsTaskData, MorphologyFormTaskData, MorphologyPartsTaskData, MultipleChoiceTaskData, TheoryTaskData, TranslateTaskData {
 
     String type();
 

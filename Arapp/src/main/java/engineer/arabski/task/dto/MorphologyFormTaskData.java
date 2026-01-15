@@ -1,9 +1,12 @@
 package engineer.arabski.task.dto;
 
+import engineer.arabski.task.dto.MorphologyFormsTask.MorphologyStep;
+
 import java.util.List;
 
 public record MorphologyFormTaskData(
 
+        String description,
         String question,
         List<MorphologyStep> steps
 
@@ -13,22 +16,5 @@ public record MorphologyFormTaskData(
         return "morphology-form";
     }
 
-    @Override
-    public String description() {
-        return question;
-    }
-
 }
 
-record MorphologyStep(
-        int stepIndex,
-        String correctId,
-        List<MorphologyOption> options) {
-}
-
-record MorphologyOption(
-        String id,
-        String content,
-        boolean isCorrect
-) {
-}

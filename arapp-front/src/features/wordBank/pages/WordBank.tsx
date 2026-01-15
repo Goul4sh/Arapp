@@ -240,9 +240,7 @@ function WordBank() {
                     </div>
                 </div>
 
-
             </div>
-
 
             <WordListModal
                 isOpen={showGroupModal}

@@ -65,29 +65,29 @@ public class DictionaryService {
 
 
     @Transactional
-    public DictionaryWord saveOrGetDictionaryWord(String lemma, String root, String pos, String translation) {
-        System.out.println("Sprawdzam słowo w słowniku: " + lemma);
+    public DictionaryWord saveOrGetDictionaryWord(NewDictionaryWordRequest word) {
+        System.out.println("Sprawdzam słowo w słowniku: " + word.lemma());
 
-        Optional<DictionaryWord> existingWord = dictionaryWordRepository.findByLemma(lemma);
+        Optional<DictionaryWord> existingWord = dictionaryWordRepository.findByLemma(word.lemma());
 
         if (existingWord.isPresent()) {
 
             System.out.println("Znaleziono istniejące słowo w słowniku: " + existingWord.get().getLemma());
-            if (translation != null && !translation.isBlank()) {
-                existingWord.get().setTranslation(translation);
+            if (word.translation() != null && !word.translation().isBlank()) {
+                existingWord.get().setTranslation(word.translation());
             }
 
             return existingWord.get();
         } else {
 
-            System.out.println("Nie znaleziono słowa w słowniku. Dodaję nowe: " + lemma);
+            System.out.println("Nie znaleziono słowa w słowniku. Dodaję nowe: " + word.lemma());
 
             DictionaryWord newWord = new DictionaryWord();
-            newWord.setLemma(lemma);
-            newWord.setPartOfSpeech(pos);
-            newWord.setRoot(root);
-//            newWord.setDiacritic(lemmaResponse.diacritic());
-            newWord.setTranslation(translation);
+            newWord.setLemma(word.lemma());
+            newWord.setPartOfSpeech(word.partOfSpeech());
+            newWord.setRoot(word.root());
+            newWord.setDiacritic(word.transliteration());
+            newWord.setTranslation(word.translation());
 
             return dictionaryWordRepository.save(newWord);
         }

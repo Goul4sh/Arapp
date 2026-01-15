@@ -1,7 +1,9 @@
 import Modal from "../../review/Modal.tsx";
 import styles from "../pages/wordBank.module.css"
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import api from "../../auth/api.ts";
+import FlashcardItem from "../../review/components/FlashcardItem.tsx";
+import {useNavigate} from "react-router-dom";
 
 interface Word {
     id: number;
@@ -31,8 +33,15 @@ interface WordGroupModalProps {
 function WordListModal({isOpen, onClose, selectedGroup, groupWords, isLoadingWords}: WordGroupModalProps) {
 
     const [words, setWords] = useState<Word[]>(groupWords);
+    const navigate = useNavigate();
+
 
     console.log(groupWords);
+
+    useEffect(() => {
+        setWords(groupWords);
+    }, [groupWords]);
+
 
     const handleAddToFlashcards = async (wordId: number) => {
 
@@ -41,13 +50,9 @@ function WordListModal({isOpen, onClose, selectedGroup, groupWords, isLoadingWor
                 w.id === wordId ? {...w, isInUserFlashcards: true} : w)
         )
 
-        console.log("na takie id wysylam", wordId);
-
         try {
             await api.post(`/api/flashcards`, {word_id: wordId}, {withCredentials: true})
-
             console.log(`Dodano słowo o ID ${wordId} do fiszek użytkownika.`);
-
         } catch (error) {
             console.error("Błąd podczas dodawania słowa do fiszek:", error);
         }
@@ -65,11 +70,21 @@ function WordListModal({isOpen, onClose, selectedGroup, groupWords, isLoadingWor
             await api.delete(`/api/flashcards/${wordId}/word`, {withCredentials: true})
         } catch (error) {
             console.error("Błąd podczas usuwania słowa z fiszek:", error);
+            setWords(prevWords =>
+                prevWords.map(w =>
+                    w.id === wordId ? {...w, isInUserFlashcards: true} : w)
+            );
         }
-
         console.log(`Usunięto słowo o ID ${wordId} z fiszek użytkownika.`);
     }
 
+    const handleStartPractice = () => {
+
+        const groupId = selectedGroup ? selectedGroup.id : null;
+        if (!groupId) return;
+
+            navigate(`/words-practice/${groupId}`, {state: {source: 'word-group'}});
+    }
 
     return (
 
@@ -80,6 +95,15 @@ function WordListModal({isOpen, onClose, selectedGroup, groupWords, isLoadingWor
 
             <div className={styles.wordListModalContainer}>
 
+                <div className={styles.practiceContainer}>
+
+                    <button
+                    onClick={handleStartPractice}>
+                        Ćwicz teraz
+                    </button>
+                    <p> Ćwicz słówka zawarte w grupie w automatycznie generowanych zadaniach. </p>
+                </div>
+
                 {isLoadingWords ? (
                     <div className={styles.wordListLoading}>Ładowanie słów...</div>
                 ) : (<>
@@ -89,30 +113,13 @@ function WordListModal({isOpen, onClose, selectedGroup, groupWords, isLoadingWor
 
                         <div className={styles.modalWordsContainer}>
                             {groupWords.map((word, i) => (
-
-                                <div key={i} className={styles.wordCard}>
-                                    <div className={styles.wordActions}>
-                                        {word.isInUserFlashcards ? (
-                                            <button className={styles.removeFlashcardBtn}
-                                                    onClick={() => handleRemoveFromFlashcards(word.id)}
-                                            >
-                                                Usuń z fiszek
-                                            </button>
-                                        ) : (
-                                            <button className={styles.addFlashcardBtn}
-                                                    onClick={() => handleAddToFlashcards(word.id)}
-                                            >
-                                                Dodaj do fiszek
-                                            </button>
-                                        )}
-
-                                    </div>
-
-                                    <h2 lang="ar" dir="rtl">{word.wordArabic}</h2>
-                                    <p className={styles.transliteration}>{word.Transliteration}</p>
-                                    <p className={styles.translation}>{word.wordTranslation}</p>
-
-                                </div>
+                                <FlashcardItem
+                                    key={word.id || i}
+                                    flashcard={word}
+                                    onAddToFlashcards={handleAddToFlashcards}
+                                    onRemoveFromFlashcards={handleRemoveFromFlashcards}
+                                    usage="wordBank"
+                                />
                             ))}
                         </div>
                     </>

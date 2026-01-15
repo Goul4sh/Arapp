@@ -57,8 +57,7 @@ export interface MorphologyPartsTaskType extends BaseTask {
 
 export interface MorphologySegment {
     id: string;
-    content: string; // np. "كـ"
-    form: string;
+    content: string;
 }
 
 export interface MorphologyFormTaskType extends BaseTask {
@@ -77,7 +76,7 @@ export interface MorphologyStep {
 
 export interface MorphologyOption {
     id: string;
-    content: string; // np. "كـ"
+    content: string;
     isCorrect: boolean;
 }
 
@@ -101,6 +100,13 @@ export interface FreehandWritingTaskType extends BaseTask{
     strokes: Array<Array<{ x: number; y: number }>>;
 }
 
+export interface TranslateTaskType extends BaseTask {
+
+    type: 'translate';
+    textToTranslate: string;
+    translatedText: string;
+}
+
 export type Task =
   (  ChooseOneTaskType
     | MultipleChoiceTaskType
@@ -111,5 +117,6 @@ export type Task =
     | TheoryTaskType
     | AssistedWritingTaskType
     | FreehandWritingTaskType)
+    | TranslateTaskType
     // & { id: number }
     ;

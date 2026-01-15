@@ -55,7 +55,7 @@ public class TaskController {
     }
 
     @PostMapping("/theory")
-    public ResponseEntity<?> createTask(@RequestBody CreateTheoryTaskCompendiumRequest data) {
+    public ResponseEntity<?> createTheoryTask(@RequestBody CreateTheoryTaskCompendiumRequest data) {
 
         Task createdTask = taskService.addTheoryTask(data);
         if (createdTask != null) {

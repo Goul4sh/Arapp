@@ -200,6 +200,8 @@
     padding: 10px;
 }
 
+
+
 .vocabularyModalContainer > div:first-child {
     background-color: #f9fafb;
     padding: 15px;
@@ -212,6 +214,13 @@
     font-size: 0.9rem;
     color: #374151;
     line-height: 1.5;
+}
+
+.errorMessage p {
+
+
+    color: #ef4444 !important;
+
 }
 
 .vocabularyTable {
@@ -317,6 +326,18 @@
     gap: 10px;
     padding-top: 15px;
     border-top: 1px solid #e5e7eb;
+}
+
+.buttonsContainer button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #cccccc;
+    color: #666666;
+}
+
+.buttonContainer button:disabled:hover {
+    background-color: #cccccc;
+    box-shadow: none;
 }
 
 .buttonsContainer button {

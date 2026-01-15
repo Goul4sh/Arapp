@@ -136,7 +136,7 @@ function WordBankManagementPage() {
 
         try {
 
-            await api.post('/api/admin/dictionary', newWord, {withCredentials: true});
+            await api.post('/api/admin/dictionary/add-word', newWord, {withCredentials: true});
 
             setCurrentPage(0);
             setSearchQuery('');

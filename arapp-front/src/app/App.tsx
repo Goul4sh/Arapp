@@ -34,16 +34,14 @@ function App() {
                 <Route path="/signup" element={<Signup/>}/>
                 <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
                 <Route path="/reset-password" element={<ResetPasswordPage/>}/>
-
+                {/*TODO zmienic linki do stron na pasujace do zawartosci */}
 
                 {/*Trasy dostepne po logowaniu, uzywajace widoku dashboard (header)*/}
                 <Route element={<ProtectedDashboardLayout/>}>
                     <Route path="/dashboard" element={<Dashboard/>}/>
                     <Route path="/review" element={<ReviewPage/>}/>
-                    <Route path="/quiz" element={<div>Quiz Page</div>}/>
                     <Route path="/letters" element={<WritingCoursePage/>}/>
                     <Route path="/words" element={<WordBank/>}/>
-                    <Route path="/grammar" element={<div>Grammar Page</div>}/>
                     <Route path="/exercises" element={<ExerciseSelector/>}/>
                 </Route>
 
@@ -51,6 +49,7 @@ function App() {
                 <Route element={<ProtectedExerciseLayout/>}>
                     <Route path="/exercises/:id" element={<ExerciseWrapperPage/>}/>
                     <Route path="/lessons/:lesson_id" element={<ExerciseWrapperPage/>}/>
+                    <Route path="/words-practice/:groupId" element={<ExerciseWrapperPage/>}/>
                 </Route>
 
                 <Route element={<ProtectedExerciseLayout/>}>

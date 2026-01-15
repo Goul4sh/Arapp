@@ -1,11 +1,14 @@
 import styles from './Review.module.css';
 import {useEffect, useState} from "react";
 import api from "../../auth/api.ts";
-import type {FlashcardItem, FlashcardsGroup, TemporaryWord} from "../reviewTypes.ts";
+import type {FlashcardItem, FlashcardsGroup, Word} from "../reviewTypes.ts";
+
 import {Link} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPencil, faPlus} from "@fortawesome/free-solid-svg-icons";
 import Modal from "../Modal.tsx";
+import FlashcardItemCard from "../components/FlashcardItem.tsx";
+import EditGroupModal from "../components/modals/EditGroupModal.tsx";
 
 //TODO dodac wyswietlanie harakat
 //TODO dodanie widoku  dodawani fiszek do grupy fiszek
@@ -19,7 +22,7 @@ function ReviewPage() {
 
     const [selectedGroup, setSelectedGroup] = useState<FlashcardsGroup | null>(null);
     const [flashcardGroups, setFlashcardGroups] = useState<FlashcardsGroup[]>([]);
-    const [recentlyEncounteredWords, setRecentlyEncounteredWords] = useState<TemporaryWord[]>([]);
+    const [recentlyEncounteredWords, setRecentlyEncounteredWords] = useState<Word[]>([]);
     const [selectedGroupIndex, setSelectedGroupIndex] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     // Training mode oznacza, ćwiczone są wszystkie fiszki, a nie tylko te do powtórki
@@ -29,18 +32,11 @@ function ReviewPage() {
     const [isShowAllModalOpen, setIsShowAllModalOpen] = useState(false);
     const [isAddGroupModalOpen, setIsAddGroupModalOpen] = useState(false);
 
-    const [isDeleteGroupButtonClicked, setIsDeleteGroupButtonClicked] = useState(false);
 
     const [newGroupData, setNewGroupData] = useState<{ name: string; category: string }>({
         name: '',
         category: ''
     });
-
-    const [editGroupData, setEditGroupData] = useState<{ name: string; category: string }>({
-        name: '',
-        category: ''
-    });
-    const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
 
     const dueFlashcards: FlashcardItem[] = selectedGroup?.flashcardItems?.filter(f => isFlashcardDue(f.nextReviewDate)) || [];
 
@@ -58,7 +54,9 @@ function ReviewPage() {
 
                 const userGroups = Array.isArray(groupsResp.data) ? groupsResp.data : [];
 
-                const defaultGroup : FlashcardsGroup = userGroups.find(g => g.isDefault);
+                console.log(userGroups);
+
+                const defaultGroup: FlashcardsGroup = userGroups.find(g => g.isDefault);
 
                 const customDefaultGroup = defaultGroup ? {
                     ...defaultGroup,
@@ -91,33 +89,6 @@ function ReviewPage() {
         fetchData();
 
     }, []);
-
-    //
-    // const createAllFlashcardsGroup = (): FlashcardsGroup | null => {
-    //     if (!flashcardGroups || flashcardGroups.length === 0) {
-    //         return {
-    //             id: '0',
-    //             name: 'Wszystkie fiszki',
-    //             category: 'Zbiorcza',
-    //             isDefault: true,
-    //             flashcardItems: []
-    //         }
-    //     }
-    //     const allFlashcards = flashcardGroups.flatMap(group => group.flashcardItems);
-    //
-    //     const uniqueFlashcardsMap = Array.from(
-    //         new Map(allFlashcards.map(flashcard => [flashcard.id, flashcard])).values()
-    //     )
-    //
-    //     return {
-    //         id: '0',
-    //         name: 'Wszystkie fiszki',
-    //         category: 'Zbiorcza',
-    //         flashcardItems: uniqueFlashcardsMap
-    //     } as FlashcardsGroup;
-    // }
-
-    // const allFlashcardsGroup = createAllFlashcardsGroup();
 
     const handleGroupClick = (group: FlashcardsGroup, index: number) => {
         setSelectedGroup(group);
@@ -172,104 +143,19 @@ function ReviewPage() {
 
     }
 
-    const handleDeleteGroupSubmit = async () => {
+    const handleGroupUpdated = (updatedGroup: FlashcardsGroup) => {
+        setFlashcardGroups(prev => prev.map(g =>
+            g.id === updatedGroup.id ? updatedGroup : g
+        ));
+        setSelectedGroup(updatedGroup);
+    };
 
-        try {
+    const handleGroupDeleted = (groupId: string) => {
+        setFlashcardGroups(prev => prev.filter(g => g.id !== groupId));
+        setSelectedGroup(null);
+        setSelectedGroupIndex(null);
+    };
 
-            await api.delete(`/api/flashcard-groups/${selectedGroup?.id}`, {withCredentials: true});
-
-            setFlashcardGroups(prev => prev.filter(g => g.id !== selectedGroup?.id));
-
-            setSelectedGroup(null);
-            setSelectedGroupIndex(null);
-            setIsEditModalOpen(false);
-            setIsDeleteGroupButtonClicked(false);
-
-        } catch (error) {
-            console.error("Błąd podczas usuwania grupy:", error);
-            alert("Nie udało się usunąć grupy.");
-
-        }
-
-    }
-
-
-    const startEditingGroup = () => {
-        if (!selectedGroup) return;
-        setEditingGroupId(selectedGroup.id);
-        setEditGroupData({
-            name: selectedGroup.name,
-            category: selectedGroup.category
-        });
-    }
-
-    const cancelEditingGroup = () => {
-        setEditingGroupId(null);
-        setEditGroupData({
-            name: '',
-            category: ''
-        })
-    }
-
-    const handleEditGroupSubmit = async () => {
-        if (!editingGroupId || !editGroupData) return;
-
-
-        const isChanged =
-            editGroupData.name !== selectedGroup?.name ||
-            editGroupData.category !== selectedGroup?.category;
-
-        if (!isChanged) {
-            cancelEditingGroup();
-            return;
-        }
-
-        if (editGroupData.category.trim() === "" || editGroupData.name.trim() === "") {
-            alert("Nazwa i kategoria grupy nie mogą być puste.");
-            return;
-        }
-
-        try {
-
-            setFlashcardGroups(prev => prev.map(g =>
-                g.id === editingGroupId
-                    ? {...g, name: editGroupData.name, category: editGroupData.category}
-                    : g));
-
-            // if (selectedGroup.id === editingGroupId) {
-            //     setSelectedGroup({
-            //         ...selectedGroup,
-            //         name: editingGroupData.name,
-            //         category: editingGroupData.category
-            //     });
-            // }
-
-
-            await api.patch(`/api/flashcard-groups/${editingGroupId}`,
-                {
-                    name: editGroupData.name,
-                    description: "",
-                    category: editGroupData.category,
-                    flashcardItem_Ids: []
-                    // dodawanie i odejmowanie fiszek z grupy nie jest obsługiwane tutaj
-                }, {withCredentials: true}
-            );
-
-            cancelEditingGroup();
-            setIsEditModalOpen(false)
-
-
-        } catch (error) {
-
-
-            console.error("Błąd podczas edycji grupy:", error);
-            alert("Nie udało się edytować grupy.");
-            const groupsResp = await api.get('/api/flashcard-groups/user', {withCredentials: true});
-            setFlashcardGroups(groupsResp.data);
-
-        }
-
-    }
 
     const handleShowAllClick = () => {
         setIsShowAllModalOpen(true);
@@ -348,11 +234,16 @@ function ReviewPage() {
                                         </div>
 
                                         <div className={styles.optionsButtons}>
-
-                                            {selectedGroupIndex === index ? (
-                                                    <FontAwesomeIcon icon={faPencil} className={styles.editGroupIcon}
-                                                                     onClick={() => handleGroupOptionClick()}></FontAwesomeIcon>)
-                                                : ("")}
+                                            {selectedGroupIndex === newIndex ? (
+                                                <FontAwesomeIcon
+                                                    icon={faPencil}
+                                                    className={styles.editGroupIcon}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleGroupOptionClick();
+                                                    }}
+                                                />
+                                            ) : null}
                                         </div>
 
                                     </div>
@@ -375,7 +266,6 @@ function ReviewPage() {
                             ) :
 
                             isTrainingMode ? (
-
 
                                 <Link
                                     to={`/review/${selectedGroup?.id}?training=true`}
@@ -417,23 +307,28 @@ function ReviewPage() {
 
                         <div className={styles.flashcardsSlider}>
 
-                            {dueFlashcards.length === 0 ?
-                                (<div className={styles.emptySliderState}>
+                            {dueFlashcards.length === 0 ? (
+                                selectedGroupIndex != null && selectedGroupIndex >= 0 ? (
+
+                                    <div className={styles.emptySliderState}>
+                                        Ta grupa jest pusta. <br/>Dodaj do niej fiszki spośród swoich fiszek, aby móc je
+                                        tutaj powtarzać.
+                                    </div>
+
+
+                                ) : (
+                                    <div className={styles.emptySliderState}>
                                         Wszystko powtórzone! <br/> Wróć później.
                                     </div>
-                                ) : (dueFlashcards.map((flashcard, index) =>
-                                        (
-                                            <div className={styles.flashcardItem} key={index}
-                                                // onClick={() => handleOptionClick(option)}
-                                            >
-                                                <div className={styles.flashcardContent}>
-                                                    <h1 lang="ar">{flashcard.word.wordArabic}</h1>
-                                                    <p className={styles.transliteration}>{flashcard.word.Transliteration}</p>
-                                                    <h2>{flashcard.word.wordTranslation}</h2>
-                                                </div>
-                                            </div>
-                                        ))
-                                )}
+                                )
+                            ) : (
+                                dueFlashcards.map((flashcard, index) => (
+                                    <FlashcardItemCard
+                                        key={flashcard.id || index}
+                                        flashcard={flashcard}
+                                    />
+                                ))
+                            )}
 
                         </div>
 
@@ -450,15 +345,9 @@ function ReviewPage() {
                                 :
                                 (recentlyEncounteredWords.map((word, index) => (
 
-                                        <div className={styles.flashcardItem} key={index}
-                                            // onClick={() => handleOptionClick(option)}
-                                        >
-                                            <div className={styles.flashcardContent}>
-                                                <h1 lang="ar">{word.wordArabic}</h1>
-                                                <p className={styles.transliteration}>{word.Transliteration}</p>
-                                                <h2>{word.wordTranslation}</h2>
-                                            </div>
-                                        </div>
+                                        <FlashcardItemCard
+                                            key={index}
+                                            flashcard={word}/>
                                     ))
                                 )}
 
@@ -478,31 +367,23 @@ function ReviewPage() {
             <Modal isOpen={isShowAllModalOpen}
                    onClose={() => setIsShowAllModalOpen(false)}
 
-
                    title={
                        selectedGroup?.id === '0'
                            ? 'Wszystkie fiszki'
                            : `Wszystkie fiszki w grupie: ${selectedGroup?.name}`
                    }
+                   headerClassName={styles.modalTitleClass}>
 
-                   headerClassName={styles.modalTitleClass}
-            >
                 <div className={styles.allFlashcardsModalContent}>
-
                     {!selectedGroup || !selectedGroup.flashcardItems || selectedGroup.flashcardItems.length === 0 ? (
                         <div>Brak fiszek w tej grupie.</div>
                     ) : (
                         <div className={styles.modalCardsContainer}>
-
                             {selectedGroup.flashcardItems.map((flashcard: FlashcardItem, index) => (
-
-                                <div className={styles.flashcardItem} key={index}>
-                                    <div className={styles.flashcardContent}>
-                                        <h1 lang="ar">{flashcard.word.wordArabic}</h1>
-                                        <p className={styles.transliteration}>{flashcard.word.Transliteration}</p>
-                                        <h2>{flashcard.word.wordTranslation}</h2>
-                                    </div>
-                                </div>
+                                <FlashcardItemCard
+                                    key={flashcard.id || index}
+                                    flashcard={flashcard}
+                                />
                             ))}
                         </div>
 
@@ -517,7 +398,6 @@ function ReviewPage() {
                 onClose={() => setIsAddGroupModalOpen(false)}
                 title={"Dodaj nową grupę fiszek"}>
                 <div className={styles.addGroupModalContent}>
-
                     <div>
                         <label> Nazwa grupy </label>
                         <input
@@ -548,124 +428,14 @@ function ReviewPage() {
                 </div>
             </Modal>
 
-            <Modal
+            <EditGroupModal
                 isOpen={isEditModalOpen}
-                onClose={() => {
-                    setIsEditModalOpen(false)
-                    setIsDeleteGroupButtonClicked(false)
-                }}
-                title={"Edytuj grupę fiszek"}>
-                <div>
-
-                    {!isDeleteGroupButtonClicked ? (
-                        <div className={styles.editGrouModalContent}>
-
-
-                            {editingGroupId ? (
-                                <div className={styles.editModeInputs}>
-                                    <div>
-                                        <label>Nazwa grupy</label>
-                                        <input
-                                            type="text"
-                                            className={styles.inputField}
-                                            value={editGroupData.name}
-                                            onChange={e => setEditGroupData({
-                                                ...editGroupData,
-                                                name: e.target.value
-                                            })}
-                                            placeholder="Nazwa grupy"
-                                            autoFocus
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label>Kategoria</label>
-                                        <input
-                                            type="text"
-                                            className={styles.inputField}
-                                            value={editGroupData.category}
-                                            onChange={e => setEditGroupData({
-                                                ...editGroupData,
-                                                category: e.target.value
-                                            })}
-                                            placeholder="Kategoria"
-                                        />
-                                    </div>
-
-                                    <div className={styles.editButtons}>
-                                        <button
-                                            className={styles.saveButton}
-                                            onClick={() => handleEditGroupSubmit()}
-                                        >
-                                            Zapisz zmiany
-                                        </button>
-                                        <button
-                                            className={styles.cancelButton}
-                                            onClick={() => cancelEditingGroup()}
-                                        >
-                                            Anuluj
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className={styles.viewMode}>
-                                    <div className={styles.groupDetails}>
-                                        <p><strong>Nazwa:</strong> {selectedGroup?.name}</p>
-                                        <p><strong>Kategoria:</strong> {selectedGroup?.category}</p>
-                                    </div>
-
-                                    <div className={styles.actionButtons}>
-                                        <button
-                                            className={styles.editButton}
-                                            onClick={() => startEditingGroup()}
-                                        >
-                                            Edytuj dane grupy
-                                        </button>
-
-                                        <button
-                                            className={styles.deleteGroupButton}
-                                            onClick={() => setIsDeleteGroupButtonClicked(true)}
-                                        >
-                                            Usuń grupę
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-
-
-                            {/*<button className={styles.deleteGroupButton}*/}
-                            {/*        onClick={() => setIsDeleteGroupButtonClicked(true)}>*/}
-                            {/*    Usuń grupę*/}
-                            {/*</button>*/}
-
-
-                        </div>
-                    ) : (
-
-                        <div className={styles.deleteConfirmationModal}>
-
-                            <h2> Jesteś pewien, że chcesz usunąć grupę?</h2>
-                            <p> Ta akcja jest nieodwracalna. Wszystkie fiszki z tej grupy nadal pozostaną w twoim
-                                zbiorze.</p>
-
-                            <div className={styles.deleteConfirmationButtons}>
-                                <button className={styles.confirmDeleteButton}
-                                        onClick={() => handleDeleteGroupSubmit()}>
-                                    Tak, usuń grupę
-                                </button>
-                                <button className={styles.cancelDeleteButton}
-                                        onClick={() => setIsDeleteGroupButtonClicked(false)}>
-                                    Anuluj
-                                </button>
-                            </div>
-                        </div>
-                    )
-
-                    }
-
-                </div>
-            </Modal>
-
+                onClose={() => setIsEditModalOpen(false)}
+                selectedGroup={selectedGroup}
+                defaultGroup={flashcardGroups[0]}
+                onGroupUpdated={handleGroupUpdated}
+                onGroupDeleted={handleGroupDeleted}
+            />
 
         </div>
     )

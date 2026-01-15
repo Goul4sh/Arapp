@@ -18,9 +18,3 @@ public record MorphologyPartsTaskData(
     }
 }
 
-record MorphologySegment(
- String id,
- String content,
- String form
-) {
-}

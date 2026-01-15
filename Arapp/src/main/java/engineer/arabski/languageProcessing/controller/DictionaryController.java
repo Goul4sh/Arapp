@@ -30,18 +30,29 @@ public class DictionaryController {
 
 
     @PostMapping("/add-words")
-    public ResponseEntity<?> addWordsToDictionary(@RequestBody List<SaveDictionaryWordRequest> words) {
-        for (SaveDictionaryWordRequest word : words) {
-            dictionaryService.saveOrGetDictionaryWord(
+    public ResponseEntity<?> addWordsToDictionary(@RequestBody List<SaveDictionaryWordWithReferenceRequest> words) {
+        for (SaveDictionaryWordWithReferenceRequest word : words) {
+            dictionaryService.saveOrGetDictionaryWord(new NewDictionaryWordRequest(
                     word.lemma(),
+                    "",
                     word.root(),
                     word.partOfSpeech(),
-                    word.translation()
+                    word.translation())
             );
         }
 
         return ResponseEntity.status(HttpStatus.OK).body("Words added/updated successfully.");
     }
+
+    @PostMapping("/add-word")
+    public ResponseEntity<?> addWordToDictionary(@RequestBody NewDictionaryWordRequest word) {
+            dictionaryService.saveOrGetDictionaryWord(
+                 word
+            );
+
+        return ResponseEntity.status(HttpStatus.OK).body("Words added/updated successfully.");
+    }
+
 
     @GetMapping
     public ResponseEntity<?> getDictionaryWordsPageable(

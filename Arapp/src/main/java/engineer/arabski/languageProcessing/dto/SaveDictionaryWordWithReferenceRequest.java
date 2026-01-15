@@ -1,6 +1,6 @@
 package engineer.arabski.languageProcessing.dto;
 
-public record SaveDictionaryWordRequest(
+public record SaveDictionaryWordWithReferenceRequest(
 
         String lemma,
         String root,

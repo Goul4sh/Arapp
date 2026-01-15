@@ -209,8 +209,6 @@ function WordGroupManagement() {
     const handleDeleteWord = (groupId: number, wordId: number) => {
         setDeletingWord({groupId, wordId});
 
-        //TODO
-
     };
 
     const confirmDeleteWord = async () => {

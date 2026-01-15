@@ -18,8 +18,6 @@ type VocabularyItem = {
     lemma: string,
     partOfSpeech: string,
     root: string,
-    // diacritic: string,
-    // String definition,
     wordId: number,
     translation: string
     isIncluded: boolean;

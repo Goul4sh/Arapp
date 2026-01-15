@@ -9,20 +9,27 @@ import MorphologyFormTask from "../components/tasks/MorphologyFormTask.tsx";
 import MorphologyPartsTask from "../components/tasks/MorphologyPartsTask.tsx";
 import TheoryTask from "../components/tasks/TheoryTask.tsx";
 import AssistedWritingTask from "../components/tasks/AssistedWritingTask.tsx";
+import TranslateTask from "../components/tasks/TranslateTask.tsx";
 
 
 // Komponent odpowiedzialny za wybór i renderowanie odpowiedniego typu zadania
 
 interface ExerciseRendererProps {
-    id: number;
-    data: Task;
+    id?: number;
+    data?: Task;
 }
 
-function ExerciseRenderer({currentTask}: { currentTask: ExerciseRendererProps }) {
+function ExerciseRenderer({currentTask}: { currentTask: ExerciseRendererProps | Task }) {
 
+console.log("Rzecz ktora dostalem do renderera zadan:", currentTask);
+
+    const task: Task = 'data' in currentTask && currentTask.data
+        ? currentTask.data
+        : currentTask as Task;
 
     function TaskSelector({task}: { task: Task }) {
 
+        console.log("Rzecz ktora dostalem do selectora zadan:", task);
 
         switch (task.type) {
             case 'multiple-choice':
@@ -41,6 +48,8 @@ function ExerciseRenderer({currentTask}: { currentTask: ExerciseRendererProps })
                 return <TheoryTask task={task}/>;
             case "writing-assisted":
                 return <AssistedWritingTask task={task}/>
+            case "translate":
+                return <TranslateTask task={task}/>
 
             default:
                 return <div>Unknown task type</div>;
@@ -52,7 +61,7 @@ function ExerciseRenderer({currentTask}: { currentTask: ExerciseRendererProps })
 
             <div className={styles.rendererContainer}>
 
-                <TaskSelector task={currentTask.data}/>
+                <TaskSelector task={task}/>
 
             </div>
 
