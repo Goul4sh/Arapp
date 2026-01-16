@@ -5,7 +5,6 @@ public record UserStatsRequest (
         Long completedTasks,
         Long correctAnswers,
         Long incorrectAnswers,
-        Long durationSeconds
-
-) {
+        Long durationSeconds,
+        Long flashcardsReviewed) {
 }

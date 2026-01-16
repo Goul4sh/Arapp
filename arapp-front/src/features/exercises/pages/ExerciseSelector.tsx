@@ -19,171 +19,19 @@ import {useState} from "react";
 
 function ExerciseSelector() {
 
-    const [exerciseId, setExerciseId] = useState('8');
 
 
-    return (<>
+
+
+
+    return (
 
             <div className={styles.exercisePage}>
 
 
-                {/*<p> Exercise Selector Component </p>*/}
-
-
-                <div className={styles.cardsContainer}>
-
-                    <div className={styles.exerciseCard}>
-
-                        <FontAwesomeIcon icon={faBook}/>
-                        <p> Kliknij aby rozpocząć ćwiczenie</p>
-                        <p style={{color: "green"}}> Fill in the blank </p>
-
-                        <Link to={"/exercises/3"} className={styles.startLink}>
-                            <button className={styles.startButton}>
-                                <FontAwesomeIcon icon={faPlay}/> Start
-                            </button>
-
-                        </Link>
-
-                    </div>
-
-                    <div className={styles.exerciseCard}>
-
-                        <FontAwesomeIcon icon={faBook}/>
-                        <p> Kliknij aby rozpocząć ćwiczenie</p>
-                        <p style={{color: "rosybrown"}}> Multiple choice </p>
-
-                        <Link to={"/exercises/2"} className={styles.startLink}>
-                            <button className={styles.startButton}>
-                                <FontAwesomeIcon icon={faPlay}/> Start
-                            </button>
-
-                        </Link>
-
-                    </div>
-
-                    <div className={styles.exerciseCard}>
-
-                        <FontAwesomeIcon icon={faBook}/>
-                        <p> Kliknij aby rozpocząć ćwiczenie</p>
-                        <p style={{color: "pink"}}> Matching </p>
-
-                        <Link to={"/exercises/4"} className={styles.startLink}>
-                            <button className={styles.startButton}>
-                                <FontAwesomeIcon icon={faPlay}/> Start
-                            </button>
-
-                        </Link>
-
-                    </div>
-
-                    <div className={styles.exerciseCard}>
-
-                        <FontAwesomeIcon icon={faBook}/>
-                        <p> Kliknij aby rozpocząć ćwiczenie</p>
-                        <p style={{color: "red"}}> Choose one </p>
-
-                        <Link to={"/exercises/1"} className={styles.startLink}>
-                            <button className={styles.startButton}>
-                                <FontAwesomeIcon icon={faPlay}/> Start
-                            </button>
-
-                        </Link>
-
-                    </div>
-
-
-                    <div className={styles.exerciseCard}>
-
-                        <FontAwesomeIcon icon={faBook}/>
-                        <p> Kliknij aby rozpocząć ćwiczenie</p>
-                        <p style={{color: "red"}}> Morphology form </p>
-
-                        <Link to={"/exercises/2"} className={styles.startLink}>
-                            <button className={styles.startButton}>
-                                <FontAwesomeIcon icon={faPlay}/> Start
-                            </button>
-
-                        </Link>
-
-                    </div>
-
-                    <div className={styles.exerciseCard}>
-
-                        <FontAwesomeIcon icon={faBook}/>
-                        <p> Kliknij aby rozpocząć ćwiczenie</p>
-                        <p style={{color: "red"}}> Morphology parts </p>
-
-                        <Link to={"/exercises/3"} className={styles.startLink}>
-                            <button className={styles.startButton}>
-                                <FontAwesomeIcon icon={faPlay}/> Start
-                            </button>
-
-                        </Link>
-
-                    </div>
-
-                    <div className={styles.exerciseCard}>
-
-                        <FontAwesomeIcon icon={faBook}/>
-                        <p> Kliknij aby rozpocząć ćwiczenie</p>
-                        <p style={{color: "cadetblue"}}> Assisted writing </p>
-
-                        <Link to={"/exercises/8"} className={styles.startLink}>
-                            <button className={styles.startButton}>
-                                <FontAwesomeIcon icon={faPlay}/> Start
-                            </button>
-
-                        </Link>
-
-                    </div>
-
-
-                    <div className={styles.exerciseCard}>
-
-                        <FontAwesomeIcon icon={faBook}/>
-                        <p> Kliknij aby rozpocząć ćwiczenie</p>
-                        <p style={{color: "cadetblue"}}> Wpisz id </p>
-
-                        <input
-                            type="number"
-                            value={exerciseId}
-                            onChange={(e) => setExerciseId(e.target.value)}
-                            placeholder="Numer ćwiczenia"
-                            className={styles.exerciseInput}
-                            min="1"
-                        />
-
-                        <Link to={`/exercises/${exerciseId}`} className={styles.startLink}>
-                            <button className={styles.startButton}>
-                                <FontAwesomeIcon icon={faPlay}/> Start
-                            </button>
-
-                        </Link>
-
-                    </div>
-
-                    <div className={styles.exerciseCard}>
-
-                        <FontAwesomeIcon icon={faBook}/>
-                        <p> Kliknij aby rozpocząć lekcję!</p>
-                        <p style={{color: "blueviolet"}}> Lekcja </p>
-
-                        <Link to={"/lessons/50"} className={styles.startLink}>
-                            <button className={styles.startButton}>
-                                <FontAwesomeIcon icon={faPlay}/> Start
-                            </button>
-
-                        </Link>
-
-                    </div>
-
-                </div>
-
-
             </div>
 
-        </>
+
     );
 }
 

@@ -8,6 +8,7 @@ public record GlobalStatsResponse(
         Long totalCorrectAnswers,
         Long totalIncorrectAnswers,
         Long totalDurationSeconds,
+        Long totalFlashcardsReviewed,
         List<String> activityDates,
         Long currentStreak
 ) {

@@ -36,4 +36,6 @@ public class DailyUserStats {
     private Long dailyIncorrectAnswers = 0L;
     private Long dailyLearningTime = 0L; // Czas w sekundach
 
+    private Long dailyFlashcardsReviewed = 0L;
+
 }

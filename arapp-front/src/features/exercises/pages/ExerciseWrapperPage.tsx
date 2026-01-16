@@ -8,8 +8,10 @@ import type {Task} from "../taskTypes.ts";
 import ProgressBar from "../components/ProgressBar.tsx";
 import {LessonContext} from "../components/LessonContext.tsx";
 import SessionSummary from "../components/SessionSummary.tsx";
+import ExitModal from "../components/ExitModal.tsx";
 
 type TaskWithId = Task & { id: number };
+
 
 // Komponent opakowujący komponent ćwiczenia. Pobiera dane na podstawie ID z url.
 
@@ -38,6 +40,7 @@ function ExerciseWrapperPage() {
             ? 'word-group'
             : 'exercise';
 
+    const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
     const [sessionStats, setSessionStats] = useState({
         correctAnswers: 0,
@@ -54,23 +57,19 @@ function ExerciseWrapperPage() {
         console.log('Tryb:', workingMode);
 
         if (source === 'lesson-path') {
-            api.get(`/api/lessons/${lesson_id}`, {withCredentials: true})
+            api.get(`/api/lessons/${lesson_id}?includeFlashcardInfo=true`, {withCredentials: true})
                 .then(resp => {
 
-                    const tasks = resp.data.tasks;
-
-                    console.log("Taski ktore dostalem od lekcji to", tasks);
-
-
-                    const tasksWithIds = tasks.map((task: Task, index: number) => ({
-                        ...task,
-                        id: index
+                    const tasks = resp.data.tasks.map((taskWrapper: any, index: number) => ({
+                        ...taskWrapper.data,
+                        id: index,
+                        references: taskWrapper.references,
                     }));
 
-                    console.log(tasksWithIds);
-                    setTaskQueue(tasksWithIds);
-                    setCurrentTask(tasksWithIds[0]);
-                    setTotalTasks(tasksWithIds.length);
+                    console.log("Oto są nowe taski z lekcji:", tasks);
+                    setTaskQueue(tasks);
+                    setCurrentTask(tasks[0]);
+                    setTotalTasks(tasks.length);
                     setLoading(false);
 
                 });
@@ -213,7 +212,17 @@ function ExerciseWrapperPage() {
     };
 
 
-    const handleExit = () => {
+    const handleExitClick = () => {
+        setIsExitModalOpen(true);
+
+    }
+
+    const handleExitCancel = () => {
+        setIsExitModalOpen(false);
+    }
+
+    const handleExitConfirm = () => {
+        setIsExitModalOpen(false);
 
         switch (source) {
             case 'lesson-path':
@@ -239,7 +248,7 @@ function ExerciseWrapperPage() {
                     correct={sessionStats.correctAnswers}
                     incorrect={sessionStats.incorrectAnswers}
                     duration={sessionStats.finalDuration}
-                    onExit={handleExit}
+                    onExit={handleExitConfirm}
                 />
             </div>
         );
@@ -258,7 +267,9 @@ function ExerciseWrapperPage() {
                 <div className={progressBarStyles.topBar}>
 
                     <div className={progressBarStyles.exitButton}>
-                        <Link to="/exercises">X</Link>
+                        <button onClick={handleExitClick}>
+                            X
+                        </button>
                     </div>
 
                     <ProgressBar progress={progress}/>
@@ -273,6 +284,11 @@ function ExerciseWrapperPage() {
                 </div>
 
             </div>
+
+
+            <ExitModal isOpen={isExitModalOpen}
+                       onClose={handleExitCancel}
+                       onConfirm={handleExitConfirm}/>
 
         </div>
     )

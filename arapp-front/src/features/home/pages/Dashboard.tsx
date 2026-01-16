@@ -28,6 +28,7 @@ function Dashboard(): JSX.Element {
         totalCorrectAnswers: 0,
         totalDurationSeconds: 0,
         totalIncorrectAnswers: 0,
+        totalFlashcardsReviewed: 0,
         currentStreak: 0,
         activityDates: []
 
@@ -36,7 +37,8 @@ function Dashboard(): JSX.Element {
         completedTasks: 0,
         correctAnswers: 0,
         incorrectAnswers: 0,
-        durationSeconds: 0
+        durationSeconds: 0,
+        flashcardsReviewed: 0,
     });
 
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -66,7 +68,7 @@ function Dashboard(): JSX.Element {
     }, []);
 
     useEffect(() => {
-        console.log('Stats updated:', stats);
+        console.log('Global stats updated:', stats);
     }, [stats]);
 
     useEffect(() => {
@@ -250,7 +252,7 @@ function Dashboard(): JSX.Element {
 
                                 </div>
                                 <div className={styles.cardContent}>
-                                    <h2> {stats.totalIncorrectAnswers}</h2>
+                                    <h2> {stats.totalFlashcardsReviewed}</h2>
                                     <p className={styles.statsTitle}>Powtórzone fiszki</p>
                                 </div>
                             </div>
@@ -285,6 +287,14 @@ function Dashboard(): JSX.Element {
                                                 <p className={styles.statValue}> {dailyStats.completedTasks} </p></div>
 
                                         </div>
+
+                                        <div className={styles.columnStatItem}>
+                                            <div className={styles.columnStatContent}><p
+                                                className={styles.statText}>Powtórzone fiszki:</p>
+                                                <p className={styles.statValue}> {dailyStats.flashcardsReviewed} </p></div>
+
+                                        </div>
+
                                     </div>
                                 </div>
 

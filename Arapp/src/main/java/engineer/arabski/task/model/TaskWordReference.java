@@ -39,7 +39,7 @@ public class TaskWordReference {
 
     private int startIndex;
     private int endIndex;
-
+    private String contextualTranslation;
 
     public TaskWordReference(Task task, DictionaryWord dictionaryWord, Integer startIndex, Integer endIndex) {
         this.task = task;

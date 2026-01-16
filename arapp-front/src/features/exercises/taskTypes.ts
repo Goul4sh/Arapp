@@ -4,6 +4,7 @@ export interface BaseTask {
     id: number;
     type: string;
     description: string;
+    references?: any;
 }
 
 //Uwaga ! możliwe ze bedzie trzeba zmienic nazwy atrybutow, aby zgadzaly sie z jsonem z backendu

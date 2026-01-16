@@ -14,18 +14,6 @@ import {TaskPreviewRenderer} from "./components/taskCreation/TaskPreviewRenderer
 import {TaskCreator} from "./components/taskCreation/TaskCreator.tsx"
 import VocabularyModal from "./components/modals/VocabularyModal.tsx";
 
-
-
-// interface LessonResponse {
-//
-//     id: number;
-//     title: string;
-//     icon: string;
-//     description: string;
-//     taskCount: number;
-//     isPublished: boolean;
-// }
-
 interface LocalLesson {
     id: number;
     title: string;
@@ -80,6 +68,8 @@ const AVAILABLE_TASK_TYPES = [
     {type: 'morphology-form', label: 'Morfologia - Formy liter'},
     {type: 'morphology-parts', label: 'Morfologia - Części słowa'},
     {type: 'theory', label: 'Teoria'},
+    {type: 'translate', label: 'Tłumaczenie'},
+    {type: 'writing-assisted', label: 'Pisanie wspomagane'}
 ];
 
 function TaskManagementPage() {
@@ -323,17 +313,40 @@ function TaskManagementPage() {
         setTaskVocabAnalysis([]);
     }
 
+    const extractTextForAnalysis = (taskData: Partial<TaskTypes.Task>): string => {
+        if (!taskData.type) return taskData.description || "";
+
+        switch (taskData.type) {
+            case 'choose-one':
+            case 'multiple-choice':
+            case 'fill-in-the-blank': {
+                const task = taskData as Partial<TaskTypes.FillInTheBlankTaskType>;
+                return `${task.sentenceWithBlank || ''}`;
+            }
+            case 'match-pairs':
+            case 'translate': {
+                const task = taskData as Partial<TaskTypes.TranslateTaskType>;
+                return `${task.textToTranslate || ''}`;
+            }
+
+            //TODO jesli reszta zadziala - dodać tu inne przypadki
+            case 'writing-assisted':
+            case 'theory':
+            case 'morphology-form':
+            case 'morphology-parts':
+            default:
+                return taskData.description || "";
+        }
+    };
+
     const analyzeVocabulary = async (taskData: Partial<TaskTypes.Task>) => {
 
         try {
 
-            console.log(taskData);
-            console.log("To wysyłam do analizy słownictwa:", taskData.description);
-
+            const textForAnalysis = extractTextForAnalysis(taskData);
             // const payload = {text: taskData.description || ""};
-
             const response = await
-                api.post('/api/admin/dictionary/analyze', {text: taskData.description},
+                api.post('/api/admin/dictionary/analyze', {text:textForAnalysis },
                     {withCredentials: true});
 
             console.log("Otrzymana analiza słownictwa:", response.data);
@@ -343,8 +356,6 @@ function TaskManagementPage() {
         } catch (error) {
             console.error("Błąd podczas analizy słownictwa:", error);
         }
-
-
     }
 
     const handleAnalyzeVocabularyButtonClicked = async (taskData: Partial<TaskTypes.Task>) => {
@@ -358,15 +369,14 @@ function TaskManagementPage() {
     // Skopiowałem połowę funkcji z saveTask
     const handleVocabularyConfirmed = async (confirmedVocabulary: VocabularyItem[]) => {
 
-        console.log("Takie items otrzymalem z modal:", confirmedVocabulary);
+        // console.log("Takie items otrzymalem z modal:", confirmedVocabulary);
 
         const currentLessonId = expandedLessonId;
         if (!currentLessonId || !pendingTaskData) return;
 
-
         const wordsToSave = confirmedVocabulary.filter(item => item.isIncluded);
 
-        console.log("Po przefiltrowaniu jedynie isIncluded zostały mi takie słowa do przesłania:", wordsToSave);
+        // console.log("Po przefiltrowaniu jedynie isIncluded zostały mi takie słowa do przesłania:", wordsToSave);
 
         const fullPayload = {
             taskData: pendingTaskData,

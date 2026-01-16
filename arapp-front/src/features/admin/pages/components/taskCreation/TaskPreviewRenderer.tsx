@@ -7,6 +7,7 @@ import MatchPairsTask from "../../../../exercises/components/tasks/MatchPairsTas
 import MorphologyFormTask from "../../../../exercises/components/tasks/MorphologyFormTask.tsx";
 import MorphologyPartsTask from "../../../../exercises/components/tasks/MorphologyPartsTask.tsx";
 import TheoryTask from "../../../../exercises/components/tasks/TheoryTask.tsx";
+import TranslateTask from "../../../../exercises/components/tasks/TranslateTask.tsx";
 
 
 interface Props {
@@ -142,6 +143,19 @@ export const TaskPreviewRenderer = ({ taskType, taskData }: Props) => {
 
 
                 return <TheoryTask task={theoryTask}/>;}
+
+                case "translate":{
+                const data = taskData as Partial<TaskTypes.TranslateTaskType>;
+
+                const translateTask: TaskTypes.TranslateTaskType = {
+                    id: 0,
+                    type: "translate",
+                    description: data.description || "Podgląd pytania...",
+                    textToTranslate: data.textToTranslate || "Podgląd tekstu do przetłumaczenia.",
+                    translatedText: data.translatedText || "Podgląd przetłumaczonego tekstu."
+                };
+
+                return <TranslateTask task={translateTask}/>;}
 
 
 

@@ -1,6 +1,8 @@
 import {useEffect, useState} from "react";
-import localStyles from "./TaskForms.module.css"
+import styles from "./TaskForms.module.css"
 import type {MultipleChoiceFormType} from "./formTaskTypes.ts";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
     onDataChange: (data: MultipleChoiceFormType) => void;
@@ -40,75 +42,123 @@ const MultipleChoiceForm = ({onDataChange, initialData}: Props) => {
         }
     }
 
+
+    const addAnswer = () => {
+        setFormData({ ...formData, answers: [...formData.answers, ''] });
+    };
+
+    const handleAnswerChange = (index: number, value: string) => {
+        const newAnswers = [...formData.answers];
+        newAnswers[index] = value;
+        setFormData({ ...formData, answers: newAnswers });
+    };
+
+    const handleDecoyChange = (index: number, value: string) => {
+        const newDecoys = [...formData.decoyAnswers];
+        newDecoys[index] = value;
+        setFormData({ ...formData, decoyAnswers: newDecoys });
+    };
+
+    const addDecoyAnswer = () => {
+        setFormData({ ...formData, decoyAnswers: [...formData.decoyAnswers, ''] });
+    };
+
+
     return (
-        <div className={localStyles.formSection}>
-            <h3>Multiple Choice Task</h3>
-            <label>
-                Description:
+        <div className={styles.formContainer}>
+
+            <div className={styles.formSection}>
+                <label className={styles.formLabel}>
+                    Treść pytania / zadania
+                </label>
                 <textarea
+                    className={styles.formTextarea}
                     value={formData.description}
-                    onChange={(e) => setFormData({...formData, description: e.target.value})}
-                    placeholder="Enter task description"
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Które z poniższych słów są rzeczownikami?"
+                    rows={3}
                 />
-            </label>
-            <div>
-                <strong>Correct Answers:</strong>
-                {formData.answers.map((answer, index) => (
-                    <div key={index}>
-                        <input
+            </div>
 
-                            type="text"
-                            value={answer}
-                            onChange={(e) => {
-                                const newAnswers = [...formData.answers]
-                                newAnswers[index] = e.target.value
-                                setFormData({...formData, answers: newAnswers})
-                            }}
-                            placeholder={`Correct answer ${index + 1}`}
-                        />
-                        {formData.answers.length > 1 && (
-                            <button onClick={() => removeAnswer(index)}>Remove</button>
-                        )}
+            <div className={styles.formSection}>
+                <label className={styles.formLabel}>
+                    Poprawne odpowiedzi
+                </label>
 
-                    </div>
-                ))}
-                <button onClick={() => setFormData({
-                    ...formData,
-                    answers: [...formData.answers, '']
-                })}>
-                    Add Correct Answer
+
+                <div className={styles.dynamicList}>
+                    {formData.answers.map((answer, index) => (
+                        <div key={index} className={styles.listItem}>
+                            <div className={styles.listItemContent}>
+                                <input
+                                    className={styles.formInput}
+                                    type="text"
+                                    value={answer}
+                                    onChange={(e) => handleAnswerChange(index, e.target.value)}
+                                    placeholder={`Poprawna opcja #${index + 1}`}
+                                />
+                            </div>
+                            <div className={styles.listItemActions}>
+                                <button
+                                    className={styles.iconButton}
+                                    onClick={() => removeAnswer(index)}
+                                    disabled={formData.answers.length <= 1}
+                                    title="Usuń poprawną odpowiedź"
+                                >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <button
+                    className={styles.addButton}
+                    onClick={addAnswer}>
+                    <FontAwesomeIcon icon={faPlus} /> Dodaj poprawną odpowiedź
                 </button>
             </div>
-            <div>
-                <strong>Decoy Answers:</strong>
-                {formData.decoyAnswers.map((decoy, index) => (
-                    <div key={index}>
-                        <input
 
-                            type="text"
-                            value={decoy}
-                            onChange={(e) => {
-                                const newDecoys = [...formData.decoyAnswers]
-                                newDecoys[index] = e.target.value
-                                setFormData({...formData, decoyAnswers: newDecoys})
-                            }}
-                            placeholder={`Decoy answer ${index + 1}`}
-                        />
+            <div className={styles.formSection}>
+                <label className={styles.formLabel}>
+                    Błędne odpowiedzi
+                </label>
 
-                        {formData.decoyAnswers.length > 1 && (
-                            <button onClick={() => removeDecoyAnswer(index)}> Remove decoy </button>)
-                        }
+                <div className={styles.dynamicList}>
+                    {formData.decoyAnswers.map((decoy, index) => (
+                        <div key={index} className={styles.listItem}>
+                            <div className={styles.listItemContent}>
+                                <input
+                                    className={styles.formInput}
+                                    type="text"
+                                    value={decoy}
+                                    onChange={(e) => handleDecoyChange(index, e.target.value)}
+                                    placeholder={`Błędna opcja #${index + 1}`}
+                                />
+                            </div>
 
-                    </div>
-                ))}
-                <button onClick={() => setFormData({
-                    ...formData,
-                    decoyAnswers: [...formData.decoyAnswers, '']
-                })}>
-                    Add Decoy Answer
+                            <div className={styles.listItemActions}>
+                                <button
+                                    className={styles.iconButton}
+                                    onClick={() => removeDecoyAnswer(index)}
+                                    disabled={formData.decoyAnswers.length <= 1}
+                                    title="Usuń zmyłkę"
+                                >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <button
+                    className={`${styles.addButton} ${styles.decoyButton}`}
+                    onClick={addDecoyAnswer}
+                >
+                    <FontAwesomeIcon icon={faPlus} /> Dodaj zmyłkę
                 </button>
             </div>
+
         </div>
-    )
+    );
+
 }
 export default MultipleChoiceForm;

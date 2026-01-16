@@ -7,7 +7,8 @@ public record UserStatsResponse(
         Long completedTasks,
         Long correctAnswers,
         Long incorrectAnswers,
-        Long durationSeconds
+        Long durationSeconds,
+        Long flashcardsReviewed
 
 ) {
     public static UserStatsResponse fromEntity(UserStats userStats) {
@@ -15,7 +16,8 @@ public record UserStatsResponse(
                 userStats.getCompletedTasks(),
                 userStats.getCorrectAnswers(),
                 userStats.getIncorrectAnswers(),
-                userStats.getDurationSeconds()
+                userStats.getDurationSeconds(),
+                userStats.getFlashcardsReviewed()
         );
     }
 }

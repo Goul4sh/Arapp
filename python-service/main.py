@@ -24,6 +24,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+PRONOUNS = {
+    "أنا", "أنت", "أنتِ", "هو", "هي",
+    "نحن", "أنتم", "أنتن", "هم", "هن"
+}
+
 
 class TextRequest(BaseModel):
     text: str
@@ -72,21 +77,39 @@ async def analyze_text(req: TextRequest):
         end_id = start_idx + len(original)
         word_index_cursor = end_id
 
-        print("Indeksy słowa:", start_idx, end_id)
-
         lemma = original
         root = ""
-        pos = "noun"
+        pos = "unknown"
         diacritized = original
 
+        if original in PRONOUNS:
+            results.append(LemmaResponse(
+                original=original,
+                lemma=original,
+                root="",
+                pos="pron",
+                diacritized=original,
+                startIndex=start_idx,
+                endIndex=end_id
+            ))
+            continue
+
         if word and hasattr(word, 'analyses') and len(word.analyses) > 0:
-            best_match = word.analyses[0]
+
+            best_match = next(
+                (a for a in word.analyses if a.analysis.get('root')),
+                word.analyses[0]
+            )
+
             data = best_match.analysis
 
             raw_lemma = data.get('lex', original)
             lemma = raw_lemma.split('_')[0]
 
             root = data.get('root', 'unknown')
+            if '#' in root:
+                root = ""
+
             pos = data.get('pos', 'unknown')
             diacritized = data.get('diac', original)
 

@@ -33,5 +33,4 @@ public interface FlashcardRepository extends JpaRepository<FlashcardItem,Long> {
     @Query("DELETE FROM FlashcardItem f WHERE f.flashcardOwner.id = :ownerId AND f.word.id = :wordId")
     void deleteByFlashcardOwner_IdAndWord_Id(@Param("ownerId") Long ownerId, @Param("wordId") Long wordId);
 
-
 }

@@ -256,7 +256,7 @@ function ReviewPage() {
                 <div className={styles.columnCenter}>
 
                     <div className={styles.topRow}>
-                        {dueFlashcards.length === 0 ? (
+                        {dueFlashcards.length === 0 && !isTrainingMode ? (
                                 <button
                                     className={`${styles.startPracticeButton}`}
                                     disabled

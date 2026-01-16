@@ -34,49 +34,16 @@ public class StatsService {
         this.userService = userService;
     }
 
-    // wykorzystuje stare userstats do zapisywania nowych, malo optymalne rozwiązanie
-    public UserStatsResponse addUserStats(UserStatsRequest userStatsRequest, Long userId) {
-
-        User user = userService.getUserById(userId);
-
-        UserStats userStats = new UserStats(
-                userStatsRequest.completedTasks(),
-                userStatsRequest.correctAnswers(),
-                userStatsRequest.incorrectAnswers(),
-                userStatsRequest.durationSeconds(),
-                user
-        );
-
-        userStatsRepository.save(userStats);
-
-        return UserStatsResponse.fromEntity(userStats);
-    }
-
-    // wykorzystuje stare userstats do zapisywania nowych, malo optymalne rozwiązanie
-    public UserStatsResponse getUserStats(Long userId) {
-        UserStatsAggregation stats = userStatsRepository.getAggregatedStatsByUserId(userId);
-
-        if (stats == null) {
-            return new UserStatsResponse(0L, 0L, 0L, 0L);
-        }
-
-        return new UserStatsResponse(
-                stats.getCompletedTasks(),
-                stats.getCorrectAnswers(),
-                stats.getIncorrectAnswers(),
-                stats.getDurationSeconds()
-        );
-    }
-
     public UserStatsResponse getDailyUserStats(Long userId, LocalDate date) {
         DailyUserStats dailyStats = dailyUserStatsRepository.findByUserIdAndDate(userId, date)
-                .orElse(new DailyUserStats(null, null, date, 0L, 0L, 0L, 0L));
+                .orElse(new DailyUserStats(null, null, date, 0L, 0L, 0L, 0L, 0L));
 
         return new UserStatsResponse(
                 dailyStats.getDailyCompletedTasks(),
                 dailyStats.getDailyCorrectAnswers(),
                 dailyStats.getDailyIncorrectAnswers(),
-                dailyStats.getDailyLearningTime()
+                dailyStats.getDailyLearningTime(),
+                dailyStats.getDailyFlashcardsReviewed()
         );
     }
 
@@ -111,6 +78,7 @@ public class StatsService {
                 overall.getTotalCorrectAnswers(),
                 overall.getTotalIncorrectAnswers(),
                 overall.getTotalDurationSeconds(),
+                overall.getTotalFlashcardsReviewed(),
                 dateStrings,
                 (long) currentStreak
         );
@@ -125,6 +93,7 @@ public class StatsService {
                 request.correctAnswers(),
                 request.incorrectAnswers(),
                 request.durationSeconds(),
+                request.flashcardsReviewed(),
                 user
         );
         userStatsRepository.save(sessionLog);
@@ -133,26 +102,28 @@ public class StatsService {
         LocalDate today = LocalDate.now();
 
         DailyUserStats dailyStat = dailyUserStatsRepository.findByUserIdAndDate(userId, today)
-                .orElse(new DailyUserStats(null, user, today, 0L, 0L, 0L, 0L));
+                .orElse(new DailyUserStats(null, user, today, 0L, 0L, 0L, 0L, 0L));
 
         dailyStat.setDailyCompletedTasks(dailyStat.getDailyCompletedTasks() + request.completedTasks());
         dailyStat.setDailyCorrectAnswers(dailyStat.getDailyCorrectAnswers() + request.correctAnswers());
         dailyStat.setDailyIncorrectAnswers(dailyStat.getDailyIncorrectAnswers() + request.incorrectAnswers());
         dailyStat.setDailyLearningTime(dailyStat.getDailyLearningTime() + request.durationSeconds());
+        dailyStat.setDailyFlashcardsReviewed(dailyStat.getDailyFlashcardsReviewed() + request.flashcardsReviewed());
 
         dailyUserStatsRepository.save(dailyStat);
 
         GlobalUserStats globalStats = globalUserStatsRepository.findById(userId)
-                .orElse(new GlobalUserStats(null, user, 0L, 0L, 0L, 0L, 0, null));
+                .orElse(new GlobalUserStats(null, user, 0L, 0L, 0L, 0L, 0L, 0, null));
 
         LocalDate lastDate = globalStats.getLastActivityDate();
 
-        // obliczanie serii dni
+        // Obliczanie serii dni
         if (lastDate == null) {
             globalStats.setCurrentStreak(1);
 
         } else if (lastDate.isEqual(today)) {
 
+            // Nic nie robimy, bo to ten sam dzień
         } else if (lastDate.isEqual(today.minusDays(1))) {
             globalStats.setCurrentStreak(globalStats.getCurrentStreak() + 1);
 
@@ -167,9 +138,9 @@ public class StatsService {
         globalStats.setTotalCorrectAnswers(globalStats.getTotalCorrectAnswers() + request.correctAnswers());
         globalStats.setTotalIncorrectAnswers(globalStats.getTotalIncorrectAnswers() + request.incorrectAnswers());
         globalStats.setTotalDurationSeconds(globalStats.getTotalDurationSeconds() + request.durationSeconds());
+        globalStats.setTotalFlashcardsReviewed(globalStats.getTotalFlashcardsReviewed() + request.flashcardsReviewed());
 
         globalUserStatsRepository.save(globalStats);
     }
-
 
 }

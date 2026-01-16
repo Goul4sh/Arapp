@@ -1,5 +1,6 @@
 package engineer.arabski.lesson.controller;
 
+import engineer.arabski.common.security.CustomUserDetails;
 import engineer.arabski.lesson.dto.LessonPreviewResponse;
 import engineer.arabski.lesson.dto.LessonRequest;
 import engineer.arabski.lesson.dto.LessonTasksResponse;
@@ -7,6 +8,7 @@ import engineer.arabski.lesson.model.Lesson;
 import engineer.arabski.lesson.service.LessonService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -36,10 +38,21 @@ public class LessonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id) {
+    public ResponseEntity<?> findById(
+            @PathVariable Long id,
+            @RequestParam(required = false, defaultValue = "false") boolean includeFlashcardInfo,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
         try {
-            LessonTasksResponse lesson = lessonService.findById(id);
+
+            LessonTasksResponse lesson;
+
+            if (includeFlashcardInfo && customUserDetails != null) {
+                lesson = lessonService.findByIdWithFlashcardInfo(id, customUserDetails.getId());
+            } else {
+                lesson = lessonService.findById(id);
+            }
+
             return ResponseEntity.status(HttpStatus.OK).body(lesson);
 
         } catch (IllegalArgumentException e) {
@@ -47,6 +60,7 @@ public class LessonController {
         }
 
     }
+
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateLesson(@PathVariable Long id, @RequestBody LessonRequest lessonRequest) {

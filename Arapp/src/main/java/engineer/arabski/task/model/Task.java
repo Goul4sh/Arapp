@@ -5,6 +5,7 @@ import engineer.arabski.languageProcessing.model.DictionaryWord;
 import engineer.arabski.lesson.model.CompendiumEntry;
 import engineer.arabski.lesson.model.Lesson;
 import engineer.arabski.task.dto.TaskData;
+import engineer.arabski.task.dto.vocabulary.WordReferenceResponse;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -60,5 +61,19 @@ public class Task {
         this.description = data != null ? data.description() : null;
     }
 
+
+    public List<WordReferenceResponse> getWordReferencesResponse() {
+        return wordReferences.stream()
+                .map(ref -> new WordReferenceResponse(
+                        ref.getDictionaryWord().getId(),
+                        ref.getDictionaryWord().getLemma(),
+                        ref.getDictionaryWord().getTranslation(),
+                        ref.getContextualTranslation(),
+                        ref.getStartIndex(),
+                        ref.getEndIndex(),
+                        false
+                ))
+                .toList();
+    }
 
 }

@@ -29,6 +29,7 @@ public class GlobalUserStats {
     private Long totalCorrectAnswers = 0L;
     private Long totalIncorrectAnswers = 0L;
     private Long totalDurationSeconds = 0L;
+    private Long totalFlashcardsReviewed = 0L;
 
     private int currentStreak = 0;
     private LocalDate lastActivityDate;

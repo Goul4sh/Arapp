@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react";
 import type {FillInTheBlankFormType} from "./formTaskTypes.ts";
-import localStyles from "./TaskForms.module.css";
-
+import styles from "./TaskForms.module.css";
 
 interface Props {
     onDataChange: (data: FillInTheBlankFormType) => void;
@@ -9,7 +8,7 @@ interface Props {
 }
 
 
-const FillTheBlankForm = ({onDataChange, initialData} : Props) => {
+const FillTheBlankForm = ({onDataChange, initialData}: Props) => {
     const [formData, setFormData] = useState<FillInTheBlankFormType>(() => ({
         id: initialData?.id || 0,
         type: 'fill-in-the-blank',
@@ -22,44 +21,65 @@ const FillTheBlankForm = ({onDataChange, initialData} : Props) => {
         onDataChange(formData)
     }, [formData, onDataChange])
 
+    //TODO dodać tutaj możliwość wyświetlania ikony.
 
     return (
+        <div className={styles.formContainer}>
 
-        <div className={localStyles.formSection}>
-            <h3>Fill in the gap</h3>
-            <label>
-                Description:
+            <div className={styles.formSection}>
+                <label className={styles.formLabel}>
+                    Polecenie / Opis zadania
+                </label>
                 <textarea
+                    className={styles.formTextarea}
                     value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Enter task description"
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    placeholder="Uzupełnij zdanie odpowiednim słowem."
+                    rows={2}
                 />
-            </label>
+            </div>
 
-            <label>
-                Correct Answer:
-                <input
-                    type="text"
-                    value={formData.sentenceWithBlank}
-                    onChange={(e) => setFormData({ ...formData, sentenceWithBlank: e.target.value })}
-                    placeholder="Wpisz zdanie z luką."
-                />
-            </label>
+            <div className={styles.formSection}>
+                <div className={styles.infoBox}>
+                    Wpisz zdanie, używając symbolu <strong>__</strong> (dwa podkreślniki) w miejscu luki.
+                </div>
 
-            <label>
-                Correct Answer:
-                <input
-                    type="text"
-                    value={formData.answer}
-                    onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
-                    placeholder="Podaj brakujące słowo lub frazę."
-                />
-            </label>
+                <label className={styles.formLabel}>
+                    Zdanie z luką (Kontekst)
+                </label>
+
+
+                <div style={{position: 'relative'}}>
+                    <input
+                        className={styles.formInput}
+                        type="text"
+                        value={formData.sentenceWithBlank}
+                        onChange={(e) => setFormData({...formData, sentenceWithBlank: e.target.value})}
+                        placeholder="Np. The cat ___ on the mat."
+                        dir="auto"
+                    />
+
+                </div>
+            </div>
+
+            <div className={styles.formSection}>
+                <label className={styles.formLabel}>
+                    Brakujące słowo (Poprawna odpowiedź)
+                </label>
+                <div>
+                    <input
+                        className={styles.formInput}
+                        type="text"
+                        value={formData.answer}
+                        onChange={(e) => setFormData({...formData, answer: e.target.value})}
+                        placeholder="Np. sat"
+
+                    />
+                </div>
+            </div>
 
         </div>
     );
-
-
 
 
 }

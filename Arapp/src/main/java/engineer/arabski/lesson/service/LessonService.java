@@ -5,34 +5,79 @@ import engineer.arabski.lesson.dto.LessonRequest;
 import engineer.arabski.lesson.dto.LessonTasksResponse;
 import engineer.arabski.lesson.model.Lesson;
 import engineer.arabski.lesson.repository.LessonRepository;
+import engineer.arabski.review.repository.FlashcardRepository;
+import engineer.arabski.task.dto.vocabulary.EnrichedTaskResponse;
+import engineer.arabski.task.dto.vocabulary.WordReferenceResponse;
 import engineer.arabski.task.model.Task;
 import engineer.arabski.task.repository.TaskRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class LessonService {
 
     private final LessonRepository lessonRepository;
 
+    private final FlashcardRepository flashcardRepository;
+
     private final TaskRepository taskRepository;
 
-
-    public LessonService(LessonRepository lessonRepository, TaskRepository taskRepository) {
-        this.lessonRepository = lessonRepository;
-        this.taskRepository = taskRepository;
-    }
-
     private LessonTasksResponse toResponse(Lesson lesson) {
-        List<LessonTasksResponse.TaskDataWithId> tasksWithIds = lesson.getTasks().stream()
-                .map(task -> new LessonTasksResponse.TaskDataWithId(task.getId(), task.getTaskData()))
+        List<EnrichedTaskResponse> tasks = lesson.getTasks().stream()
+                .map(task -> new EnrichedTaskResponse(task.getTaskData(), task.getWordReferencesResponse()))
                 .toList();
 
-        return new LessonTasksResponse(tasksWithIds);
+        return new LessonTasksResponse(tasks);
     }
 
+
+    private LessonTasksResponse toResponseWithFlashcard(Lesson lesson, Long userId) {
+
+        Set<Long> allWordIds = lesson.getTasks().stream()
+                .flatMap(t -> t.getWordReferencesResponse().stream())
+                .map(WordReferenceResponse::dictionaryWordId)
+                .collect(Collectors.toSet());
+
+        Set<Long> existingFlashcardIds;
+
+        if (allWordIds.isEmpty()) {
+            existingFlashcardIds = Collections.emptySet();
+        } else {
+            existingFlashcardIds = flashcardRepository.findAllByWord_IdsAndFlashcardOwner_Id(new ArrayList<>(allWordIds), userId);
+        }
+
+        List<EnrichedTaskResponse> tasks = lesson.getTasks().stream()
+                .map(task -> {
+                    var updatedReferences = task.getWordReferencesResponse().stream()
+                            .map(ref -> {
+                                boolean isKnown = existingFlashcardIds.contains(ref.dictionaryWordId());
+
+                                return new WordReferenceResponse(
+                                        ref.dictionaryWordId(),
+                                        ref.lemma(),
+                                        ref.dictionaryTranslation(),
+                                        ref.contextualTranslation(),
+                                        ref.startIndex(),
+                                        ref.endIndex(),
+                                        isKnown
+                                );
+                            })
+                            .toList();
+
+                    return new EnrichedTaskResponse(task.getTaskData(), updatedReferences);
+                })
+                .toList();
+
+        return new LessonTasksResponse(tasks);
+    }
 
     public LessonPreviewResponse toPreviewResponse(Lesson lesson) {
         return new LessonPreviewResponse(
@@ -83,6 +128,16 @@ public class LessonService {
         return toResponse(lesson);
 
     }
+
+    public LessonTasksResponse findByIdWithFlashcardInfo(Long lessonId, Long userId) {
+
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new IllegalArgumentException("Lesson not found with id " + lessonId));
+
+        return toResponseWithFlashcard(lesson, userId);
+
+    }
+
 
     public Lesson findByIdEntity(Long lessonId) {
 

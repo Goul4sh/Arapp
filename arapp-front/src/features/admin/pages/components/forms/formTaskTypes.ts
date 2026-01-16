@@ -73,6 +73,11 @@ export interface MorphologyOption {
     isCorrect: boolean;
 }
 
+export interface TranslateFormType extends BaseTask{
+    type: 'translate';
+    textToTranslate: string;
+    translatedText: string;
+}
 
 // export interface AssistedWritingTaskType {
 //     type: 'writing-assisted';

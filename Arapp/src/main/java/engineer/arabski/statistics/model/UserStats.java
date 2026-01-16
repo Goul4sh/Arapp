@@ -27,13 +27,15 @@ public class UserStats {
     private Long correctAnswers;
     private Long incorrectAnswers;
     private Long durationSeconds;
+    private Long flashcardsReviewed;
 
-    public UserStats(Long completedTasks, Long correctAnswers, Long incorrectAnswers, Long durationSeconds, User user) {
+    public UserStats(Long completedTasks, Long correctAnswers, Long incorrectAnswers, Long durationSeconds, Long flashcardsReviewed ,User user) {
 
         this.completedTasks = completedTasks;
         this.correctAnswers = correctAnswers;
         this.incorrectAnswers = incorrectAnswers;
         this.durationSeconds = durationSeconds;
+        this.flashcardsReviewed = flashcardsReviewed;
         this.user = user;
 
     }

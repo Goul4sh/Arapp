@@ -3,6 +3,7 @@ export interface GlobalDashboardData {
     totalCorrectAnswers: number;
     totalDurationSeconds: number;
     totalIncorrectAnswers: number;
+    totalFlashcardsReviewed: number;
     currentStreak: number;
     activityDates: string[];
 }
@@ -12,6 +13,7 @@ export interface DailyDashboardData {
     correctAnswers: number;
     incorrectAnswers: number;
     durationSeconds: number;
+    flashcardsReviewed: number;
 }
 
 export interface NextLessonData {

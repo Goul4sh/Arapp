@@ -22,6 +22,8 @@ function ReviewPracticePage() {
     const [searchParams] = useState(new URLSearchParams(window.location.search));
     const isTrainingMode = searchParams.get("training") === "true";
 
+    const [isFinished, setIsFinished] = useState(false);
+
     useEffect(() => {
 
         if (isTrainingMode) {
@@ -98,30 +100,28 @@ function ReviewPracticePage() {
         // zamiast flashcards.length uzywane jest current:lemgth, ze wzgledu na ponowne dodawanie fiszki do listy.
         // moze nalezy to zmienic w przyszlosci?
 
-        if (nextIndex >= currentLength) {
-            alert("Wszystkie fiszki powtorzone!")
-
-            // navigate("/review");
-            return (
-
-                <div className={styles.flashcardsFinishedScreen}>
-
-                    <div>
-
-                        <h2>Gratulacje! Wszystkie fiszki zostały powtórzone.</h2>
-                        <button onClick={() => navigate("/review")}>Powrót do przeglądu fiszek</button>
-
-
-                    </div>
-
-                </div>
-
-            );
-        }
 
         setCurrentFlashcardIndex(nextIndex % flashcards.length);
         setShowAnswer(false);
+
+        if (nextIndex >= currentLength) {
+            setIsFinished(true);
+            return
+
+        }
     }
+
+    if (isFinished) {
+        return (
+            <div className={styles.flashcardsFinishedScreen}>
+                <div>
+                    <h2>Gratulacje! Wszystkie fiszki zostały powtórzone.</h2>
+                    <button onClick={() => navigate("/review")}>Powrót do przeglądu fiszek</button>
+                </div>
+            </div>
+        );
+    }
+
 
     return (
         <div className={styles.practicePage}>

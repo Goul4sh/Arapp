@@ -8,6 +8,8 @@ import engineer.arabski.review.model.FlashcardGroup;
 import engineer.arabski.review.model.FlashcardItem;
 import engineer.arabski.review.repository.FlashcardGroupRepository;
 import engineer.arabski.review.repository.FlashcardRepository;
+import engineer.arabski.statistics.dto.UserStatsRequest;
+import engineer.arabski.statistics.service.StatsService;
 import engineer.arabski.user.model.User;
 import engineer.arabski.user.service.UserService;
 import jakarta.transaction.Transactional;
@@ -29,6 +31,7 @@ public class FlashcardService {
     private final UserService userService;
     private final Sm2Algorithm sm2Algorithm = new Sm2Algorithm();
 
+    private final StatsService statsService;
 
     public static FlashcardItemResponse toResponse(FlashcardItem flashcardItem) {
 
@@ -57,7 +60,7 @@ public class FlashcardService {
 
         FlashcardItem flashcardItem = new FlashcardItem(user, dictionaryWord);
 
-        FlashcardItem  saved =  flashcardRepository.save(flashcardItem);
+        FlashcardItem saved = flashcardRepository.save(flashcardItem);
 
         FlashcardGroup defaultGroup = getOrCreateDefaultGroup(user);
         if (defaultGroup != null) {
@@ -164,7 +167,7 @@ public class FlashcardService {
 
 
     @Transactional
-    public void processReview (Long flashcardId, int quality) {
+    public void processReview(Long flashcardId, int quality) {
 
         FlashcardItem flashcard = flashcardRepository.findById(flashcardId)
                 .orElseThrow(() -> new RuntimeException("Flashcard not found: " + flashcardId));
@@ -184,6 +187,12 @@ public class FlashcardService {
         flashcard.setNextReviewDate(nextReview);
 
         flashcardRepository.save(flashcard);
+
+        statsService.saveSessionStats(
+                flashcard.getFlashcardOwner().getId(),
+                new UserStatsRequest(0L, 0L, 0L, 0L, 1L)
+        );
+
 
         System.out.println("Fiszka " + flashcardId + " oceniona na " + quality +
                 ". Następna powtórka za " + result.intervalDays() + " dni.");

@@ -7,6 +7,7 @@ import * as TaskTypes from "../../../../exercises/taskTypes.ts"
 
 import styles from "../../adminGlobalStyles.module.css"
 import TheoryForm from "../forms/TheoryForm.tsx";
+import TranslateTaskForm from "../forms/TranslateTaskForm.tsx";
 
 interface Props {
     task: TaskTypes.Task | null;
@@ -66,6 +67,8 @@ export const TaskCreator = ({task, onSave, onDataChange, onCancel}: Props) => {
                 return <div>Morphology Form Form (TODO)</div>
             case "theory":
                 return <TheoryForm onDataChange={handleFormChange} key={task.id} initialData={localTaskData}/>
+            case "translate":
+                return <TranslateTaskForm onDataChange={handleFormChange} key={task.id} initialData={localTaskData}/>
 
             default:
                 return <div>Wybierz typ zadania do dodania</div>

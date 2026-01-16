@@ -11,7 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/statistics")
@@ -24,26 +23,6 @@ public class UserStatsController {
     public UserStatsController(StatsService statsService) {
         this.statsService = statsService;
     }
-
-//    @GetMapping
-//    public ResponseEntity<?> getUserStats( @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-//
-//        System.out.print(customUserDetails.getUsername());
-//        System.out.print(customUserDetails.getId());
-//        UserStatsResponse stats = (statsService.getUserStats(customUserDetails.getId()));
-//
-//
-//        return ResponseEntity.ok(stats);
-//    }
-//
-//    @PostMapping
-//    public ResponseEntity<?> addUserStats(@RequestBody UserStatsRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails
-//    ) {
-//
-//        UserStatsResponse response= statsService.addUserStats(request, customUserDetails.getId());
-//
-//        return ResponseEntity.ok("User stats added successfully. " + response );
-//    }
 
 
     @GetMapping

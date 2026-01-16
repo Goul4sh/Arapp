@@ -1,6 +1,8 @@
-import localStyles from "./TaskForms.module.css"
+import styles from "./TaskForms.module.css"
 import {useEffect, useState} from "react";
 import type {MatchPairsFormType} from "./formTaskTypes.ts";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
     onDataChange: (data: MatchPairsFormType) => void;
@@ -60,38 +62,74 @@ const MatchPairsForm = ({onDataChange, initialData}: Props) => {
 
 
     return (
-        <div className={localStyles.formSection}>
-            <h3>Match Pairs Task</h3>
-            <label>
-                Description:
+        <div className={styles.formContainer}>
+
+            <div className={styles.formSection}>
+                <label className={styles.formLabel}>
+                    Polecenie / Opis zadania
+                </label>
                 <textarea
+                    className={styles.formTextarea}
                     value={formData.description}
-                    onChange={(e) => setFormData({...formData, description: e.target.value})}
-                    placeholder="Enter task description"
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Połącz słowa z ich definicjami"
+                    rows={3}
                 />
-            </label>
-            <div>
-                <strong>Pairs to Match:</strong>
-                {pairEntries.map((pair, index) => (
-                    <div key={index} style={{display: 'flex', gap: '10px', marginBottom: '10px'}}>
-                        <input
-                            type="text"
-                            value={pair.key}
-                            onChange={(e) => updatePair(index, 'key', e.target.value)}
-                            placeholder="Left side (key)"
-                        />
-                        <input
-                            type="text"
-                            value={pair.value}
-                            onChange={(e) => updatePair(index, 'value', e.target.value)}
-                            placeholder="Right side (value)"
-                        />
-                        {pairEntries.length > 1 && (
-                            <button onClick={() => removePair(index)}>Remove</button>
-                        )}
-                    </div>
-                ))}
-                <button onClick={addPair}>Add Pair</button>
+            </div>
+
+            <div className={styles.formSection}>
+                <label className={styles.formLabel}>
+                    Pary do połączenia
+                </label>
+
+                <div className={styles.dynamicList}>
+                    {pairEntries.map((pair, index) => (
+                        <div key={index} className={styles.listItem}>
+
+                            <div className={styles.listItemContent} style={{ alignItems: 'center' }}>
+
+                                <input
+                                    className={styles.formInput}
+                                    type="text"
+                                    value={pair.key}
+                                    onChange={(e) => updatePair(index, 'key', e.target.value)}
+                                    placeholder="Lewa strona"
+                                    // style={{ flex: 1 }}
+                                />
+
+                                <input
+                                    className={styles.formInput}
+                                    type="text"
+                                    value={pair.value}
+                                    onChange={(e) => updatePair(index, 'value', e.target.value)}
+                                    placeholder="Prawa strona (Po arabsku)"
+                                    // style={{ flex: 1 }}
+                                    dir={"rtl"}
+                                    lang={"ar"}
+                                />
+
+                            </div>
+
+                            <div className={styles.listItemActions}>
+                                <button
+                                    className={styles.iconButton}
+                                    onClick={() => removePair(index)}
+                                    disabled={pairEntries.length <= 1}
+                                    title="Usuń parę"
+                                >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <button
+                    className={styles.addButton}
+                    onClick={addPair}
+                >
+                    <FontAwesomeIcon icon={faPlus} /> Dodaj kolejną parę
+                </button>
             </div>
         </div>
     );
