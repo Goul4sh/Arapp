@@ -299,13 +299,6 @@ function Dashboard(): JSX.Element {
                                 </div>
 
                                 <div className={styles.separator}></div>
-
-                                <div className={styles.contentBox}>
-
-                                    {/*Placeholder! Tutaj mozna cos dodac albo zmienic uklad strony.*/}
-
-                                </div>
-
                             </div>
 
 
@@ -321,64 +314,70 @@ function Dashboard(): JSX.Element {
                                     </div>
                                 </div>
 
-                                <div className={styles.detailsCard}>
+                                {/*<div className={styles.detailsCard}>*/}
 
-                                    <h2 className={styles.detailstTitle}
-                                    >{selectedDate ? `Szczegóły z dnia ${selectedDate}` : 'Kliknij na dzień, aby zobaczyć szczegóły'}</h2>
-                                    <div className={styles.detailsContent}>
+                                {/*    <h2 className={styles.detailstTitle}*/}
+                                {/*    >{selectedDate ? `Szczegóły z dnia ${selectedDate}` : 'Kliknij na dzień, aby zobaczyć szczegóły'}</h2>*/}
+                                {/*    */}
 
-                                        {dailyDetails ? (
-                                            <div className={styles.statsList}>
-                                                <div className={styles.columnStatItem}>
-                                                    <div className={styles.columnStatContent}><p
-                                                        className={styles.statText}>Czas nauki:</p>
-                                                        <p className={styles.statValue}> {formatTime(dailyDetails.durationSeconds)}</p>
-                                                    </div>
+                                {/*    </div>*/}
 
-                                                </div>
+                                {/*</div>*/}
 
-                                                <div className={styles.columnStatItem}>
-                                                    <div className={styles.columnStatContent}><p
-                                                        className={styles.statText}>Ukończone zadania:</p>
-                                                        <p className={styles.statValue}> {dailyDetails.completedTasks}</p>
-                                                    </div>
+                            </div>
 
-                                                </div>
 
-                                                <div className={styles.columnStatItem}>
-                                                    <div className={styles.columnStatContent}><p
-                                                        className={styles.statText}>Poprawne odpowiedzi:</p>
-                                                        <p className={styles.statValue}> {dailyDetails.correctAnswers} </p>
-                                                    </div>
-
-                                                </div>
-
-                                                <div className={styles.columnStatItem}>
-                                                    <div className={styles.columnStatContent}><p
-                                                        className={styles.statText}>Złe odpowiedzi:</p>
-                                                        <p className={styles.statValue}> {dailyDetails.incorrectAnswers} </p>
-                                                    </div>
-
+                        <div className={styles.rightMostColumn}>
+                            <div className={styles.contentBox}>
+                                <h2 className={styles.cardTitle}>
+                                    {selectedDate ? `Szczegóły z dnia ${selectedDate}` : 'Szczegóły aktywności'}
+                                </h2>
+                                <div className={styles.detailsContent}>
+                                    {dailyDetails ? (
+                                        <div className={styles.statsList}>
+                                            <div className={styles.columnStatItem}>
+                                                <div className={styles.columnStatContent}>
+                                                    <p className={styles.statText}>Czas nauki:</p>
+                                                    <p className={styles.statValue}>{formatTime(dailyDetails.durationSeconds)}</p>
                                                 </div>
                                             </div>
-                                        ) : (
-                                            <p className={styles.noDetailsText}>Brak danych dla wybranego dnia.</p>
-                                        )}
 
+                                            <div className={styles.columnStatItem}>
+                                                <div className={styles.columnStatContent}>
+                                                    <p className={styles.statText}>Ukończone zadania:</p>
+                                                    <p className={styles.statValue}>{dailyDetails.completedTasks}</p>
+                                                </div>
+                                            </div>
 
-                                    </div>
+                                            <div className={styles.columnStatItem}>
+                                                <div className={styles.columnStatContent}>
+                                                    <p className={styles.statText}>Poprawne odpowiedzi:</p>
+                                                    <p className={styles.statValue}>{dailyDetails.correctAnswers}</p>
+                                                </div>
+                                            </div>
 
+                                            <div className={styles.columnStatItem}>
+                                                <div className={styles.columnStatContent}>
+                                                    <p className={styles.statText}>Złe odpowiedzi:</p>
+                                                    <p className={styles.statValue}>{dailyDetails.incorrectAnswers}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className={styles.columnStatItem}>
+                                                <div className={styles.columnStatContent}>
+                                                    <p className={styles.statText}>Powtórzone fiszki:</p>
+                                                    <p className={styles.statValue}>{dailyDetails.flashcardsReviewed}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <p className={styles.noDetailsText}>
+                                            {selectedDate ? 'Brak danych dla wybranego dnia.' : 'Kliknij na dzień w kalendarzu, aby zobaczyć szczegóły.'}
+                                        </p>
+                                    )}
                                 </div>
-
                             </div>
-
-
-                            <div className={styles.rightMostColumn}>
-
-                                to jest dopiero placeholder!
-
-
-                            </div>
+                        </div>
 
                         </div>
 

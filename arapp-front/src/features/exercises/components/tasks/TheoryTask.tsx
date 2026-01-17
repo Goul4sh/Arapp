@@ -1,10 +1,13 @@
 import type {TheoryTaskType} from "../../taskTypes.ts";
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from "remark-gfm";
 import styles from "../Tasks.module.css"
 import {useContext} from "react";
 import {LessonContext} from "../LessonContext.tsx";
 
 // import markdownStyles from "../theoryMarkdown.module.css"
+
+const isArabic = (text: string) => /[\u0600-\u06FF]/.test(text);
 
 function TheoryTask({task}: { task: TheoryTaskType }) {
 
@@ -13,7 +16,6 @@ function TheoryTask({task}: { task: TheoryTaskType }) {
 
     const handleNext = () => {
 
-        
 
         submitAnswer(true);
     }
@@ -23,7 +25,7 @@ function TheoryTask({task}: { task: TheoryTaskType }) {
         <div className={styles.theorTaskContainer}>
 
             <div className={styles.markdownContainer}>
-                <ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
 
                     {task.content}
 

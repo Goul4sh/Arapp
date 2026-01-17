@@ -79,7 +79,6 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not create task with vocabulary data");
 
     }
-//TODO zrobic to do konca!
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody TaskData data) {

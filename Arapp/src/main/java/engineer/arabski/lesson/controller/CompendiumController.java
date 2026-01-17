@@ -33,6 +33,13 @@ private final CompendiumService compendiumService;
         return ResponseEntity.status(HttpStatus.OK).body(compendiumService.getCompendiumDetailById(id));
     }
 
+    @GetMapping("/published")
+    public ResponseEntity<?> findAllPublished() {
+
+        return ResponseEntity.status(HttpStatus.OK).body(compendiumService.findAllPublished());
+
+    }
+
     @PostMapping
     public ResponseEntity<?> createCompendiumItem(@RequestBody CompendiumRequest request) {
 
@@ -40,6 +47,33 @@ private final CompendiumService compendiumService;
 
         compendiumService.addCompendiumItem(request);
         return ResponseEntity.status(HttpStatus.CREATED).body("Compendium entry created successfully");
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCompendiumItem(@PathVariable Long id) {
+        compendiumService.deleteCompendiumItem(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Compendium entry deleted successfully");
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> editCompendiumItem(@PathVariable Long id, @RequestBody CompendiumRequest request) {
+        try {
+            compendiumService.editCompendiumItem(id, request);
+            return ResponseEntity.status(HttpStatus.OK).body("Compendium entry updated successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not update entry");
+        }
+    }
+
+
+    @PatchMapping("/{id}/publish/{isPublished}")
+    public ResponseEntity<?> publishLesson(@PathVariable Long id, @PathVariable boolean isPublished) {
+        try {
+            compendiumService.publishEntry(id, isPublished);
+            return ResponseEntity.status(HttpStatus.OK).body("Compendium entry published successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not publish entry");
+        }
     }
 
 }

@@ -9,7 +9,7 @@ export interface WordReference {
     endIndex: number;
     dictionaryTranslation: string;
     contextualTranslation: string
-    lemma?: string;
+    lemma: string;
     hasFlashcard?: boolean;
 
 }
@@ -19,7 +19,7 @@ export interface InteractiveTextProps {
     references: WordReference[];
 }
 
-function InteractiveText({text, references} : {text : string , references: WordReference[]}) {
+function InteractiveText({text, references} : InteractiveTextProps) {
 
 
     const parts = useMemo(() => {

@@ -1,0 +1,117 @@
+/* InteractiveText.module.css */
+
+.textContainer {
+    font-family: 'Amiri', serif; /* Ważne dla arabskiego */
+    font-size: 1.8rem;
+    line-height: 2.2; /* Większa linia, żeby tooltipy się mieściły */
+    color: #374151;
+}
+
+.wordWrapper {
+    position: relative; /* To jest kotwica dla tooltipa (absolute) */
+    display: inline-block;
+    cursor: pointer;
+}
+
+.highlightableWord {
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+    padding: 0 2px;
+}
+
+/* Hover effect na słowo */
+.wordWrapper:hover .highlightableWord {
+    background-color: #e0f2fe; /* Delikatny niebieski */
+    border-bottom-color: #0ea5e9;
+    color: #0284c7;
+    border-radius: 4px;
+}
+
+/* Tooltip - domyślnie ukryty */
+.tooltip {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    bottom: 120%; /* Nad słowem */
+    left: 50%;
+    transform: translateX(-50%); /* Wyśrodkowanie */
+
+    width: max-content;
+    min-width: 120px;
+    max-width: 200px;
+
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    z-index: 50;
+
+    transition: opacity 0.2s ease-in-out, transform 0.2s;
+
+    /* Reset kierunku tekstu w tooltipie na LTR (polski) */
+    direction: ltr;
+    text-align: center;
+    font-family: 'Inter', sans-serif; /* Powrót do fontu UI */
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Mały trójkącik na dole dymka */
+.tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #ffffff transparent transparent transparent;
+}
+
+/* Pokaż tooltip po najechaniu */
+.wordWrapper:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+    bottom: 110%; /* Lekka animacja w górę */
+}
+
+/* Wnętrze tooltipa */
+.tooltipHeader {
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #111827;
+}
+
+.tooltipMeta {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-bottom: 8px;
+    font-style: italic;
+}
+
+.addBtn {
+    width: 100%;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    background-color: #f3f4f6;
+    color: #374151;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.addBtn:hover {
+    background-color: #d1d5db;
+}
+
+.addBtn.added {
+    background-color: #dcfce7;
+    color: #166534;
+}

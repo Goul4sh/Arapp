@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "completed_lessons", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "lesson_id"}) // User nie może ukończyć tej samej lekcji 2 razy
+        @UniqueConstraint(columnNames = {"user_id", "lesson_id"}) // User nie może ukończyć tej samej lekcji 2 razy, zmieniać się będzie tylko timestamp
 })
 @Getter
 @Setter
@@ -37,6 +37,12 @@ public class UserCompleteLesson {
     @JoinColumn(name = "lesson_id", nullable = false)
     private Lesson lesson;
 
-//    private LocalDateTime completedAt;
+    private LocalDateTime completedAt;
+
+    @PrePersist
+    @PreUpdate
+    public void updateTimestamp() {
+        this.completedAt = LocalDateTime.now();
+    }
 
 }

@@ -264,7 +264,6 @@ function WordBankManagementPage() {
                         <tbody>
                         {words.map((word, index) => {
                             const isEditing = editingWordId === word.wordId;
-                            console.log(`Word ${word.wordId}: isEditing = ${isEditing}, editingWordId = ${editingWordId}`);
 
                             return (
                                 <tr key={word.wordId}>

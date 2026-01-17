@@ -375,30 +375,6 @@
 }
 
 
-.flashcardItem {
-    flex: 0 0 280px;
-    height: 180px;
-    background-color: #fff;
-    border: 1px solid #f0f0f0;
-    border-radius: 18px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.06);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    position: relative;
-    transition: transform 0.2s;
-}
-
-
-
-.flashcardItem:hover {
-    transform: translateY(-3px);
-    border-color: #4cae4f;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-}
-
 .flashcardContent h1 {
     font-size: 2rem;
     margin: 0 0 5px 0;

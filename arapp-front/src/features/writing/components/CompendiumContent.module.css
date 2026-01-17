@@ -1,0 +1,53 @@
+.articleContent {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+}
+
+.articleTitle {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 10px;
+}
+
+.articleSubtitle {
+    font-size: 1.3rem;
+    color: #4cae4f;
+    margin-bottom: 20px;
+}
+
+.markdownWrapper {
+    line-height: 1.6;
+    color: #374151;
+}
+
+.markdownWrapper h1 {
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.markdownWrapper h2 {
+    font-size: 1.3rem;
+    margin-top: 1.2rem;
+    margin-bottom: 0.4rem;
+}
+
+.markdownWrapper p {
+    margin-bottom: 1rem;
+}
+
+.markdownWrapper code {
+    background: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.markdownWrapper pre {
+    background: #f3f4f6;
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+}

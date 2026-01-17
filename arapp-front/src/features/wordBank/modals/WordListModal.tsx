@@ -27,10 +27,12 @@ interface WordGroupModalProps {
     selectedGroup: WordGroup | null;
     groupWords: Word[];
     isLoadingWords: boolean;
+    onFlashcardUpdate?: (wordId: number, isInFlashcards: boolean) => void;
+
 }
 
 
-function WordListModal({isOpen, onClose, selectedGroup, groupWords, isLoadingWords}: WordGroupModalProps) {
+function WordListModal({isOpen, onClose, selectedGroup, groupWords, isLoadingWords, onFlashcardUpdate}: WordGroupModalProps) {
 
     const [words, setWords] = useState<Word[]>(groupWords);
     const navigate = useNavigate();
@@ -52,6 +54,7 @@ function WordListModal({isOpen, onClose, selectedGroup, groupWords, isLoadingWor
 
         try {
             await api.post(`/api/flashcards`, {word_id: wordId}, {withCredentials: true})
+            onFlashcardUpdate?.(wordId, true);
             console.log(`Dodano słowo o ID ${wordId} do fiszek użytkownika.`);
         } catch (error) {
             console.error("Błąd podczas dodawania słowa do fiszek:", error);
@@ -68,6 +71,7 @@ function WordListModal({isOpen, onClose, selectedGroup, groupWords, isLoadingWor
 
         try {
             await api.delete(`/api/flashcards/${wordId}/word`, {withCredentials: true})
+            onFlashcardUpdate?.(wordId, false);
         } catch (error) {
             console.error("Błąd podczas usuwania słowa z fiszek:", error);
             setWords(prevWords =>
@@ -98,10 +102,11 @@ function WordListModal({isOpen, onClose, selectedGroup, groupWords, isLoadingWor
                 <div className={styles.practiceContainer}>
 
                     <button
+                        className={styles.startPracticeButton}
                     onClick={handleStartPractice}>
                         Ćwicz teraz
                     </button>
-                    <p> Ćwicz słówka zawarte w grupie w automatycznie generowanych zadaniach. </p>
+                    <p> Ćwicz słówka zawarte w grupie dzięki automatycznie generowanym zadaniom. </p>
                 </div>
 
                 {isLoadingWords ? (

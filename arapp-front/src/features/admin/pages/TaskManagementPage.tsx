@@ -317,8 +317,15 @@ function TaskManagementPage() {
         if (!taskData.type) return taskData.description || "";
 
         switch (taskData.type) {
-            case 'choose-one':
+            case 'choose-one': {
+                const task = taskData as Partial<TaskTypes.ChooseOneTaskType>;
+                return `${task.answer || ''} ${task.decoyAnswers ? task.decoyAnswers.join(' ') : ''}`;
+            }
             case 'multiple-choice':
+            {
+                const task = taskData as Partial<TaskTypes.MultipleChoiceTaskType>;
+                return `${task.answers ? task.answers.join(' ') : ''} ${task.decoyAnswers ? task.decoyAnswers.join(' ') : ''}`;
+            }
             case 'fill-in-the-blank': {
                 const task = taskData as Partial<TaskTypes.FillInTheBlankTaskType>;
                 return `${task.sentenceWithBlank || ''}`;
@@ -366,17 +373,13 @@ function TaskManagementPage() {
         setIsVocabAnalysisOpen(true)
 
     }
-    // Skopiowałem połowę funkcji z saveTask
     const handleVocabularyConfirmed = async (confirmedVocabulary: VocabularyItem[]) => {
 
-        // console.log("Takie items otrzymalem z modal:", confirmedVocabulary);
 
         const currentLessonId = expandedLessonId;
         if (!currentLessonId || !pendingTaskData) return;
 
         const wordsToSave = confirmedVocabulary.filter(item => item.isIncluded);
-
-        // console.log("Po przefiltrowaniu jedynie isIncluded zostały mi takie słowa do przesłania:", wordsToSave);
 
         const fullPayload = {
             taskData: pendingTaskData,

@@ -5,7 +5,7 @@ import {
     type CompendiumTag
 } from "../writingTypes.ts";
 import api from "../../auth/api.ts";
-import ReactMarkdown from "react-markdown";
+import CompendiumContent from "./CompendiumContent.tsx";
 
 
 function Compendium() {
@@ -19,7 +19,7 @@ function Compendium() {
     const [selectedItem, setSelectedItem] = useState<CompendiumEntryFull | null>(null);
 
     const [isLoading, setIsLoading] = useState(true);
-    const [isLoadingDetail, setIsLoadingDetail] = useState(true);
+    // const [isLoadingDetail, setIsLoadingDetail] = useState(true);
 
 
     useEffect(() => {
@@ -28,7 +28,7 @@ function Compendium() {
 
                 const [completeResp, compendiumEntriesResp, compendiumTagsResp] = await Promise.all([
                     api.get<number[]>('/api/lessons/complete', {withCredentials: true}),
-                    api.get<CompendiumEntry[]>('/api/compendium', {withCredentials: true}),
+                    api.get<CompendiumEntry[]>('/api/compendium/published', {withCredentials: true}),
                     api.get<CompendiumTag[]>('/api/compendium/tags', {withCredentials: true}),
 
                 ]);
@@ -65,7 +65,7 @@ function Compendium() {
 
         if (!isUnlocked(entry)) return;
 
-        setIsLoadingDetail(true);
+        // setIsLoadingDetail(true);
         try {
             const response =
                 await api.get<CompendiumEntryDetailResponse>(`/api/compendium/${entry.id}`,
@@ -79,7 +79,7 @@ function Compendium() {
         } catch (error) {
             console.error("Błąd pobierania szczegółów wpisu", error);
         } finally {
-            setIsLoadingDetail(false);
+            // setIsLoadingDetail(false);
         }
     }
 
@@ -139,18 +139,13 @@ function Compendium() {
                             ← Powrót do listy
                         </button>
 
-                        <div className={styles.articleContent}>
-                            <h1 className={styles.articleTitle}>
-                                {selectedItem.title}
-                                {/*{selectedItem.subtitle && (*/}
-                                {/*    <span className={styles.arabicChar}>{selectedItem.subtitle}</span>*/}
-                                {/*)}*/}
-                            </h1>
+                        <CompendiumContent
+                            title={selectedItem.title}
+                            subtitle={selectedItem.subtitle}
+                            content={selectedItem.content}
+                        />
 
-                            <div className={styles.markdownWrapper}>
-                                <ReactMarkdown>{selectedItem.content}</ReactMarkdown>
-                            </div>
-                        </div>
+
                     </div>
                 ) : (
 

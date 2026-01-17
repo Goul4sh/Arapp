@@ -48,7 +48,7 @@ function ReviewPage() {
 
                 const [groupsResp, wordsResp] = await Promise.all([
                     api.get('/api/flashcard-groups/user', {withCredentials: true}),
-                    api.get('/api/words', {withCredentials: true})
+                    api.get('/api/words/recent', {withCredentials: true})
                 ]);
 
 

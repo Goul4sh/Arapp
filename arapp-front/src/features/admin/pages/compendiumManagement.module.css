@@ -1,0 +1,160 @@
+.tableContainer {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.entriesTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.entriesTable thead th {
+    text-align: left;
+    padding: 12px;
+    background: #f9fafb;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.entryRow {
+    cursor: pointer;
+    transition: background 0.2s;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.entryRow:hover {
+    background: #f9fafb;
+}
+
+.entryRow.expanded {
+    background: #e0f2e9;
+}
+
+.entryRow td {
+    padding: 12px;
+}
+
+.titleCell {
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.subtitleCell {
+    color: #4cae4f;
+    font-size: 0.95rem;
+}
+
+.lessonCell {
+    text-align: center;
+    color: #6b7280;
+}
+
+.tagsCell {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.actionsCell {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.expandedContentRow td {
+    padding: 0 !important;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.expandedRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+    background: #f9fafb;
+}
+
+.editorColumn,
+.previewColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+
+.previewColumn {
+    max-height: 800px;
+
+
+}
+
+
+.columnTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 10px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.formLabel {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.formInput,
+.formTextarea {
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+.formInput:focus,
+.formTextarea:focus {
+    outline: none;
+    border-color: #4cae4f;
+    box-shadow: 0 0 0 3px rgba(76, 174, 79, 0.1);
+}
+
+.formRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.formActions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.previewContent {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    min-height: 400px;
+}
+
+.previewTitle {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 10px;
+}
+
+.previewSubtitle {
+    font-size: 1.3rem;
+    color: #4cae4f;
+    margin-bottom: 20px;
+}
+

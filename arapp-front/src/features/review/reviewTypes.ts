@@ -1,18 +1,36 @@
 export interface FlashcardItem {
 
     id: string;
-    word: TemporaryWord;
+    word: Word;
     nextReviewDate: string;
 }
 
+// interface Word {
+//     wordId: number;
+//     // wordArabic: string;
+//     transliteration: string;
+//     translation: string;
+//     lemma: string;
+//     root: string;
+//     partOfSpeech: string;
+// }
 
-export interface TemporaryWord {
 
+export interface Word {
+    id: number;
     wordArabic: string;
-    wordTranslation: string;
     Transliteration: string;
-
+    wordTranslation: string;
+    isInUserFlashcards: boolean;
 }
+
+// export interface TemporaryWord {
+//
+//     wordArabic: string;
+//     wordTranslation: string;
+//     Transliteration: string;
+//
+// }
 
 export interface FlashcardsGroup {
 

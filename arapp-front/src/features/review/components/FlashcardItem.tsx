@@ -59,9 +59,11 @@ function FlashcardItemCard({flashcard, onAddToFlashcards, onRemoveFromFlashcards
                         )}
                     </div>
                 )}
-                <h1 lang="ar">{wordData.wordArabic}</h1>
-                <p className={styles.transliteration}>{wordData.Transliteration}</p>
-                <h2>{wordData.wordTranslation}</h2>
+                <div className={styles.flashcardText}>
+                    <h1 lang="ar">{wordData.wordArabic}</h1>
+                    <p className={styles.transliteration}>{wordData.Transliteration}</p>
+                    <h2>{wordData.wordTranslation}</h2>
+                </div>
             </div>
         </div>
     );

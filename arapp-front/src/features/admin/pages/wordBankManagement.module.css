@@ -1,0 +1,233 @@
+.wordNumber {
+    font-weight: 600;
+    color: #64748b;
+    min-width: 2.5rem;
+    margin-left: 1rem;
+}
+
+.wordEditInputs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.wordEditInputs input {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.arabicInput {
+    font-size: 1.1rem !important;
+    text-align: right;
+    direction: rtl;
+}
+
+/*.addLessonRow {*/
+/*    padding: 10px 20px 10px 20px;*/
+/*    */
+/*}*/
+
+/*.addLessonRow {*/
+/*    padding: 16px 20px;*/
+/*    background: white;*/
+/*    border-radius: 8px;*/
+/*    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
+/*    border: 1px solid #e5e7eb;*/
+/*}*/
+
+.searchSection {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;}
+
+.searchBar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+.searchInput {
+    width: 30%;
+    padding: 10px 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #374151;
+    transition: all 0.2s;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: #4cae4f;
+    box-shadow: 0 0 0 3px rgba(76, 174, 79, 0.1);
+}
+
+.searchInput:hover {
+    border-color: #9ca3af;
+}
+
+.resultsInfo {
+    color: #6b7280;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.wordsTable {
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wordsTable table {
+    width: 60%;
+    border-collapse: collapse;
+}
+
+.wordsTable th,
+.wordsTable td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.wordsTable th {
+    background: #f8f9fa;
+    font-weight: 600;
+}
+
+.wordsTable input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.actionButtons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.pagination button {
+    padding: 10px 15px;
+    border: 1px solid #d1d5db;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #374151;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #f9fafb;
+
+}
+
+.pagination button:not(:disabled):hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.pagination button:not(:disabled):hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.wordsTable {
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wordsTable table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.wordsTable thead {
+    background-color: #f3f4f6;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.wordsTable th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.wordsTable tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s;
+}
+
+.wordsTable tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.wordsTable tbody tr:last-child {
+    border-bottom: none;
+}
+
+.wordsTable td {
+    padding: 12px 15px;
+    font-size: 0.9rem;
+    color: #374151;
+}
+
+.wordsTable td[lang="ar"] {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.wordsTable input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #374151;
+    transition: all 0.2s;
+}
+
+.wordsTable input:focus {
+    outline: none;
+    border-color: #4cae4f;
+    box-shadow: 0 0 0 3px rgba(76, 174, 79, 0.1);
+}
+
+.wordsTable input:hover {
+    border-color: #9ca3af;
+}
+
+.actionButtons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}

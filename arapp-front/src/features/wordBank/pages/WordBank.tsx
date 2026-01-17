@@ -25,13 +25,23 @@ interface Word {
     transliteration: string;
     translation: string;
     isInUserFlashcards: boolean;
-
 }
 
 interface WordGroupDetails {
     id: number;
     words: Word[];
 
+}
+
+interface RecentWordReference {
+
+    dictionaryWordId: number;
+    lemma: string;
+    dictionaryTranslation: string;
+    contextualTranslation: string;
+    startIndex: number;
+    endIndex: number;
+    hasFlashcard: boolean;
 }
 
 //TODO przetestować! front i endpointy backendu
@@ -41,7 +51,7 @@ function WordBank() {
     const [selectedGroupWords, setSelectedGroupWords] = useState<Word[]>([]);
     // const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    const [recentWords, setRecentWords] = useState<Word[]>([]);
+    const [recentWords, setRecentWords] = useState<RecentWordReference[]>([]);
 
     const [selectedGroup, setSelectedGroup] = useState<WordGroup | null>(null);
     const [showGroupModal, setShowGroupModal] = useState(false);
@@ -79,9 +89,9 @@ function WordBank() {
     const fetchRecentWords = async () => {
         try {
 
-            const response = await api.get('/api/words', {withCredentials: true})
+            const response = await api.get('/api/words/recent', {withCredentials: true})
 
-            const fetchedWords = response.data as Word[];
+            const fetchedWords = response.data as RecentWordReference[];
 
             setRecentWords(fetchedWords);
             setIsLoading(false);
@@ -102,7 +112,7 @@ function WordBank() {
             setSelectedGroupWords(fetchedWords.words);
 
             setCachedGroupWords(prev =>
-                ({ ...prev, [groupId]: fetchedWords.words }));
+                ({...prev, [groupId]: fetchedWords.words}));
 
         } catch (error) {
             console.error("Błąd podczas pobierania słówek z grupy:", error);
@@ -128,6 +138,23 @@ function WordBank() {
         setShowGroupModal(false);
         setSelectedGroup(null);
     }
+    
+    const handleFlashcardUpdate = (wordId: number, isInFlashcards: boolean) => {
+        if (selectedGroup) {
+            setCachedGroupWords(prev => ({
+                ...prev,
+                [selectedGroup.id]: prev[selectedGroup.id]?.map(w =>
+                    w.id === wordId ? {...w, isInUserFlashcards: isInFlashcards} : w
+                ) || []
+            }));
+
+            setSelectedGroupWords(prev =>
+                prev.map(w =>
+                    w.id === wordId ? {...w, isInUserFlashcards: isInFlashcards} : w
+                )
+            );
+        }
+    };
 
 
     if (error)
@@ -215,20 +242,20 @@ function WordBank() {
                     <div className={styles.sectionHeader}>
                         <h2>Słówka z ostatnich lekcji</h2>
                     </div>
-
+                    {/*//TODO jesli zadziala to zmienic sposob wyswietlania na flashcard*/}
                     <div className={styles.recentWordsSlider}>
                         {!recentWords || recentWords.length === 0 ?
                             (<p className={styles.emptySliderState}>Brak ostatnio napotkanych słówek</p>)
                             :
                             (recentWords.map(word => (
-                                    <div key={word.id} className={styles.wordCard}>
+                                    <div key={word.dictionaryWordId} className={styles.wordCard}>
 
                                         <div className={styles.wordCardContainer}>
 
-                                            <h2 className={styles.wordArabic} lang="ar" dir="rtl">{word.wordArabic}</h2>
-                                            <p className={styles.transliteration}>{word.transliteration}</p>
-                                            <p className={styles.translation}>{word.translation}</p>
-                                            {word.isInUserFlashcards && (
+                                            <h2 className={styles.wordArabic} lang="ar" dir="rtl">{word.lemma}</h2>
+                                            <p className={styles.transliteration}>{word.contextualTranslation}</p>
+                                            <p className={styles.translation}>{word.dictionaryTranslation}</p>
+                                            {word.hasFlashcard && (
                                                 <span className={styles.flashcardBadge}>W fiszkach</span>
                                             )}
 
@@ -248,6 +275,7 @@ function WordBank() {
                 selectedGroup={selectedGroup}
                 groupWords={selectedGroupWords}
                 isLoadingWords={isLoadingWords}
+                onFlashcardUpdate={handleFlashcardUpdate}
             />
 
         </div>

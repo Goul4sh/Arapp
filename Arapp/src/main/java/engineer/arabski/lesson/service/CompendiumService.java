@@ -1,11 +1,9 @@
 package engineer.arabski.lesson.service;
 
-import engineer.arabski.lesson.dto.CompendiumDetailResponse;
-import engineer.arabski.lesson.dto.CompendiumListResponse;
-import engineer.arabski.lesson.dto.CompendiumRequest;
-import engineer.arabski.lesson.dto.CompendiumTagDTO;
+import engineer.arabski.lesson.dto.*;
 import engineer.arabski.lesson.model.CompendiumEntry;
 import engineer.arabski.lesson.model.CompendiumTag;
+import engineer.arabski.lesson.model.Lesson;
 import engineer.arabski.lesson.repository.CompendiumRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -35,8 +33,6 @@ public class CompendiumService {
         );
     }
 
-
-
     public CompendiumListResponse itemToSummary(CompendiumEntry entry) {
         return new  CompendiumListResponse (
                 entry.getId(),
@@ -44,7 +40,8 @@ public class CompendiumService {
                 entry.getIcon(),
                 entry.getDescription(),
                 entry.getRequiredLessonId(),
-                entry.getTags().stream().map(this::tagToResponse).toList()
+                entry.getTags().stream().map(this::tagToResponse).toList(),
+                entry.isPublished()
         );
 
     }
@@ -75,6 +72,34 @@ public class CompendiumService {
     }
 
 
+    public void editCompendiumItem(Long id, CompendiumRequest request) {
+
+        CompendiumEntry entry = compendiumRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Compendium item not found with id " + id));
+
+        if (request.title() != null) {
+            entry.setTitle(request.title());
+        }
+        if (request.subtitle() != null) {
+            entry.setIcon(request.subtitle());
+        }
+        if (request.description() != null) {
+            entry.setDescription(request.description());
+        }
+        if (request.content() != null) {
+            entry.setContent(request.content());
+        }
+        if (request.requiredLessonId() != null) {
+            entry.setRequiredLessonId(request.requiredLessonId());
+        }
+
+        compendiumRepository.save(entry);
+    }
+
+    public void deleteCompendiumItem(Long id) {
+        compendiumRepository.deleteById(id);
+    }
+
     @Transactional
     public void addCompendiumItem(CompendiumRequest request) {
 
@@ -88,8 +113,6 @@ public class CompendiumService {
             System.out.println("Requested tags: " + request.tagNames());
             throw new IllegalArgumentException("One or more Tag Names are invalid");
         }
-
-
         //To można później zoptymalizować
 
         CompendiumEntry compendiumEntry = toEntity(request);
@@ -112,5 +135,34 @@ public class CompendiumService {
                 .toList();
     }
 
+
+
+    public CompendiumEntry findByIdEntity(Long entryId) {
+        return compendiumRepository.findById(entryId)
+                .orElse(null);
+    }
+
+
+    public void publishEntry(Long entryId, boolean published) {
+
+        CompendiumEntry entry = findByIdEntity(entryId);
+
+        if (entry == null) {
+            throw new IllegalArgumentException("Lesson not found with id " + entryId);
+        }
+
+        entry.setPublished(published);
+
+        compendiumRepository.save(entry);
+
+    }
+
+
+    public List<CompendiumListResponse> findAllPublished() {
+
+        return compendiumRepository.findAllByIsPublishedTrue().stream()
+                .map(this::itemToSummary)
+                .collect(Collectors.toList());
+    }
 
 }

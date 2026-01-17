@@ -9,7 +9,9 @@ public record CompendiumListResponse(
         String subtitle,
         String description,
         Long requiredLessonId,
-        List<CompendiumTagDTO> tags
+        List<CompendiumTagDTO> tags,
+        boolean isPublished
+
 
 ) {
 }

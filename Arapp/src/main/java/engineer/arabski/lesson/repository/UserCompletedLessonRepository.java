@@ -22,4 +22,8 @@ public interface UserCompletedLessonRepository extends JpaRepository <UserComple
     @Query("SELECT MAX(cl.lesson.Id) FROM UserCompleteLesson cl WHERE cl.user.id = :userId")
     Long findLastCompletedLessonByUserId(Long userId);
 
+    @Query("SELECT cl.lesson.Id FROM UserCompleteLesson cl WHERE cl.user.id = :userId order by  cl.completedAt DESC limit 3")
+    List<Long> findRecentCompletedLessonsByUserId(Long userId);
+
+
 }

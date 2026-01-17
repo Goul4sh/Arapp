@@ -6,7 +6,7 @@ import Dashboard from "../features/home/pages/Dashboard.tsx";
 
 import ReviewPage from "../features/review/pages/ReviewPage.tsx";
 import ProtectedDashboardLayout from '../common/layouts/ProtectedDashboardLayout';
-import ExerciseSelector from "../features/exercises/pages/ExerciseSelector.tsx";
+import ExercisePlaylist from "../features/exercises/pages/ExercisePlaylist.tsx";
 import ProtectedExerciseLayout from "../common/layouts/ProtectedExerciseLayout.tsx";
 import ExerciseWrapperPage from "../features/exercises/pages/ExerciseWrapperPage.tsx";
 import ReviewPracticePage from "../features/review/pages/ReviewPracticePage.tsx";
@@ -42,7 +42,7 @@ function App() {
                     <Route path="/review" element={<ReviewPage/>}/>
                     <Route path="/letters" element={<WritingCoursePage/>}/>
                     <Route path="/words" element={<WordBank/>}/>
-                    <Route path="/exercises" element={<ExerciseSelector/>}/>
+                    <Route path="/exercises" element={<ExercisePlaylist/>}/>
                 </Route>
 
                 {/*Trasa pozwalająca na wykonywanie ćwiczeń zależnie od id*/}

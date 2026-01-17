@@ -1,7 +1,7 @@
 import styles from "./Renderer.module.css";
 import progressBarStyles from "../components/progressBar.module.css"
 import ExerciseRenderer from "./ExerciseRenderer.tsx";
-import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import api from "../../auth/api.ts";
 import type {Task} from "../taskTypes.ts";
@@ -11,7 +11,6 @@ import SessionSummary from "../components/SessionSummary.tsx";
 import ExitModal from "../components/ExitModal.tsx";
 
 type TaskWithId = Task & { id: number };
-
 
 // Komponent opakowujący komponent ćwiczenia. Pobiera dane na podstawie ID z url.
 
@@ -25,6 +24,8 @@ function ExerciseWrapperPage() {
     const [loading, setLoading] = useState(true);
     const [isSessionFinished, setIsSessionFinished] = useState<boolean>(false);
     const [mistakeTaskIds, setMistakeTaskIds] = useState<Set<string | number>>(new Set());
+
+    const [taskReferences, setTaskReferences] = useState<any>(null);
 
     const navigate = useNavigate();
 
@@ -70,6 +71,8 @@ function ExerciseWrapperPage() {
                     setTaskQueue(tasks);
                     setCurrentTask(tasks[0]);
                     setTotalTasks(tasks.length);
+                    const references = resp.data.tasks.map((taskWrapper: any) => taskWrapper.references).flat();
+                    setTaskReferences(references);
                     setLoading(false);
 
                 });
@@ -134,7 +137,6 @@ function ExerciseWrapperPage() {
                 : sessionStats.correctAnswers + 1;
 
             const newCompletedCount = sessionStats.completedTasksCount + 1;
-            // const newCorrectAnswers = sessionStats.correctAnswers + 1;
 
             setSessionStats(prev => ({
                 ...prev,
@@ -201,6 +203,8 @@ function ExerciseWrapperPage() {
                     correctAnswers: correctAnswers,
                     incorrectAnswers: incorrectAnswers,
                     durationSeconds: duration,
+                    flashcardsReviewed : 0
+
                 }, {withCredentials: true}),
 
                 api.post(`/api/lessons/complete/${lesson_id}`, {}, {withCredentials: true})
@@ -249,6 +253,7 @@ function ExerciseWrapperPage() {
                     incorrect={sessionStats.incorrectAnswers}
                     duration={sessionStats.finalDuration}
                     onExit={handleExitConfirm}
+                    taskReferences={taskReferences}
                 />
             </div>
         );
@@ -284,7 +289,6 @@ function ExerciseWrapperPage() {
                 </div>
 
             </div>
-
 
             <ExitModal isOpen={isExitModalOpen}
                        onClose={handleExitCancel}

@@ -1,4 +1,6 @@
 import styles from './Tasks.module.css';
+import type {WordReference} from "./text/InteractiveText.tsx";
+import FlashcardItemCard from "../../review/components/FlashcardItem.tsx";
 
 const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
@@ -8,11 +10,18 @@ const formatTime = (seconds: number) => {
     return `${minutes}m ${seconds % 60}s`;
 };
 
-const SessionSummary = ({correct, incorrect, duration, onExit}: {
+const SessionSummary = ({
+                            correct,
+                            incorrect,
+                            duration,
+                            onExit,
+                            taskReferences
+                        }: {
     correct: number,
     incorrect: number,
     duration: number,
-    onExit: () => void
+    onExit: () => void,
+    taskReferences?: WordReference[],
 }) => {
 
     const total = correct + incorrect;
@@ -20,6 +29,33 @@ const SessionSummary = ({correct, incorrect, duration, onExit}: {
 
     return (
         <div className={styles.summaryContainer}>
+
+            <div className={styles.wordReferences}>
+
+                <h2 className={styles.summaryTitle}>Słowa napotkane w tej lekcji</h2>
+                <div className={styles.referencesList}>
+                    {taskReferences && taskReferences.length > 0 ? (
+                        taskReferences.map((ref: WordReference, index: number) => (
+                            <FlashcardItemCard
+                                key={index}
+                                flashcard={
+                                    {
+                                        id: ref.dictionaryWordId,
+                                        wordArabic: ref.lemma,
+                                        Transliteration: ref.contextualTranslation,
+                                        wordTranslation: ref.dictionaryTranslation,
+                                        isInUserFlashcards: ref.hasFlashcard
+                                    }
+                                }/>
+                        ))) : (
+
+                        <div className={styles.emptySliderState}>
+                        <p>Brak słów do wyświetlenia.</p>
+                        </div>
+                    )}
+                </div>
+
+            </div>
 
             <div className={styles.summaryContent}>
 

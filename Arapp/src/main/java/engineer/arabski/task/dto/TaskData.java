@@ -23,7 +23,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = AssistedWritingTaskData.class, name = "writing-assisted"),
         @JsonSubTypes.Type(value = TranslateTaskData.class, name = "translate")
 
-//TODO naprawić widocznosc type na froncie
 })
 
 public sealed interface TaskData

@@ -19,7 +19,7 @@ interface ExerciseRendererProps {
     data?: Task;
 }
 
-function ExerciseRenderer({currentTask, references}: { currentTask: ExerciseRendererProps | Task; references?: any }) {
+function ExerciseRenderer({currentTask}: { currentTask: ExerciseRendererProps | Task;}) {
 
 console.log("Rzecz ktora dostalem do renderera zadan:", currentTask);
 

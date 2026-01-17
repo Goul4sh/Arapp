@@ -44,5 +44,6 @@ public class CompendiumEntry {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<CompendiumTag> tags;
+    private boolean isPublished = false;
 
 }

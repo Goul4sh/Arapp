@@ -108,7 +108,12 @@ public class StatsService {
         dailyStat.setDailyCorrectAnswers(dailyStat.getDailyCorrectAnswers() + request.correctAnswers());
         dailyStat.setDailyIncorrectAnswers(dailyStat.getDailyIncorrectAnswers() + request.incorrectAnswers());
         dailyStat.setDailyLearningTime(dailyStat.getDailyLearningTime() + request.durationSeconds());
-        dailyStat.setDailyFlashcardsReviewed(dailyStat.getDailyFlashcardsReviewed() + request.flashcardsReviewed());
+        if (request.flashcardsReviewed() != null) {
+            dailyStat.setDailyFlashcardsReviewed(dailyStat.getDailyFlashcardsReviewed() + request.flashcardsReviewed());
+        } else
+        {
+            dailyStat.setDailyFlashcardsReviewed(dailyStat.getDailyFlashcardsReviewed() + 0L);
+        }
 
         dailyUserStatsRepository.save(dailyStat);
 
