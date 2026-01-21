@@ -56,7 +56,8 @@ export const TaskPreviewRenderer = ({ taskType, taskData }: Props) => {
                     id: 0,
                     type: "fill-in-the-blank",
                     description: data.description || "Podgląd pytania...",
-                    sentenceWithBlank: data.sentenceWithBlank || "",
+                    translatedSentence: data.translatedSentence || "Przykładowe przetłumaczone zdanie",
+                    sentenceWithBlank: data.sentenceWithBlank || "Przykładowe __ z luką.",
                     answer: data.answer || "Poprawna odpowiedź"
                 };
 
@@ -128,7 +129,6 @@ export const TaskPreviewRenderer = ({ taskType, taskData }: Props) => {
 
                 };
 
-
                 return <MorphologyPartsTask task={morphologyPartsTask}/>;}
 
             case "theory":{
@@ -138,9 +138,8 @@ export const TaskPreviewRenderer = ({ taskType, taskData }: Props) => {
                     id: 0,
                     type: "theory",
                     description: data.description || "Podgląd pytania...",
-                    content: data.content || "<h2>Podgląd treści teoretycznej</h2><p>Tu znajduje się przykładowa treść teoretyczna zadania.</p>"
+                    content: data.content || "hihohihih # 45"
                 };
-
 
                 return <TheoryTask task={theoryTask}/>;}
 
@@ -158,8 +157,7 @@ export const TaskPreviewRenderer = ({ taskType, taskData }: Props) => {
                 return <TranslateTask task={translateTask}/>;}
 
 
-
-
+                
             default:
                 return <div>Nieznany typ zadania do podglądu</div>;
         }

@@ -69,7 +69,7 @@ public class TaskService {
     }
 
     @Transactional
-    public Task addTheoryTask(CreateTheoryTaskCompendiumRequest theoryData) {
+    public TheoryCompendiumResponse addTheoryTask(CreateTheoryTaskCompendiumRequest theoryData) {
         Task task = new Task();
         task.setTaskType("theory");
         task.setDescription(theoryData.description());
@@ -110,6 +110,32 @@ public class TaskService {
                 )
         );
 
+        Task savedTask = taskRepository.save(task);
+
+        return new TheoryCompendiumResponse(
+                savedTask.getId(),
+                savedTask.getTaskData()
+        );
+    }
+
+    @Transactional
+    public Task addTaskWithVocabReferences(TaskData taskData, Long wordId) {
+
+        Task task = new Task();
+
+        task.setTaskData(taskData);
+
+        DictionaryWord dictionaryWord = dictionaryService.findByIdEntity(wordId);
+
+        if (dictionaryWord == null) {
+            throw new IllegalArgumentException("Dictionary word not found with id: " + wordId);
+        }
+        TaskWordReference reference = new TaskWordReference();
+        reference.setTask(task);
+        reference.setDictionaryWord(dictionaryWord);
+        reference.setStartIndex(0);
+        reference.setEndIndex(0);
+        task.getWordReferences().add(reference);
         return taskRepository.save(task);
     }
 
@@ -138,10 +164,10 @@ public class TaskService {
 
             DictionaryWord dictionaryWord = dictionaryService.saveOrGetDictionaryWord(
                     new NewDictionaryWordRequest(word.lemma(),
-                    "",
-                    word.root(),
-                    word.partOfSpeech(),
-                    word.translation())
+                            "",
+                            word.root(),
+                            word.partOfSpeech(),
+                            word.translation())
             );
 
             TaskWordReference reference = new TaskWordReference();

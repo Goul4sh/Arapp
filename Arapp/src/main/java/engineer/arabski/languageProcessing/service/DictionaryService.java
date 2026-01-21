@@ -102,6 +102,9 @@ public class DictionaryService {
                 .toList();
     }
 
+    public DictionaryWord findByIdEntity(Long id) {
+        return dictionaryWordRepository.findById(id).orElse(null);
+    }
 
     public Page<WordBankListResponse> getDictionaryWordsPageable(int page, int size, String query) {
 

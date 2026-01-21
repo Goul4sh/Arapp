@@ -35,7 +35,8 @@ public class ChapterService {
                 chapter.getDescription(),
                 chapter.getLessons().stream()
                         .map(lessonService::toPreviewResponse)
-                        .toList());
+                        .toList(),
+                chapter.getOrderIndex());
 
     }
 
@@ -48,7 +49,8 @@ public class ChapterService {
                 chapter.getLessons().stream()
                         .filter(Lesson::isPublished)
                         .map(lessonService::toPreviewResponse)
-                        .toList());
+                        .toList(),
+                chapter.getOrderIndex());
 
     }
 
@@ -65,7 +67,43 @@ public class ChapterService {
     }
 
 
-    // mozliwe inne podejscie?
+    public void deleteChapter(Long id) {
+        chapterRepository.deleteById(id);
+    }
+
+
+    public void moveChapter(Long id, String direction) {
+        Chapter chapter = chapterRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Chapter not found with id: " + id));
+
+        int currentIndex = chapter.getOrderIndex();
+        int newIndex;
+
+        if (direction.equalsIgnoreCase("up")) {
+            newIndex = currentIndex - 1;
+            if (newIndex < 0) {
+                throw new IllegalArgumentException("Chapter is already at the top");
+            }
+        } else if (direction.equalsIgnoreCase("down")) {
+            newIndex = currentIndex + 1;
+            long maxIndex = chapterRepository.count();
+            if (newIndex > maxIndex) {
+                throw new IllegalArgumentException("Chapter is already at the bottom");
+            }
+        } else {
+            throw new IllegalArgumentException("Invalid direction. Use 'up' or 'down'");
+        }
+
+        Chapter otherChapter = chapterRepository.findByOrderIndex(newIndex)
+                .orElseThrow(() -> new IllegalArgumentException("Cannot find chapter at position " + newIndex));
+
+        chapter.setOrderIndex(newIndex);
+        otherChapter.setOrderIndex(currentIndex);
+
+        chapterRepository.save(chapter);
+        chapterRepository.save(otherChapter);
+    }
+
 
     public List<ChapterResponse> findAll() {
         return chapterRepository.findAll().stream()
@@ -115,9 +153,9 @@ public class ChapterService {
     }
 
     @Transactional
-    public void addChapter(ChapterRequest chapterRequest) {
+    public ChapterResponse addChapter(ChapterRequest chapterRequest) {
 
-        Chapter chapter = new Chapter(chapterRequest.title(), chapterRequest.description());
+        Chapter chapter = new Chapter(chapterRequest.title(), chapterRequest.description(),chapterRequest.orderIndex());
 
         if (!(chapterRequest.lessonIds() == null)) {
 
@@ -127,7 +165,7 @@ public class ChapterService {
             chapter.setLessons(List.of());
         }
 
-        chapterRepository.save(chapter);
+       return toChapterResponsePublishedOnly( chapterRepository.save(chapter));
 
     }
 

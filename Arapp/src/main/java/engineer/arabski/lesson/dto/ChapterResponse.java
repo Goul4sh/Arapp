@@ -7,7 +7,8 @@ public record ChapterResponse(
         Long id,
         String title,
         String description,
-        List<LessonPreviewResponse> lessons
+        List<LessonPreviewResponse> lessons,
+        int orderIndex
 
 ) {
 }

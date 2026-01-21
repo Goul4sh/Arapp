@@ -11,10 +11,10 @@ import {
 
 const adminModules = [
     {
-        title: "Grupy słów",
-        link: "/admin/word-groups",
-        icon: faBook,
-        color: "#3b82f6"
+        title: "Struktura kursu",
+        link: "/admin/course",
+        icon: faLayerGroup,
+        color: "#48b910"
     },
 
     {
@@ -24,17 +24,17 @@ const adminModules = [
         color: "#f59e0b"
     },
     {
-        title: "Struktura kursu",
-        link: "/admin/course",
-        icon: faLayerGroup,
-        color: "#48b910"
-    },
-
-    {
         title: "Kompendium wiedzy",
         link: "/admin/compendium",
         icon: faLayerGroup,
         color: "#10b981"
+    },
+
+    {
+        title: "Grupy słów",
+        link: "/admin/word-groups",
+        icon: faBook,
+        color: "#3b82f6"
     },
     {
         title: "Baza słownictwa",
@@ -49,8 +49,8 @@ function AdminDashboard(): JSX.Element {
     return (
         <div className={styles.dashboardPage}>
             <div className={styles.welcomeContainer}>
-                <h1 className={styles.welcomeText}>Panel zarządzania</h1>
-                <p className={styles.subtitle}>Wybierz moduł, aby zarządzać treścią.</p>
+                <h1 className={styles.welcomeText}>Panel administratora</h1>
+                {/*<p className={styles.subtitle }>Wybierz moduł, aby zarządzać treścią.</p>*/}
             </div>
 
             <div className={styles.gridContainer}>

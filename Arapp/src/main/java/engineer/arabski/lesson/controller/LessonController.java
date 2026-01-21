@@ -62,6 +62,17 @@ public class LessonController {
     }
 
 
+    @PatchMapping("/{id}/position")
+    public ResponseEntity<?> updateLessonPosition(@PathVariable Long id, @RequestParam("direction") String direction) {
+        try {
+            lessonService.moveLesson(id, direction);
+            return ResponseEntity.status(HttpStatus.OK).body("Lesson position updated successfully");
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateLesson(@PathVariable Long id, @RequestBody LessonRequest lessonRequest) {
         try {

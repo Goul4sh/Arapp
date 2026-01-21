@@ -21,7 +21,6 @@ async def lifespan(app: FastAPI):
     print("Zamykanie serwera")
     models.clear()
 
-
 app = FastAPI(lifespan=lifespan)
 
 PRONOUNS = {

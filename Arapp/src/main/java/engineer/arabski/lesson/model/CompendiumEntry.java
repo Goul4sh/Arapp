@@ -1,10 +1,13 @@
 package engineer.arabski.lesson.model;
 
+import engineer.arabski.task.model.Task;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -45,5 +48,18 @@ public class CompendiumEntry {
     )
     private Set<CompendiumTag> tags;
     private boolean isPublished = false;
+
+    @OneToMany(mappedBy = "compendiumEntry", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Task> tasks = new ArrayList<>();
+
+    @PreRemove
+    private void removeCompendiumAssociation() {
+        if (tasks != null) {
+            for (Task task : tasks) {
+                task.setCompendiumEntry(null);
+            }
+        }
+    }
+
 
 }

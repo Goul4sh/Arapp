@@ -6,6 +6,7 @@ public record LessonRequest(
         String title,
         String description,
         String icon,
-        List<Long> taskIds
+        List<Long> taskIds,
+        int orderIndex
         ) {
 }

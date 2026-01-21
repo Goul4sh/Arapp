@@ -31,6 +31,7 @@ export interface MatchPairsFormType extends BaseTask {
 export interface TheoryFormType extends BaseTask {
     type: 'theory';
     content: string;
+
 }
 
 export interface TheoryFormExtendedType extends TheoryFormType{
@@ -39,6 +40,7 @@ export interface TheoryFormExtendedType extends TheoryFormType{
     compendiumTitle?: string;
     compendiumIcon?: string;
     tagNames: string[];
+    requiredLessonId?: number;
 }
 
 export interface MorphologyPartsFormType extends BaseTask {
@@ -47,6 +49,8 @@ export interface MorphologyPartsFormType extends BaseTask {
     correctOrder : string[];
     segments: MorphologySegment[];
     decoySegments: MorphologySegment[];
+    referencedWordId?: number;
+
 }
 
 export interface MorphologySegment {
@@ -59,6 +63,8 @@ export interface MorphologyFormType extends BaseTask {
     type: 'morphology-form';
     question: string;
     steps: MorphologyStep[];
+    referencedWordId?: number;
+
 }
 
 export interface MorphologyStep {

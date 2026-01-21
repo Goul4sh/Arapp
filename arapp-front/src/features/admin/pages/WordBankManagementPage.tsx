@@ -221,7 +221,7 @@ function WordBankManagementPage() {
 
                 <div className={styles.headerSection}>
                     <div>
-                        <h1 className={styles.pageTitle}>Zarządzanie słowami</h1>
+                        <h1 className={styles.pageTitle}>Baza słownictwa</h1>
                     </div>
                     <div className={styles.headerButtons}>
                         <button

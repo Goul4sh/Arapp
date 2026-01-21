@@ -3,6 +3,7 @@ package engineer.arabski.lesson.repository;
 import engineer.arabski.lesson.model.Lesson;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -16,6 +17,8 @@ public interface LessonRepository extends JpaRepository<Lesson,Long> {
             "tasks.wordReferences.dictionaryWord"
     })
     Optional<Lesson> findById(Long id);
+
+    Optional<Lesson> findByOrderIndexAndChapter_Id(int orderIndex, Long chapterId);
 
 
 }

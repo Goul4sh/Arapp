@@ -30,6 +30,7 @@ interface LocalLesson {
     description: string;
     taskCount: number;
     isPublished: boolean;
+    orderIndex: number;
 }
 
 interface LocalChapter {
@@ -59,8 +60,6 @@ function LessonManagement() {
     const [deletingLesson, setDeletingLesson] = useState<{ chapterId: number; lessonId: number } | null>(null);
     const [deletingChapter, setDeletingChapter] = useState<number | null>(null);
 
-    // const [isDeleteChapterModalOpen, setIsDeleteChapterModalOpen] = useState(false);
-
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -72,7 +71,7 @@ function LessonManagement() {
                     const chaptersWithNumericIds: LocalChapter[] = resp.data.map(chapter => ({
                         ...chapter,
                         id: Number(chapter.id),
-                        orderIndex: 0,
+                        orderIndex: chapter.orderIndex,
                         isPublished: false,
                         lessons: chapter.lessons.map(lesson => ({
                             id: Number(lesson.id),
@@ -80,10 +79,12 @@ function LessonManagement() {
                             icon: lesson.icon || '',
                             description: lesson.description,
                             taskCount: lesson.taskCount || 0,
-                            isPublished: lesson.isPublished || false
-                        }))
+                            isPublished: lesson.isPublished || false,
+                            orderIndex: lesson.orderIndex
+                        })).sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0))
                     }));
 
+                    chaptersWithNumericIds.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0));
                     setChapters(chaptersWithNumericIds);
                 });
         } catch (error) {
@@ -148,7 +149,8 @@ function LessonManagement() {
             await api.patch(`/api/chapters/${chapterId}`, {
                 title: editingChapterData.title,
                 description: editingChapterData.description,
-                lessonIds: []
+                lessonIds: [],
+                orderIndex: 0
             }, {withCredentials: true});
 
         } catch (error) {
@@ -219,38 +221,91 @@ function LessonManagement() {
         }
     };
 
-    const moveChapter = (index: number, direction: 'up' | 'down') => {
+    const moveLesson = async (chapterId: number, lessonId: number, direction: 'up' | 'down') => {
+        const chapter = chapters.find(ch => ch.id === chapterId);
+        if (!chapter) return;
+
+        const index = chapter.lessons.findIndex(l => l.id === lessonId);
+        if (index === -1) return;
+
+        console.log("Przesuwanie lekcji:", lessonId, "w rozdziale:", chapterId, "kierunek:", direction);
+
+        const targetIndex = direction === 'up' ? index - 1 : index + 1;
+        if (targetIndex < 0 || targetIndex >= chapter.lessons.length) return;
+
+        console.log("Docelowy index to:", targetIndex);
+        const newLessons = [...chapter.lessons];
+        [newLessons[index], newLessons[targetIndex]] = [newLessons[targetIndex], newLessons[index]];
+
+        const reindexed = newLessons.map((l, i) => ({ ...l, orderIndex: i + 1 }));
+        reindexed.sort((a, b) => a.orderIndex - b.orderIndex);
+
+        setChapters(prev => prev.map(ch =>
+            ch.id === chapterId ? { ...ch, lessons: reindexed } : ch
+        ));
+        try {
+            await api.patch(`/api/lessons/${lessonId}/position?direction=${direction}`, {}, { withCredentials: true });
+        } catch (error) {
+            console.error("Błąd podczas zmiany kolejności lekcji", error);
+        }
+    };
+
+    const moveChapter = async (chapterId: number, direction: 'up' | 'down') => {
+        const index = chapters.findIndex(ch => ch.id === chapterId);
+        if (index === -1) return;
+
         const newChapters = [...chapters];
         const targetIndex = direction === 'up' ? index - 1 : index + 1;
+        if (targetIndex < 0 || targetIndex >= chapters.length) return;
+
         if (targetIndex >= 0 && targetIndex < newChapters.length) {
             [newChapters[index], newChapters[targetIndex]] = [newChapters[targetIndex], newChapters[index]];
             setChapters(newChapters);
         }
+        try {
+            await api.patch(`/api/chapters/${chapterId}/position?direction=${direction}`, {},{withCredentials: true});
+        } catch (error) {
+            console.error("Błąd podczas zmiany kolejności rozdziału", error);
+        }
+
+
     };
 
     const handleAddChapter = async () => {
+
+        const maxOrder = chapters.reduce((max, ch) => Math.max(max, ch.orderIndex), 0);
+        const newOrderIndex = maxOrder + 1;
+
         const newChapter: LocalChapter = {
             id: Date.now(),
             title: `Nowy Rozdział ${chapters.length + 1}`,
             description: "",
-            orderIndex: chapters.length + 1,
+            orderIndex: newOrderIndex,
             lessons: [],
             isPublished: false
         };
 
-        const mockChapter: { title: string, description: string, lessons: Lesson[] } = {
+        const mockChapter: { title: string, description: string, lessons: Lesson[], orderIndex: number } = {
             title: newChapter.title,
             description: newChapter.description,
-            lessons: []
+            lessons: [],
+            orderIndex: newOrderIndex
         };
-
+        console.log("Dodawanie rozdzialu na pozycje:", newChapter.orderIndex);
         try {
-            await api.post(`/api/chapters`, mockChapter, {withCredentials: true});
+            const response = await api.post(`/api/chapters`, mockChapter, {withCredentials: true});
+
+            const createdChapter: Chapter = response.data;
+
+            newChapter.id = Number(createdChapter.id);
+
+            console.log("Dodano nowy rozdział o ID:", newChapter.id);
+            console.log("Pozycja nowego rozdzialu to:", newChapter.orderIndex);
+
 
         } catch (error) {
             console.error("Błąd podczas dodawania rozdziału:", error);
         }
-
 
         setChapters(prev => [...prev, newChapter]);
         setExpandedChapters(prev => new Set(prev).add(newChapter.id));
@@ -265,14 +320,15 @@ function LessonManagement() {
 
         if (deletingChapter === null) return;
         setChapters(prev => prev.filter(ch => ch.id !== deletingChapter));
-
         try {
 
+            console.log("Usuwanie rozdziału o ID:", deletingChapter);
             await api.delete(`/api/chapters/${deletingChapter}`, {withCredentials: true});
-
+            console.log("Rozdział usunięty pomyślnie.");
         } catch (error) {
             console.error("Błąd podczas usuwania rozdziału:", error);
         }
+        setDeletingChapter(null)
 
     }
 
@@ -290,7 +346,7 @@ function LessonManagement() {
             return {...ch, lessons: ch.lessons.filter(l => l.id !== lessonId)};
         }));
 
-
+        setDeletingLesson(null)
         try {
 
             await api.delete(`/api/lessons/${lessonId}`, {withCredentials: true});
@@ -305,37 +361,45 @@ function LessonManagement() {
     const handleAddLesson = async (chapterId: number) => {
 
         try {
+
+            const chapter = chapters.find(ch => ch.id === chapterId);
+            const maxOrder = chapter ? chapter.lessons.reduce((max, l) => Math.max(max, l.orderIndex ?? 0), 0) : 0;
+            const newOrderIndex = maxOrder + 1;
+
+            console.log("Lekcja zostanie stworzona  zindeksem: ", newOrderIndex)
             const lessonData = {
                 title: "Nowa lekcja",
                 description: "Opis nowej lekcji",
                 icon: "",
-                taskIds: []
+                taskIds: [],
+                orderIndex: newOrderIndex
             };
-
 
             const response = await api.post('/api/lessons', lessonData, {withCredentials: true});
             const newLesson: LessonResponse = response.data;
 
+            console.log("Lekcja ktora stworzylem wyglada nastepujaco: ",newLesson);
+
             await api.patch(`/api/chapters/${chapterId}/lessons/${newLesson.id}`, {withCredentials: true});
 
-            setChapters(prevChapters => prevChapters.map(chapter => {
-                if (chapter.id === chapterId) {
-                    return {
-                        ...chapter,
-                        lessons: [
-                            ...chapter.lessons,
-                            {
-                                id: Number(newLesson.id),
-                                title: newLesson.title,
-                                icon: newLesson.icon || '',
-                                description: newLesson.description,
-                                taskCount: 0,
-                                isPublished: false
-                            }
-                        ]
-                    };
+            setChapters(prevChapters => prevChapters.map(ch => {
+                if (ch.id === chapterId) {
+                    const updatedLessons = [
+                        ...ch.lessons,
+                        {
+                            id: Number(newLesson.id),
+                            title: newLesson.title,
+                            icon: newLesson.icon || '',
+                            description: newLesson.description,
+                            taskCount: 0,
+                            isPublished: false,
+                            orderIndex: newOrderIndex
+                        }
+                    ];
+                    updatedLessons.sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0));
+                    return { ...ch, lessons: updatedLessons };
                 }
-                return chapter;
+                return ch;
             }));
 
         } catch (error) {
@@ -479,12 +543,12 @@ function LessonManagement() {
                                                 ) : (
 
                                                     <>
-                                                        <button onClick={() => moveChapter(chIndex, 'up')}
+                                                        <button onClick={() => moveChapter(chapter.id, 'up')}
                                                                 disabled={chIndex === 0}
                                                                 className={styles.smallActionBtn}>
                                                             <FontAwesomeIcon icon={faArrowUp}/>
                                                         </button>
-                                                        <button onClick={() => moveChapter(chIndex, 'down')}
+                                                        <button onClick={() => moveChapter(chapter.id, 'down')}
                                                                 disabled={chIndex === chapters.length - 1}
                                                                 className={styles.smallActionBtn}>
                                                             <FontAwesomeIcon icon={faArrowDown}/>
@@ -585,6 +649,23 @@ function LessonManagement() {
                                                                     </>
                                                                 ) : (
                                                                     <>
+
+                                                                        <button
+                                                                            onClick={() => moveLesson(chapter.id, lesson.id, 'up')}
+                                                                            disabled={lIndex === 0}
+                                                                            className={styles.smallActionBtn}
+                                                                        >
+                                                                            <FontAwesomeIcon icon={faArrowUp}/>
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={() => moveLesson(chapter.id, lesson.id, 'down')}
+                                                                            disabled={lIndex === chapter.lessons.length - 1}
+                                                                            className={styles.smallActionBtn}
+                                                                        >
+                                                                            <FontAwesomeIcon icon={faArrowDown}/>
+                                                                        </button>
+                                                                        <div className={styles.verticalDivider}></div>
+
                                                                         <button
                                                                             className={styles.smallActionBtn}
                                                                             title="Edytuj Zadania"
@@ -648,7 +729,7 @@ function LessonManagement() {
                         <div className={styles.deleteConfirmationButtons}>
                             <button className={styles.confirmDeleteButton}
                                     onClick={() => confirmDeleteChapter()}>
-                                Tak, usuń grupę
+                                Tak, usuń rozdział
                             </button>
                             <button className={styles.cancelDeleteButton}
                                     onClick={() => setDeletingChapter(null)}>

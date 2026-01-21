@@ -15,7 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 public class Lesson {
 
-    public Lesson(String name, String description, String icon) {
+    public Lesson(String name, String description, String icon, int orderIndex) {
+        this.orderIndex = orderIndex;
         this.name = name;
         this.description = description;
         this.icon = icon;
@@ -32,6 +33,8 @@ public class Lesson {
     private String icon;
 
     private boolean isPublished = false;
+
+    private int orderIndex;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();

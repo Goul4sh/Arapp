@@ -3,6 +3,7 @@ package engineer.arabski.lesson.controller;
 import engineer.arabski.lesson.dto.ChapterRequest;
 import engineer.arabski.lesson.dto.ChapterResponse;
 import engineer.arabski.lesson.service.ChapterService;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,6 +62,18 @@ public class ChapterController {
 
     }
 
+    @PatchMapping("/{id}/position")
+    public ResponseEntity<?> updateChapterPosition(@PathVariable Long id, @RequestParam("direction") String direction) {
+        try {
+            chapterService.moveChapter(id, direction);
+            return ResponseEntity.status(HttpStatus.OK).body("Chapter position updated successfully");
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+
     @PatchMapping("/{id}/lessons/{lessonId}")
     public ResponseEntity<?> addLessonToChapter(@PathVariable Long id, @PathVariable Long lessonId) {
         try {
@@ -76,8 +89,8 @@ public class ChapterController {
 
         try {
 
-            chapterService.addChapter(chapterRequest);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Chapter created successfully");
+           ChapterResponse response = chapterService.addChapter(chapterRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not create chapter");
@@ -88,7 +101,7 @@ public class ChapterController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteChapter(@PathVariable Long id) {
         try {
-//            chapterService.deleteChapter(id);
+            chapterService.deleteChapter(id);
             return ResponseEntity.status(HttpStatus.OK).body("Chapter deleted successfully");
 
         } catch (IllegalArgumentException e) {

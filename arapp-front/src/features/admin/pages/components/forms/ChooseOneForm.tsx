@@ -73,6 +73,8 @@ const ChooseOneForm = ({onDataChange, initialData}: Props) => {
                     value={formData.answer}
                     onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
                     placeholder="Wpisz poprawną odpowiedź"
+                    lang="ar"
+                    dir="auto"
                 />
             </div>
 
@@ -91,6 +93,8 @@ const ChooseOneForm = ({onDataChange, initialData}: Props) => {
                                     value={decoy}
                                     onChange={(e) => handleDecoyChange(index, e.target.value)}
                                     placeholder={`Błędna opcja #${index + 1}`}
+                                    lang="ar"
+                                    dir="auto"
                                 />
                             </div>
 

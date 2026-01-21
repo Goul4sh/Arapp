@@ -7,6 +7,7 @@ export interface Lesson {
     description: string;
     isPublished: boolean;
     taskCount: number;
+    orderIndex: number;
 }
 
 export interface ProcessedLesson extends Lesson {
@@ -21,6 +22,7 @@ export interface Chapter {
     title: string;
     description: string;
     lessons: Lesson[];
+    orderIndex: number;
 }
 
 export interface ProcessedChapter extends Chapter {

@@ -6,5 +6,6 @@ public record LessonPreviewResponse(
         String icon,
         String description,
         boolean isPublished,
-        int taskCount) {
+        int taskCount,
+        int orderIndex) {
 }

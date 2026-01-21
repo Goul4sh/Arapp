@@ -46,7 +46,7 @@ import WordGroupSearchWordModal from "./components/modals/WordGroupSearchWordMod
 
 function WordGroupManagement() {
     const [wordGroups, setWordGroups] = useState<WordGroup[]>([]);
-    const [expandedGroups, setExpandedGroups] = useState<Set<number>>(new Set());
+    const [expandedGroupId, setExpandedGroupId] = useState<number | null>(null);
 
     const [deletingGroup, setDeletingGroup] = useState<number | null>(null);
     const [deletingWord, setDeletingWord] = useState<{ groupId: number; wordId: number } | null>(null);
@@ -55,7 +55,6 @@ function WordGroupManagement() {
     const [editingGroup, setEditingGroup] = useState<WordGroup | null>(null);
 
     const [searchWordModalOpen, setSearchWordModalOpen] = useState(false);
-
 
     const [loadedGroupWords, setLoadedGroupWords] = useState<Set<number>>(new Set());
 
@@ -98,22 +97,14 @@ function WordGroupManagement() {
     };
 
     const toggleGroup = async (groupId: number) => {
-        const isExpanding = !expandedGroups.has(groupId);
+        const isCurrentlyExpanded = expandedGroupId === groupId;
+        const isExpanding = !isCurrentlyExpanded;
 
-        setExpandedGroups(prev => {
-            const newSet = new Set(prev);
-            if (newSet.has(groupId)) {
-                newSet.delete(groupId);
-            } else {
-                newSet.add(groupId);
-            }
-            return newSet;
-        });
+        setExpandedGroupId(isExpanding ? groupId : null);
 
         if (isExpanding && !loadedGroupWords.has(groupId)) {
             await refreshGroupData(groupId);
         }
-
     };
 
     const startEditingGroup = (group: WordGroup, e: React.MouseEvent) => {
@@ -169,7 +160,7 @@ function WordGroupManagement() {
 
     const handleAddGroup = async () => {
         try {
-            const response = await api.post('/api/admin/word-groups', {
+            const response = await api.post('/api/word-groups', {
                 name: "Nowa grupa słówek",
                 description: "",
                 imageUrl: "",
@@ -178,7 +169,7 @@ function WordGroupManagement() {
 
             const newGroup = response.data;
             setWordGroups(prev => [...prev, newGroup]);
-            setExpandedGroups(prev => new Set(prev).add(newGroup.id));
+            setExpandedGroupId(newGroup.id);
         } catch (error) {
             console.error("Błąd podczas dodawania grupy:", error);
         }
@@ -242,15 +233,14 @@ function WordGroupManagement() {
     }
 
 
-    const handleSelectWordForGroup = async (wordId: number) => {
+    const handleSelectWordForGroup = async (word: { wordId: number; lemma?: string; translation?: string }) => {
         if (!editingGroup) return;
 
         try {
             await api.patch(`/api/word-groups/${editingGroup.id}/add-words`,
-                [wordId], {withCredentials: true});
+                [word.wordId], {withCredentials: true});
 
             await refreshGroupData(editingGroup.id);
-
             setSearchWordModalOpen(false);
             setEditingGroup(null);
 
@@ -308,13 +298,13 @@ function WordGroupManagement() {
                             <div key={group.id} className={styles.chapterCard}>
 
                                 <div
-                                    className={`${styles.chapterHeader} ${expandedGroups.has(group.id) ? styles.active : ''}`}
+                                    className={`${styles.chapterHeader} ${expandedGroupId == group.id ? styles.active : ''}`}
                                     onClick={() => toggleGroup(group.id)}
                                 >
                                     <div className={styles.chapterTitleSection}>
                                         <span className={styles.chevronIcon}>
                                             <FontAwesomeIcon
-                                                icon={expandedGroups.has(group.id) ? faChevronDown : faChevronRight}
+                                                icon={expandedGroupId == group.id ? faChevronDown : faChevronRight}
                                             />
                                         </span>
 
@@ -364,9 +354,7 @@ function WordGroupManagement() {
                                     </div>
                                 </div>
 
-                                {/*TODO Dodać wyświetlanie słów w osobnym widoku*/}
-
-                                {expandedGroups.has(group.id) && (
+                                {expandedGroupId == group.id && (
                                     <div className={styles.lessonsList}>
                                         {group.words?.length === 0 ? (
                                             <div className={styles.emptyChapter}>
@@ -382,8 +370,6 @@ function WordGroupManagement() {
                                                         </div>
 
                                                         <div className={styles.lessonInfo}>
-
-
                                                             <h4 className={styles.lessonTitle} lang="ar"
                                                                 dir="rtl">
                                                                 {word.wordArabic}
@@ -392,8 +378,6 @@ function WordGroupManagement() {
                                                                 <span>{word.wordTranslation}</span>
                                                                 <span>{word.Transliteration}</span>
                                                             </div>
-
-
                                                         </div>
 
                                                         <div className={styles.lessonActions}>
@@ -404,8 +388,6 @@ function WordGroupManagement() {
                                                             >
                                                                 <FontAwesomeIcon icon={faTrash}/>
                                                             </button>
-
-
                                                         </div>
                                                     </div>
                                                 );
@@ -492,7 +474,9 @@ function WordGroupManagement() {
                     setSearchWordModalOpen(false);
                     setEditingGroup(null);
                 }}
-                onSelectWord={handleSelectWordForGroup}/>
+                onSelectWord={handleSelectWordForGroup}
+                alreadyAddedWordIds={editingGroup?.words?.map(w => w.id) || []}
+            />
 
 
         </div>

@@ -28,40 +28,46 @@ function AlphabetPath() {
                 console.log(chaptersResp.data);
                 console.log(completeResp.data);
 
-                const rawChapterData = chaptersResp.data;
+                const rawChapterData = chaptersResp.data.filter(ch => Array.isArray(ch.lessons) && ch.lessons.length > 0);
                 const completedIds = completeResp.data;
 
                 let previousLessonCompleted = true;
 
                 const processedChapters: ProcessedChapter[] = rawChapterData.map((chapter) => {
 
-                    const processedLessons: ProcessedLesson[] = chapter.lessons.map((lesson) => {
-                        const isCompleted = completedIds.includes(Number(lesson.id));
+                    const processedLessons: ProcessedLesson[] = chapter.lessons
+                        .map((lesson) => {
+                            const orderIndex = Number(lesson.orderIndex ?? 0);
+                            const isCompleted = completedIds.includes(Number(lesson.id));
+                            const isLocked = !previousLessonCompleted;
 
-                        const isLocked = !previousLessonCompleted;
+                            if (!isCompleted) {
+                                previousLessonCompleted = false;
+                            }
 
-                        if (!isCompleted) {
-                            previousLessonCompleted = false;
-                        }
+                            return {
+                                ...lesson,
+                                orderIndex,
+                                isCompleted,
+                                isLocked
+                            };
+                        })
+                        .sort((a, b) => a.orderIndex - b.orderIndex);
 
-                        return {
-                            ...lesson,
-                            isCompleted,
-                            isLocked
-                        };
-                    });
-
+                    const chapterOrderIndex = Number(chapter.orderIndex ?? 0);
                     const isChapterLocked = processedLessons.length > 0 && processedLessons[0].isLocked;
 
                     return {
                         ...chapter,
+                        orderIndex: chapterOrderIndex,
                         lessons: processedLessons,
                         isLocked: isChapterLocked
                     };
                 });
 
-                setChaptersData(processedChapters);
+                processedChapters.sort((a, b) => a.orderIndex - b.orderIndex);
 
+                setChaptersData(processedChapters);
 
                 if (activeChapter) {
                     const found = processedChapters.find(c => c.id === activeChapter.id);

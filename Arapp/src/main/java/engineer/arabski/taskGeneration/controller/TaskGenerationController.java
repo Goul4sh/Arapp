@@ -20,29 +20,31 @@ public class TaskGenerationController {
     private final TaskGenerationService taskGenerationService;
 
 
-//    @GetMapping("/morphology-forms")
-//    public ResponseEntity<?> generateMorphologyFormsTask(@RequestBody MorphologyRequest request) {
-//
-//        List<TaskData> task = taskGenerationService.generateMorphologyFormsTasks(List.of(request), 1);
-//        if (task != null) {
-//            return ResponseEntity.status(HttpStatus.OK).body(task.getFirst());
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
-//
-//    }
-//
-//    @GetMapping("/morphology-parts")
-//    public ResponseEntity<?> generateMorphologyPartsTask(@RequestBody MorphologyRequest request) {
-//
-//        List<TaskData> task = taskGenerationService.generateMorphologyPartsTasks(List.of(request), 1);
-//        if (task != null) {
-//            return ResponseEntity.status(HttpStatus.OK).body(task.getFirst());
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
-//
-//    }
+    @PostMapping("/morphology-forms")
+    public ResponseEntity<?> generateMorphologyFormsTask(@RequestBody MorphologyRequest request) {
+
+        System.out.println("Jestem w kontrolerze, otrzymalem request: " + request);
+
+        List<TaskData> task = taskGenerationService.generateMorphologyFormsTasks(List.of(request), 1);
+        if (task != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(task.getFirst());
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
+
+    }
+
+    @PostMapping("/morphology-parts")
+    public ResponseEntity<?> generateMorphologyPartsTask(@RequestBody MorphologyRequest request) {
+
+        List<TaskData> task = taskGenerationService.generateMorphologyPartsTasks(List.of(request), 1);
+        if (task != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(task.getFirst());
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
+
+    }
 
     @GetMapping("/groups/{wordGroupId}")
     public ResponseEntity<?> generateTaskSetForGroup(

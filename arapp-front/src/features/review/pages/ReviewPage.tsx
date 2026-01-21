@@ -72,7 +72,7 @@ function ReviewPage() {
 
                 setFlashcardGroups(finalGroups);
                 setSelectedGroup(finalGroups[0] || null);
-                setSelectedGroupIndex(0);
+                setSelectedGroupIndex(-1);
 
                 setRecentlyEncounteredWords(wordsResp.data);
 

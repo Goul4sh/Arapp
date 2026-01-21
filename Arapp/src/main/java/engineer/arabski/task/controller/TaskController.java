@@ -3,6 +3,7 @@ package engineer.arabski.task.controller;
 
 import engineer.arabski.task.dto.CreateTheoryTaskCompendiumRequest;
 import engineer.arabski.task.dto.TaskData;
+import engineer.arabski.task.dto.TheoryCompendiumResponse;
 import engineer.arabski.task.dto.vocabulary.EnrichedTaskRequest;
 import engineer.arabski.task.model.Task;
 import engineer.arabski.task.service.TaskService;
@@ -57,7 +58,7 @@ public class TaskController {
     @PostMapping("/theory")
     public ResponseEntity<?> createTheoryTask(@RequestBody CreateTheoryTaskCompendiumRequest data) {
 
-        Task createdTask = taskService.addTheoryTask(data);
+        TheoryCompendiumResponse createdTask = taskService.addTheoryTask(data);
         if (createdTask != null) {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
@@ -67,17 +68,30 @@ public class TaskController {
 
     }
 
-    @PostMapping("/with-vocab")
-    public ResponseEntity<?> createTaskWithVocabData(@RequestBody EnrichedTaskRequest data) {
 
-        Task createdTask = taskService.addTaskWithVocab(data);
+    @PostMapping("/with-vocab/{wordId}")
+    public ResponseEntity<?> createTaskWithVocabDataReference(
+            @RequestBody TaskData data,
+            @PathVariable Long wordId) {
+
+        Task createdTask = taskService.addTaskWithVocabReferences(data, wordId);
+
         if (createdTask != null) {
-
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
         }
-
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not create task with vocabulary data");
+    }
 
+    @PostMapping("/with-vocab")
+    public ResponseEntity<?> createTaskWithVocabData(
+            @RequestBody EnrichedTaskRequest data) {
+
+        Task createdTask = taskService.addTaskWithVocab(data);
+
+        if (createdTask != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Could not create task with vocabulary data");
     }
 
     @PatchMapping("/{id}")

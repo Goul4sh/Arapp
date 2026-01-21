@@ -5,6 +5,7 @@ import ProgressBar from "../../exercises/components/ProgressBar.tsx";
 
 import styles from './ReviewPractice.module.css'
 import {Link, useNavigate, useParams} from "react-router-dom";
+import progressBarStyles from "../../exercises/components/progressBar.module.css";
 
 //TODO dodac kiedys klawiature do wpisywania odpowiedzi
 
@@ -131,8 +132,9 @@ function ReviewPracticePage() {
 
                 <div className={styles.flashcardCounter}>
 
-                    <Link to="/review">EXIT</Link>
-
+                    <button
+                    onClick={() =>  navigate("/review")}
+                          className={progressBarStyles.exitButton}>X</button>
 
                     <p>{currentFlashcardIndex + 1} / {flashcards.length}</p>
 

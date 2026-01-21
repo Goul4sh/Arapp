@@ -8,6 +8,8 @@ import * as TaskTypes from "../../../../exercises/taskTypes.ts"
 import styles from "../../adminGlobalStyles.module.css"
 import TheoryForm from "../forms/TheoryForm.tsx";
 import TranslateTaskForm from "../forms/TranslateTaskForm.tsx";
+import MorphologyFormsForm from "../forms/MorphologyFormsForm.tsx";
+import MorphologyPartsForm from "../forms/MorphologyPartsForm.tsx";
 
 interface Props {
     task: TaskTypes.Task | null;
@@ -62,9 +64,9 @@ export const TaskCreator = ({task, onSave, onDataChange, onCancel}: Props) => {
             case "match-pairs":
                 return <MatchPairsForm onDataChange={handleFormChange} key={task.id} initialData={localTaskData}/>
             case "morphology-parts":
-                return <div>Morphology Parts Form (TODO)</div>
+                return <MorphologyPartsForm onDataChange={handleFormChange} key={task.id} initialData={localTaskData}/>
             case "morphology-form":
-                return <div>Morphology Form Form (TODO)</div>
+                return <MorphologyFormsForm onDataChange={handleFormChange} key={task.id} initialData={localTaskData}/>
             case "theory":
                 return <TheoryForm onDataChange={handleFormChange} key={task.id} initialData={localTaskData}/>
             case "translate":

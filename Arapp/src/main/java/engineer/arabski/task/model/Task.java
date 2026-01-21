@@ -50,6 +50,7 @@ public class Task {
 
     //Pole na potrzeby powiązania zadania theory z wpisem w kompendium. W reszcie będzie null.
     @ManyToOne(fetch = FetchType.LAZY)
+
     @JoinColumn(name = "compendium_entry_id")
     private CompendiumEntry compendiumEntry;
 

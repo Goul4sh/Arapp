@@ -6,7 +6,8 @@ public record ChapterRequest(
 
         String title,
         String description,
-        List<Long> lessonIds
+        List<Long> lessonIds,
+        int orderIndex
 
 ) {
 }

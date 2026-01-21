@@ -1,6 +1,5 @@
 package engineer.arabski.lesson.model;
 
-import engineer.arabski.lesson.dto.LessonPreviewResponse;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,9 +13,10 @@ import java.util.List;
 @Entity
 public class Chapter {
 
-    public Chapter(String name, String description) {
+    public Chapter(String name, String description, int orderIndex) {
         this.name = name;
         this.description = description;
+        this.orderIndex = orderIndex;
     }
 
     @Id
@@ -30,6 +30,7 @@ public class Chapter {
     @OneToMany(mappedBy = "chapter",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Lesson> lessons;
 
+    private int orderIndex;
 
     public void addLesson(Lesson lesson) {
         lessons.add(lesson);

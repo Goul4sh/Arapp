@@ -28,6 +28,7 @@ export interface FillInTheBlankTaskType extends BaseTask {
     // id: number;
 
     type: 'fill-in-the-blank';
+    translatedSentence: string;
     sentenceWithBlank: string;
     answer: string;
 }
@@ -44,6 +45,13 @@ export interface TheoryTaskType extends BaseTask {
 
     type: 'theory';
     content: string;
+    createCompendiumEntry?: boolean;
+    compendiumTitle?: string;
+    compendiumIcon?: string;
+    tagNames?: string[];
+    requiredLessonId?: number;
+    existingCompendiumEntryId?: number;
+
 }
 
 export interface MorphologyPartsTaskType extends BaseTask {
@@ -54,6 +62,7 @@ export interface MorphologyPartsTaskType extends BaseTask {
     correctOrder : string[];
     segments: MorphologySegment[];
     decoySegments: MorphologySegment[];
+    referencedWordId?: number;
 }
 
 export interface MorphologySegment {
@@ -67,6 +76,8 @@ export interface MorphologyFormTaskType extends BaseTask {
     type: 'morphology-form';
     question: string;
     steps: MorphologyStep[];
+    referencedWordId?: number;
+
 }
 
 export interface MorphologyStep {

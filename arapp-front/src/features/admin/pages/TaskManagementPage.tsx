@@ -13,6 +13,7 @@ import type {Task} from "../../exercises/taskTypes.ts";
 import {TaskPreviewRenderer} from "./components/taskCreation/TaskPreviewRenderer.tsx";
 import {TaskCreator} from "./components/taskCreation/TaskCreator.tsx"
 import VocabularyModal from "./components/modals/VocabularyModal.tsx";
+import Modal from "../../review/Modal.tsx";
 
 interface LocalLesson {
     id: number;
@@ -46,19 +47,17 @@ type VocabularyItem = {
 
 }
 
-//
-// type VocabularyItemToSave = {
-//     original: string;
-//     lemma: string,
-//     partOfSpeech: string,
-//     root: string,
-//     wordId: number,
-//     translation: string
-//     endIndex: number;
-//     startIndex: number;
-//
-// }
+type TheoryTaskCompendiumData = {
 
+    description: string;
+    requiredLessonId: number;
+    createCompendiumEntry: boolean;
+    existingCompendiumEntryId: number | null;
+    compendiumTitle: string;
+    compendiumContent: string;
+    compendiumIcon: string;
+    tagNames: string[]
+}
 
 const AVAILABLE_TASK_TYPES = [
     {type: 'choose-one', label: 'Wybierz jedno'},
@@ -89,6 +88,8 @@ function TaskManagementPage() {
     const [isVocabAnalysisOpen, setIsVocabAnalysisOpen] = useState(false);
     const [taskVocabAnalysis, setTaskVocabAnalysis] = useState<VocabularyItem[] | []>([]);
     const [pendingTaskData, setPendingTaskData] = useState<Partial<TaskTypes.Task> | null>(null);
+
+    const [deletingTask, setDeletingTask] = useState<number | null>(null);
 
 
     useEffect(() => {
@@ -123,7 +124,6 @@ function TaskManagementPage() {
 
     const fetchLessonTasks = async (lessonId: number) => {
 
-
         if (expandedLessonId === lessonId) {
             setExpandedLessonId(null);
             return;
@@ -144,12 +144,12 @@ function TaskManagementPage() {
 
             console.log("to dostałem z lekcji:", response.data);
 
-            const flatData = response.data.tasks.map((item: { id: number; data?: Partial<TaskTypes.Task> }) => {
-                if (!item.data) return {id: item.id};
+            const flatData = response.data.tasks.map((item: { taskId: number; data?: Partial<TaskTypes.Task> }) => {
+                if (!item.data) return {id: item.taskId};
 
                 return {
                     ...item.data,
-                    id: item.id
+                    id: item.taskId
                 };
             });
 
@@ -244,67 +244,6 @@ function TaskManagementPage() {
         setAddingTaskToLessonId(null);
     }
 
-    // const handleSaveTask = async (taskData: Partial<TaskTypes.Task>) => {
-    //
-    //     const currentLessonId = expandedLessonId;
-    //     if (!currentLessonId || !taskData) return;
-    //
-    //
-    //     try {
-    //
-    //         const isUpdate = taskData.id && true && taskData.id > 0;
-    //
-    //         if (isUpdate) {
-    //
-    //             console.log("Wysyłam do aktualizacji:", taskData);
-    //
-    //             // Aktualizacja istniejącego zadania
-    //             const response = await api.patch(`/api/exercises/${taskData.id}`, taskData, {withCredentials: true});
-    //             console.log("Zaktualizowano zadanie:", response.data);
-    //
-    //             const savedTask = response.data;
-    //
-    //             setLessonTasks(prev => ({
-    //                 ...prev,
-    //                 [currentLessonId]: prev[currentLessonId].map(t =>
-    //                     t.id === savedTask.id ? savedTask : t
-    //                 )
-    //             }));
-    //
-    //         } else {
-    //
-    //             console.log("Wysylam do zapisu:", taskData);
-    //
-    //             const response = await api.post(`/api/exercises`, taskData, {withCredentials: true});
-    //             console.log("To dostalem z backendu pododaniu taska nowego", response.data)
-    //             const savedTask = response.data;
-    //
-    //             await api.patch(`/api/lessons/${currentLessonId}/exercises/${savedTask.id}`, {withCredentials: true});
-    //
-    //             const flatTask = savedTask.taskData ? {...savedTask.taskData, id: savedTask.id} : {id: savedTask.id};
-    //
-    //             setLessonTasks(prev => ({
-    //                 ...prev,
-    //                 [currentLessonId]: [...(prev[currentLessonId] || []), flatTask]
-    //             }));
-    //
-    //         }
-    //
-    //
-    //         setSelectedTaskByLesson(prev => ({...prev, [currentLessonId]: null}));
-    //         setTaskData(null);
-    //         setTaskVocabAnalysis([]);
-    //         alert("Zapisano pomyślnie!");
-    //
-    //
-    //     } catch (error) {
-    //         console.error("Błąd podczas zapisywania zadania:", error);
-    //
-    //     }
-    //
-    // }
-
-
     // Funkcje do vocab modal
 
     const handleCloseVocabularyModal = () => {
@@ -321,8 +260,7 @@ function TaskManagementPage() {
                 const task = taskData as Partial<TaskTypes.ChooseOneTaskType>;
                 return `${task.answer || ''} ${task.decoyAnswers ? task.decoyAnswers.join(' ') : ''}`;
             }
-            case 'multiple-choice':
-            {
+            case 'multiple-choice': {
                 const task = taskData as Partial<TaskTypes.MultipleChoiceTaskType>;
                 return `${task.answers ? task.answers.join(' ') : ''} ${task.decoyAnswers ? task.decoyAnswers.join(' ') : ''}`;
             }
@@ -353,7 +291,7 @@ function TaskManagementPage() {
             const textForAnalysis = extractTextForAnalysis(taskData);
             // const payload = {text: taskData.description || ""};
             const response = await
-                api.post('/api/admin/dictionary/analyze', {text:textForAnalysis },
+                api.post('/api/admin/dictionary/analyze', {text: textForAnalysis},
                     {withCredentials: true});
 
             console.log("Otrzymana analiza słownictwa:", response.data);
@@ -368,13 +306,159 @@ function TaskManagementPage() {
     const handleAnalyzeVocabularyButtonClicked = async (taskData: Partial<TaskTypes.Task>) => {
 
         setPendingTaskData(taskData);
+        console.log("Wybieram sposób dodawania zadania. Będę decydowac na podstawie tego obiektu:", taskData);
+        if (taskData.type === 'theory') {
+            await handleCreateTheoryTask(taskData);
+            return;
+        }
+        if (taskData.type === 'morphology-form' || taskData.type === 'morphology-parts') {
+            await handleCreateMorphologyTask(taskData);
+            return;
+        }
+
         const vocabulary = await analyzeVocabulary(taskData);
         setTaskVocabAnalysis(vocabulary)
         setIsVocabAnalysisOpen(true)
+    }
+
+    const handleCreateMorphologyTask = async (taskContents: Partial<TaskTypes.Task>) => {
+
+        const currentLessonId = expandedLessonId;
+        if (!currentLessonId || !taskContents) return;
+
+        if (taskContents.type !== 'morphology-form' && taskContents.type !== 'morphology-parts') {
+            console.error("Nie można utworzyć zadania z danymi innego typu:", taskContents);
+            return;
+        }
+        const wordsToSave = taskContents.referencedWordId
+
+        const isUpdate = taskContents.id && true && taskContents.id > 0;
+
+        console.log("Zadanie ma referencję do słowa:", wordsToSave)
+
+        try {
+
+            if (isUpdate) {
+
+                const response = await api.patch(`/api/exercises/${taskContents.id}`, taskContents, {withCredentials: true});
+                console.log("Zaktualizowano zadanie:", response.data);
+
+                const savedTask = response.data;
+                setLessonTasks(prev => ({
+                    ...prev,
+                    [currentLessonId]: prev[currentLessonId].map(t =>
+                        t.id === savedTask.id ? savedTask : t
+                    )
+                }));
+
+            } else {
+                console.log("Wysyłam pełny payload do zapisu:", pendingTaskData);
+
+                const response = await api.post(`/api/exercises/with-vocab/${wordsToSave}`, pendingTaskData, {withCredentials: true});
+
+                alert("Zadanie i słownictwo zapisane!");
+                console.log("To dostalem z backendu pododaniu taska nowego", response.data)
+                const savedTask = response.data;
+
+                await api.patch(`/api/lessons/${currentLessonId}/exercises/${savedTask.id}`, {withCredentials: true});
+
+                const flatTask = savedTask.taskData ? {
+                    ...savedTask.taskData,
+                    id: savedTask.id
+                } : {id: savedTask.id};
+
+                setLessonTasks(prev => ({
+                    ...prev,
+                    [currentLessonId]: [...(prev[currentLessonId] || []), flatTask]
+                }));
+
+            }
+            setIsVocabAnalysisOpen(false);
+            setPendingTaskData(null);
+            setTaskVocabAnalysis([]);
+
+        } catch (error) {
+            console.error("Błąd zapisu zadania ze słownictwem:", error);
+            alert("Wystąpił błąd podczas zapisu.");
+        }
 
     }
-    const handleVocabularyConfirmed = async (confirmedVocabulary: VocabularyItem[]) => {
 
+    const handleCreateTheoryTask = async (taskContents: Partial<TaskTypes.Task>) => {
+
+        const currentLessonId = expandedLessonId;
+        if (!currentLessonId || !taskContents || !taskContents.id) return;
+
+        if (taskContents.type !== 'theory') {
+            console.error("Nie można utworzyć zadania teorii z danymi innego typu:", taskContents);
+            return;
+        }
+
+        console.log("Będę tworzyc payload uzywajac takiego obiektu:", taskContents);
+
+        const isUpdate = taskContents.id > 0;
+
+        try {
+            if (isUpdate) {
+                const payload = {
+                    description: taskContents.description,
+                    content: taskContents,
+                    compendiumEntryId: taskContents.existingCompendiumEntryId,
+                    type: "theory"
+                }
+
+                // Aktualizacja istniejącego zadania
+                const response = await api.patch(`/api/exercises/${taskContents.id}`, payload, {withCredentials: true});
+                console.log("Zaktualizowano zadanie:", response.data);
+
+                const savedTask = response.data;
+
+                setLessonTasks(prev => ({
+                    ...prev,
+                    [currentLessonId]: prev[currentLessonId].map(t =>
+                        t.id === savedTask.id ? savedTask : t
+                    )
+                }));
+
+            } else {
+
+                const payload: TheoryTaskCompendiumData = {
+                    description: taskContents.description || "",
+                    requiredLessonId: taskContents.requiredLessonId || 0,
+                    createCompendiumEntry: taskContents.createCompendiumEntry || false,
+                    existingCompendiumEntryId: taskContents.existingCompendiumEntryId || null,
+                    compendiumTitle: taskContents.compendiumTitle || "",
+                    compendiumContent: taskContents.content || "",
+                    compendiumIcon: taskContents.compendiumIcon || "book",
+                    tagNames: taskContents.tagNames || []
+                };
+
+                console.log("Jestem w tworzeniu theory task. Zaraz sprobuje zapisac zadanie następującym obiektem:", payload);
+
+                const response = await api.post('/api/exercises/theory', payload, {withCredentials: true});
+
+                alert("Zadanie zapisane!");
+                console.log("To dostalem z backendu pododaniu taska nowego", response.data)
+                const savedTask = response.data;
+                console.log("To dostałem po zwróceniu taska.", savedTask);
+
+                await api.patch(`/api/lessons/${currentLessonId}/exercises/${savedTask.taskId}`, {withCredentials: true});
+
+                const flatTask = savedTask.taskData ? {...savedTask.taskData, id: savedTask.id} : {id: savedTask.id};
+
+                setLessonTasks(prev => ({
+                    ...prev,
+                    [currentLessonId]: [...(prev[currentLessonId] || []), flatTask]
+                }));
+
+            }
+        } catch
+            (error) {
+            console.error("Błąd zapisu zadania teorii:", error);
+        }
+    }
+
+    const handleVocabularyConfirmed = async (confirmedVocabulary: VocabularyItem[]) => {
 
         const currentLessonId = expandedLessonId;
         if (!currentLessonId || !pendingTaskData) return;
@@ -388,27 +472,52 @@ function TaskManagementPage() {
             }
         };
 
+        const isUpdate = pendingTaskData.id && true && pendingTaskData.id > 0;
+
+        console.log("Id zadania, które właśnie edytuję to: ", pendingTaskData.id)
+
         try {
 
-            console.log("Wysyłam pełny payload do zapisu:", fullPayload);
+            if (isUpdate) {
 
-            const response = await api.post('/api/exercises/with-vocab', fullPayload, {withCredentials: true});
+                console.log("Wysyłam do aktualizacji:", pendingTaskData, "ze słownictwem:", wordsToSave);
+
+                // Aktualizacja istniejącego zadania
+                const response = await api.patch(`/api/exercises/${pendingTaskData.id}`, pendingTaskData, {withCredentials: true});
+                console.log("Zaktualizowano zadanie:", response.data);
+
+                const savedTask = response.data;
+
+                setLessonTasks(prev => ({
+                    ...prev,
+                    [currentLessonId]: prev[currentLessonId].map(t =>
+                        t.id === savedTask.id ? savedTask : t
+                    )
+                }));
+
+            } else {
+                console.log("Wysyłam pełny payload do zapisu:", fullPayload);
+
+                const response = await api.post('/api/exercises/with-vocab', fullPayload, {withCredentials: true});
 
 
-            alert("Zadanie i słownictwo zapisane!");
-            console.log("To dostalem z backendu pododaniu taska nowego", response.data)
-            const savedTask = response.data;
+                alert("Zadanie i słownictwo zapisane!");
+                console.log("To dostalem z backendu pododaniu taska nowego", response.data)
+                const savedTask = response.data;
 
-            await api.patch(`/api/lessons/${currentLessonId}/exercises/${savedTask.id}`, {withCredentials: true});
+                await api.patch(`/api/lessons/${currentLessonId}/exercises/${savedTask.id}`, {withCredentials: true});
 
-            const flatTask = savedTask.taskData ? {...savedTask.taskData, id: savedTask.id} : {id: savedTask.id};
+                const flatTask = savedTask.taskData ? {
+                    ...savedTask.taskData,
+                    id: savedTask.id
+                } : {id: savedTask.id};
 
-            setLessonTasks(prev => ({
-                ...prev,
-                [currentLessonId]: [...(prev[currentLessonId] || []), flatTask]
-            }));
+                setLessonTasks(prev => ({
+                    ...prev,
+                    [currentLessonId]: [...(prev[currentLessonId] || []), flatTask]
+                }));
 
-
+            }
             setIsVocabAnalysisOpen(false);
             setPendingTaskData(null);
             setTaskVocabAnalysis([]);
@@ -419,9 +528,21 @@ function TaskManagementPage() {
         }
     };
 
-    const handleDeleteTask = async (lessonId: number, taskId: number) => {
-//TODO tudaj dodac popup inny niz alertxd
-        alert("Jesteś pewien, że chcesz usunąć to zadanie?");
+    const handleDeleteTask = (taskId: number) => {
+        setDeletingTask(taskId);
+    }
+
+    const confirmDeleteTask = () => {
+        if (deletingTask === null) return;
+
+        const currentLessonId = expandedLessonId;
+        if (!currentLessonId) return;
+
+        handleConfirmDeleteTask(currentLessonId, deletingTask);
+
+    }
+
+    const handleConfirmDeleteTask = async (lessonId: number, taskId: number) => {
 
         try {
             await api.delete(`/api/exercises/${taskId}`, {withCredentials: true});
@@ -438,6 +559,7 @@ function TaskManagementPage() {
 
             setTaskData(null);
             setSelectedTaskType("");
+            setDeletingTask(null);
 
             alert("Zadanie usunięte pomyślnie!");
         } catch (error) {
@@ -524,7 +646,7 @@ function TaskManagementPage() {
                                                         </div>
                                                     ) : (
                                                         lessonTasks[lesson.id]?.map((task, index) => {
-
+                                                                // console.log("Renderuję task:", task);
                                                                 return (
 
                                                                     <div
@@ -549,7 +671,7 @@ function TaskManagementPage() {
                                                                     {index + 1}.
                                                                 </span>
                                                                             <span className={localStyles.taskType}>
-                                                                    {task.type}
+                                                                    {AVAILABLE_TASK_TYPES.find(t => t.type === task.type)?.label || task.type}
                                                                 </span>
                                                                         </div>
                                                                         <div className={localStyles.taskActions}>
@@ -557,8 +679,7 @@ function TaskManagementPage() {
                                                                                 className={styles.smallActionBtn}
                                                                                 onClick={(e) => {
                                                                                     e.stopPropagation();
-                                                                                    handleDeleteTask(lesson.id, task.id);
-                                                                                    // TODO: Delete logic
+                                                                                    handleDeleteTask(task.id || task.taskId);
                                                                                 }}
                                                                             >
                                                                                 <FontAwesomeIcon icon={faTrash}/>
@@ -573,7 +694,8 @@ function TaskManagementPage() {
 
                                                     {addingTaskToLessonId === lesson.id ? (
                                                         <div className={localStyles.typeSelectionContainer}>
-                                                            <p className={localStyles.typeSelectionHeader}> Wybierz typ
+                                                            <p className={localStyles.typeSelectionHeader}> Wybierz
+                                                                typ
                                                                 zadania</p>
                                                             <div className={localStyles.typeButtonsContainer}>
                                                                 {AVAILABLE_TASK_TYPES.map((item) => (
@@ -614,7 +736,6 @@ function TaskManagementPage() {
 
                                                     )}
 
-
                                                 </div>
 
                                                 {/*FORMULARZ*/}
@@ -625,9 +746,6 @@ function TaskManagementPage() {
                                                             <TaskCreator
                                                                 key={selectedTaskByLesson[lesson.id]?.id}
                                                                 task={selectedTaskByLesson[lesson.id]!}
-
-
-                                                                // onSave={handleSaveTask}
                                                                 onSave={handleAnalyzeVocabularyButtonClicked}
                                                                 onCancel={handleCancelEdit}
                                                                 onDataChange={setTaskData}
@@ -683,9 +801,37 @@ function TaskManagementPage() {
             </div>
 
 
+            <Modal
+                isOpen={deletingTask !== null}
+                onClose={() => {
+                    setDeletingTask(null)
+                }}
+                title={"Usuń rozdział"}>
+                <div>
+
+                    <div className={styles.deleteConfirmationModal}>
+
+                        <h2> Jesteś pewien, że chcesz usunąć zadanie?</h2>
+                        <p> Ta akcja jest nieodwracalna.</p>
+
+                        <div className={styles.deleteConfirmationButtons}>
+                            <button className={styles.confirmDeleteButton}
+                                    onClick={() => confirmDeleteTask()}>
+                                Tak, usuń zadanie
+                            </button>
+                            <button className={styles.cancelDeleteButton}
+                                    onClick={() => setDeletingTask(null)}>
+                                Anuluj
+                            </button>
+                        </div>
+                    </div>
+
+
+                </div>
+            </Modal>
+
             <VocabularyModal isOpen={isVocabAnalysisOpen}
                              onClose={handleCloseVocabularyModal}
-                // onSave={handleSaveTask}
                              onSave={handleVocabularyConfirmed}
                              vocabularyItems={taskVocabAnalysis}/>
 

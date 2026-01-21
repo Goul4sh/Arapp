@@ -314,16 +314,6 @@ function Dashboard(): JSX.Element {
                                     </div>
                                 </div>
 
-                                {/*<div className={styles.detailsCard}>*/}
-
-                                {/*    <h2 className={styles.detailstTitle}*/}
-                                {/*    >{selectedDate ? `Szczegóły z dnia ${selectedDate}` : 'Kliknij na dzień, aby zobaczyć szczegóły'}</h2>*/}
-                                {/*    */}
-
-                                {/*    </div>*/}
-
-                                {/*</div>*/}
-
                             </div>
 
 

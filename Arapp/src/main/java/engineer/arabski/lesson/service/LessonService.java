@@ -3,6 +3,7 @@ package engineer.arabski.lesson.service;
 import engineer.arabski.lesson.dto.LessonPreviewResponse;
 import engineer.arabski.lesson.dto.LessonRequest;
 import engineer.arabski.lesson.dto.LessonTasksResponse;
+import engineer.arabski.lesson.model.Chapter;
 import engineer.arabski.lesson.model.Lesson;
 import engineer.arabski.lesson.repository.LessonRepository;
 import engineer.arabski.review.repository.FlashcardRepository;
@@ -32,7 +33,7 @@ public class LessonService {
 
     private LessonTasksResponse toResponse(Lesson lesson) {
         List<EnrichedTaskResponse> tasks = lesson.getTasks().stream()
-                .map(task -> new EnrichedTaskResponse(task.getTaskData(), task.getWordReferencesResponse()))
+                .map(task -> new EnrichedTaskResponse(task.getId(),task.getTaskData(), task.getWordReferencesResponse()))
                 .toList();
 
         return new LessonTasksResponse(tasks);
@@ -72,7 +73,7 @@ public class LessonService {
                             })
                             .toList();
 
-                    return new EnrichedTaskResponse(task.getTaskData(), updatedReferences);
+                    return new EnrichedTaskResponse(task.getId(),task.getTaskData(), updatedReferences);
                 })
                 .toList();
 
@@ -86,7 +87,8 @@ public class LessonService {
                 lesson.getDescription(),
                 lesson.getIcon(),
                 lesson.isPublished(),
-                lesson.getTasks().size()
+                lesson.getTasks().size(),
+                lesson.getOrderIndex()
         );
     }
 
@@ -164,6 +166,38 @@ public class LessonService {
 
     }
 
+    public void moveLesson(Long id, String direction) {
+        Lesson lesson = lessonRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Lesson not found with id: " + id));
+
+        int currentIndex = lesson.getOrderIndex();
+        int newIndex;
+
+        if (direction.equalsIgnoreCase("up")) {
+            newIndex = currentIndex - 1;
+            if (newIndex < 0) {
+                throw new IllegalArgumentException("Lesson is already at the top");
+            }
+        } else if (direction.equalsIgnoreCase("down")) {
+            newIndex = currentIndex + 1;
+            long maxIndex = lessonRepository.count();
+            if (newIndex > maxIndex) {
+                throw new IllegalArgumentException("Lesson is already at the bottom");
+            }
+        } else {
+            throw new IllegalArgumentException("Invalid direction. Use 'up' or 'down'");
+        }
+
+        Lesson otherLesson = lessonRepository.findByOrderIndexAndChapter_Id(newIndex, lesson.getChapter().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Cannot find lesson at position " + newIndex));
+
+        lesson.setOrderIndex(newIndex);
+        otherLesson.setOrderIndex(currentIndex);
+
+        lessonRepository.save(lesson);
+        lessonRepository.save(otherLesson);
+    }
+
 
     @Transactional
     public void addTaskToLesson(Long lessonId, Long taskId) {
@@ -184,7 +218,7 @@ public class LessonService {
     @Transactional
     public LessonPreviewResponse addLesson(LessonRequest request) {
 
-        Lesson lesson = new Lesson(request.title(), request.description(), request.icon());
+        Lesson lesson = new Lesson(request.title(), request.description(), request.icon(), request.orderIndex());
 
         List<Task> tasks = taskRepository.findAllById(request.taskIds());
 

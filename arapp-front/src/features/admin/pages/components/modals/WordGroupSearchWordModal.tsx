@@ -6,6 +6,7 @@ import localStyles from "../../wordBankManagement.module.css"
 import api from "../../../../auth/api.ts";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck} from "@fortawesome/free-solid-svg-icons";
+
 interface Word {
     wordId: number;
     transliteration: string;
@@ -18,7 +19,8 @@ interface Word {
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSelectWord: (wordId: number) => void;
+    onSelectWord: (word: Word) => void;
+    alreadyAddedWordIds?: number[];
 }
 
 
@@ -39,14 +41,26 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 
-function WordGroupSearchWordModal({isOpen, onClose, onSelectWord}: ModalProps) {
+function WordGroupSearchWordModal({isOpen, onClose, onSelectWord, alreadyAddedWordIds}: ModalProps) {
     const [words, setWords] = useState<Word[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const pageSize = 10;
 
+    const [AddedWordIds, setAddedWordIds] = useState<number[]>(alreadyAddedWordIds || []);
     const debouncedSearch = useDebounce(searchQuery, 600);
+
+
+    useEffect(() => {
+        if (isOpen) {
+            setAddedWordIds(alreadyAddedWordIds || []);
+            setSearchQuery("");
+            setCurrentPage(0);
+        } else {
+            setAddedWordIds([])
+        }
+    }, [alreadyAddedWordIds, isOpen]);
 
     useEffect(() => {
         if (isOpen) {
@@ -57,6 +71,7 @@ function WordGroupSearchWordModal({isOpen, onClose, onSelectWord}: ModalProps) {
     useEffect(() => {
         setCurrentPage(0);
     }, [debouncedSearch]);
+
 
     const fetchWords = async () => {
         try {
@@ -69,15 +84,25 @@ function WordGroupSearchWordModal({isOpen, onClose, onSelectWord}: ModalProps) {
                 withCredentials: true
             });
 
-            setWords(response.data.content);
+            const fetched: Word[] = response.data.content || [];
+            const currentBlockedIds = alreadyAddedWordIds || [];
+
+            console.log("Aktualnie posaidane slowa w grupie to:", currentBlockedIds);
+            console.log("Wszystkie pobrane slowa to", fetched);
+
+            const filteredWords = fetched.filter((word: Word) => !currentBlockedIds.includes(word.wordId) && !AddedWordIds.includes(word.wordId));
+            setWords(filteredWords);
             setTotalPages(response.data.totalPages);
         } catch (error) {
             console.error("Error fetching words:", error);
         }
     };
 
-    const handleSelectWord = (wordId: number) => {
-        onSelectWord(wordId);
+    const handleSelectWord = (word: Word) => {
+
+        setAddedWordIds(prev => [...prev, word.wordId]);
+        setWords(prev => prev.filter(w => w.wordId !== word.wordId));
+        onSelectWord(word);
         onClose();
         setSearchQuery("");
         setCurrentPage(0);
@@ -129,7 +154,7 @@ function WordGroupSearchWordModal({isOpen, onClose, onSelectWord}: ModalProps) {
                                 <td>
                                     <button
                                         className={styles.actionBtnSave}
-                                        onClick={() => handleSelectWord(word.wordId)}
+                                        onClick={() => handleSelectWord(word)}
                                         title="Wybierz słowo"
                                     >
                                         <FontAwesomeIcon icon={faCheck}/> Wybierz
@@ -162,4 +187,5 @@ function WordGroupSearchWordModal({isOpen, onClose, onSelectWord}: ModalProps) {
         </Modal>
     );
 }
+
 export default WordGroupSearchWordModal;
