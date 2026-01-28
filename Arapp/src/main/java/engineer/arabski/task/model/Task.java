@@ -38,7 +38,6 @@ public class Task {
 
     private String description;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lesson_id")
     @JsonIgnore
@@ -47,10 +46,8 @@ public class Task {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "task", orphanRemoval = true)
     private List<TaskWordReference> wordReferences = new ArrayList<>();
 
-
     //Pole na potrzeby powiązania zadania theory z wpisem w kompendium. W reszcie będzie null.
     @ManyToOne(fetch = FetchType.LAZY)
-
     @JoinColumn(name = "compendium_entry_id")
     private CompendiumEntry compendiumEntry;
 

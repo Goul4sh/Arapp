@@ -17,9 +17,6 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    public static final String HEADER_STRING = "Authorization";
-    public static final String TOKEN_PREFIX = "Bearer ";
-
     @Value("${jwt.secret}")
     private String secret;
 
@@ -89,6 +86,11 @@ public class JwtUtil {
         }
     }
 
+
+    public long getExpirationTime(String token) {
+        final Date expiration = extractExpiration(token);
+        return expiration.getTime();
+    }
 
     private Boolean isTokenExpired(String token) {
         final Date expiration = extractExpiration(token);

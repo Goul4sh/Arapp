@@ -4,6 +4,7 @@ import api from "../../../auth/api.ts";
 import Modal from "../../Modal.tsx";
 
 import styles from "./../../modal.module.css"
+import localStyles from "./editGroupModal.module.css"
 import FlashcardItemCard from "../FlashcardItem.tsx";
 
 interface EditGroupModalProps {
@@ -328,7 +329,7 @@ function EditGroupModal({
                             />
                         </div>
 
-                        <div className={styles.flashcardsGrid}>
+                        <div className={localStyles.flashcardsGrid}>
                             {filteredFlashcards.length === 0 ? (
                                 <div className={styles.emptyState}>
                                     "Nie znaleziono fiszek"

@@ -6,6 +6,7 @@ public record WordBankEditRequest(
         String root,
         String diacritic,
         String translation,
-        String partOfSpeech
+        String partOfSpeech,
+        String transliteration
 ) {
 }

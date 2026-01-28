@@ -1,57 +1,43 @@
 package engineer.arabski.common.security.service;
 
-import engineer.arabski.common.security.EmailVerificationToken;
-import engineer.arabski.common.security.repository.EmailVerificationTokenRespository;
 import engineer.arabski.user.model.User;
-import engineer.arabski.user.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import engineer.arabski.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class EmailVerificationService {
 
-    private final EmailVerificationTokenRespository emailRepository;
+
+    private final UserRepository userRepository;
+    private final RedisAuthService redisAuthService;
 
 
-    public EmailVerificationService(EmailVerificationTokenRespository emailRepository) {
-        this.emailRepository = emailRepository;
-    }
-
-    public EmailVerificationToken createToken(User user) {
-        EmailVerificationToken token = new EmailVerificationToken();
-        token.setUser(user);
-        token.setToken(UUID.randomUUID().toString());
-        token.setExpiryDate(LocalDateTime.now().plusHours(24));
-        return emailRepository.save(token);
-
+    public String createToken(String email) {
+        String token = UUID.randomUUID().toString();
+        redisAuthService.saveVerificationToken(token, email);
+        return token;
     }
 
     public Optional<User> verify(String token) {
 
         try {
 
-            EmailVerificationToken foundToken = emailRepository.findByToken(token);
-
-            if (foundToken == null) return Optional.empty();
-
-            System.out.println("Znaleziono token: " + foundToken.getToken() + ". Zmienianie statusu uzytkownika na aktywny.");
-
-            User user = foundToken.getUser();
+            String email = redisAuthService.validateEmailVerificationToken(token);
+            System.out.println("Znaleziono token: " + token + ". Zmienianie statusu użytkownika na aktywny.");
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
             user.setEnabled(true);
-//            emailRepository.delete(foundToken);
             return Optional.of(user);
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return Optional.empty();
-
         }
-
-
     }
 
 }

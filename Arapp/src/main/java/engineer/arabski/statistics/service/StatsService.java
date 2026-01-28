@@ -1,15 +1,12 @@
 package engineer.arabski.statistics.service;
 
 import engineer.arabski.statistics.dto.GlobalStatsResponse;
-import engineer.arabski.statistics.dto.UserStatsAggregation;
 import engineer.arabski.statistics.dto.UserStatsRequest;
 import engineer.arabski.statistics.dto.UserStatsResponse;
 import engineer.arabski.statistics.model.DailyUserStats;
 import engineer.arabski.statistics.model.GlobalUserStats;
-import engineer.arabski.statistics.model.UserStats;
 import engineer.arabski.statistics.repository.DailyUserStatsRepository;
 import engineer.arabski.statistics.repository.GlobalUserStatsRepository;
-import engineer.arabski.statistics.repository.UserStatsRepository;
 import engineer.arabski.user.model.User;
 import engineer.arabski.user.service.UserService;
 import jakarta.transaction.Transactional;
@@ -21,14 +18,12 @@ import java.util.List;
 @Service
 public class StatsService {
 
-    private final UserStatsRepository userStatsRepository;
     private final DailyUserStatsRepository dailyUserStatsRepository;
     private final GlobalUserStatsRepository globalUserStatsRepository;
 
     private final UserService userService;
 
-    public StatsService(UserStatsRepository userStatsRepository, DailyUserStatsRepository dailyUserStatsRepository, GlobalUserStatsRepository globalUserStatsRepository, UserService userService) {
-        this.userStatsRepository = userStatsRepository;
+    public StatsService(DailyUserStatsRepository dailyUserStatsRepository, GlobalUserStatsRepository globalUserStatsRepository, UserService userService) {
         this.dailyUserStatsRepository = dailyUserStatsRepository;
         this.globalUserStatsRepository = globalUserStatsRepository;
         this.userService = userService;
@@ -87,17 +82,6 @@ public class StatsService {
     @Transactional
     public void saveSessionStats(Long userId, UserStatsRequest request) {
         User user = userService.getUserById(userId);
-
-        UserStats sessionLog = new UserStats(
-                request.completedTasks(),
-                request.correctAnswers(),
-                request.incorrectAnswers(),
-                request.durationSeconds(),
-                request.flashcardsReviewed(),
-                user
-        );
-        userStatsRepository.save(sessionLog);
-
 
         LocalDate today = LocalDate.now();
 

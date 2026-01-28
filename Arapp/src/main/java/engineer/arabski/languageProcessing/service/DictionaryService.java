@@ -33,7 +33,8 @@ public class DictionaryService {
                 word.getRoot(),
                 word.getDiacritic(),
                 word.getTranslation(),
-                word.getPartOfSpeech()
+                word.getPartOfSpeech(),
+                word.getTransliteration()
         );
     }
 
@@ -134,6 +135,7 @@ public class DictionaryService {
 
         word.setLemma(request.lemma());
         word.setRoot(request.root());
+        word.setTransliteration(request.transliteration());
         word.setPartOfSpeech(request.partOfSpeech());
         word.setTranslation(request.translation());
 

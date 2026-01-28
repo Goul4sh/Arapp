@@ -127,8 +127,8 @@ function Login(): JSX.Element {
                     <span className={styles.googleText}>Zaloguj kontem Google</span>
                 </button>
 
-                <div className={styles.register}>
-                    <p>Nie masz konta? </p> <Link to={"/signup"}>Zarejestruj się </Link>
+                <div className={styles.register} >
+                    <p >Nie masz konta? </p> <Link to={"/signup"}>Zarejestruj się </Link>
 
                 </div>
             </div>

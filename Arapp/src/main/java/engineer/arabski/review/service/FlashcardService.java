@@ -193,9 +193,6 @@ public class FlashcardService {
                 new UserStatsRequest(0L, 0L, 0L, 0L, 1L)
         );
 
-
-        System.out.println("Fiszka " + flashcardId + " oceniona na " + quality +
-                ". Następna powtórka za " + result.intervalDays() + " dni.");
     }
 
 

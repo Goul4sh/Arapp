@@ -181,6 +181,9 @@ function WordBankManagementPage() {
 
         try {
 
+
+            console.log("Wysyłam dane edytowanego słowa:", editingWordData);
+
             setWords(prevWords => prevWords.map(word =>
                 word.wordId === wordId ? {...word, ...editingWordData} : word));
 
@@ -252,7 +255,6 @@ function WordBankManagementPage() {
                         <thead>
                         <tr>
                             <th>Lp.</th>
-                            {/*<th>Słowo arabskie</th>*/}
                             <th>Tłumaczenie</th>
                             <th>Transliteracja</th>
                             <th>Lemat</th>

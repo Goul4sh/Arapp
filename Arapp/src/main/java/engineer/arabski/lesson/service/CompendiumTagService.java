@@ -57,4 +57,28 @@ public class CompendiumTagService {
 
     }
 
+    public void createDefaultTagsIfNotExist() {
+        String[][] defaultTags = {
+                {"grammar", "Gramatyka"},
+                {"vocabulary", "Słownictwo"},
+                {"phrases", "Frazy"},
+                {"culture", "Kultura"},
+                {"idioms", "Idiomy"}
+        };
+
+        for (String[] tagData : defaultTags) {
+            String name = tagData[0];
+            String displayName = tagData[1];
+
+            boolean exists = compendiumTagRepository.existsByName(name);
+            if (!exists) {
+                CompendiumTag tag = new CompendiumTag();
+                tag.setName(name);
+                tag.setDisplayName(displayName);
+                compendiumTagRepository.save(tag);
+            }
+        }
+    }
+
+
 }

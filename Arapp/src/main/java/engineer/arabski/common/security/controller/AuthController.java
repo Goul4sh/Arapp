@@ -1,14 +1,15 @@
 package engineer.arabski.common.security.controller;
 
 import engineer.arabski.common.security.CustomUserDetails;
-import engineer.arabski.common.security.EmailVerificationToken;
 import engineer.arabski.common.security.dto.ErrorResponse;
 import engineer.arabski.common.security.dto.UserDataResponse;
 import engineer.arabski.common.security.dto.LoginRequest;
 import engineer.arabski.common.security.dto.RegisterRequest;
 import engineer.arabski.common.security.exception.UserAlreadyExistsException;
+import engineer.arabski.common.security.jwt.JwtUtil;
 import engineer.arabski.common.security.service.EmailService;
 import engineer.arabski.common.security.service.EmailVerificationService;
+import engineer.arabski.common.security.service.RedisAuthService;
 import engineer.arabski.user.model.User;
 import engineer.arabski.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,6 +39,8 @@ public class AuthController {
     private final UserService userService;
     private final EmailVerificationService emailVerificationService;
     private final EmailService emailService;
+    private final JwtUtil jwtUtil;
+    private final RedisAuthService reditAuthService;
 
     @Value("${app.frontend.url}")
     private String frontendUrl;
@@ -53,7 +56,6 @@ public class AuthController {
 
             String jwt = userService.authenticateUser(loginRequest.email(), loginRequest.password());
             User user = userService.getUserByEmail(loginRequest.email()).orElseThrow();
-
 
             ResponseCookie jwtCookie = ResponseCookie.from("jwt", jwt)
                     .httpOnly(true)
@@ -83,16 +85,22 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
-//        if (registerRequest.email() == null || registerRequest.password() == null) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email and password are required");
-//        }
+
+        if (registerRequest.email() == null || registerRequest.password() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email and password are required");
+        }
 
         try {
-            User newUser = userService.createUser(registerRequest);
 
-            EmailVerificationToken token = emailVerificationService.createToken(newUser);
+            User user = userService.createUser(registerRequest);
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new ErrorResponse("Wystąpił błąd serwera przy rejestracji."));
+            }
 
-            emailService.sendVerificationEmail(newUser, token.getToken());
+            String token = emailVerificationService.createToken(registerRequest.email());
+
+            emailService.sendVerificationEmail(registerRequest.email(), token);
 
             return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
         } catch (UserAlreadyExistsException e) {
@@ -111,12 +119,30 @@ public class AuthController {
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 
         try {
+            String token = null;
+            if (request.getCookies() != null) {
+                for (var cookie : request.getCookies()) {
+                    if ("jwt".equals(cookie.getName())) {
+                        token = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+
+            if (token != null) {
+                long expirationTime = jwtUtil.getExpirationTime(token);
+                long currentTime = System.currentTimeMillis();
+                long ttl = expirationTime - currentTime;
+
+                reditAuthService.addToBlacklist(token, ttl);
+            }
+
+
             SecurityContextHolder.clearContext();
             HttpSession session = request.getSession(false);
             if (session != null) {
                 session.invalidate();
             }
-
 
             ResponseCookie jwtCookie = ResponseCookie.from("jwt", "")
                     .httpOnly(true)

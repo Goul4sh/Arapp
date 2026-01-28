@@ -14,4 +14,6 @@ public interface CompendiumTagRepository  extends JpaRepository<CompendiumTag,Lo
 
     Set<CompendiumTag> findAllByNameIn(Iterable<String> names);
 
+    boolean existsByName(String name);
+
 }

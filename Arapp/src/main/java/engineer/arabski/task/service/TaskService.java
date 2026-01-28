@@ -30,17 +30,20 @@ public class TaskService {
     private final CompendiumTagService compendiumTagService;
 
 
+    public Task addTask(TaskData taskData) {
+        Task task = new Task();
+        task.setTaskData(taskData);
+
+        return taskRepository.save(task);
+    }
+
     public Optional<TaskData> findById(Long id) {
         return taskRepository.findById(id)
                 .map(Task::getTaskData);
     }
 
 
-    public Task findByIdEntity(Long id) {
-        return taskRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + id));
-    }
-
+//    @Transactional
 
     public void deleteTask(Long taskId) {
         taskRepository.deleteById(taskId);
@@ -56,17 +59,6 @@ public class TaskService {
         return updatedTask.getTaskData();
     }
 
-
-    @Transactional
-    public Task addTask(TaskData taskData) {
-        Task task = new Task();
-
-        task.setTaskData(taskData);
-
-        System.out.println("Adding task: " + task.getDescription() + " of type " + task.getTaskType());
-
-        return taskRepository.save(task);
-    }
 
     @Transactional
     public TheoryCompendiumResponse addTheoryTask(CreateTheoryTaskCompendiumRequest theoryData) {

@@ -32,15 +32,11 @@ public class FlashcardItem {
         this.word = word;
     }
 
-//    @ManyToOne
-//    @JoinColumn(name = "temporary_word_id")
-//    private TemporaryWord word;
 
     @ManyToOne
     @JoinColumn(name = "dictionary_word_id")
     private DictionaryWord word;
-//    private Long source_sentence_id;
-//    private String context_fragment;
+
 
     @ManyToOne
     @JoinColumn(name = "flashcard_owner_id")

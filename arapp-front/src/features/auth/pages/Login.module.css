@@ -149,6 +149,11 @@
     cursor: pointer;
 }
 
+.register p {
+
+    margin: 0;
+}
+
 .register a, .register p {
 
     padding: 0;

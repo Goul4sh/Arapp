@@ -1,6 +1,5 @@
 package engineer.arabski.statistics.dto;
 
-import engineer.arabski.statistics.model.UserStats;
 
 public record UserStatsResponse(
 
@@ -11,13 +10,5 @@ public record UserStatsResponse(
         Long flashcardsReviewed
 
 ) {
-    public static UserStatsResponse fromEntity(UserStats userStats) {
-        return new UserStatsResponse(
-                userStats.getCompletedTasks(),
-                userStats.getCorrectAnswers(),
-                userStats.getIncorrectAnswers(),
-                userStats.getDurationSeconds(),
-                userStats.getFlashcardsReviewed()
-        );
-    }
+
 }

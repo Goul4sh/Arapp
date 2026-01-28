@@ -15,7 +15,6 @@ public class Sm2Algorithm {
         double newEaseFactor;
 
         if (quality >= 3) {
-
             if (prevRepetitions == 0) {
                 newInterval = 1;
             } else if (prevRepetitions == 1) {
@@ -25,11 +24,9 @@ public class Sm2Algorithm {
             }
             newRepetitions = prevRepetitions + 1;
         } else {
-
             newRepetitions = 0;
             newInterval = 1;
         }
-
 
         newEaseFactor = prevEaseFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
         if (newEaseFactor < MIN_EASE_FACTOR) {

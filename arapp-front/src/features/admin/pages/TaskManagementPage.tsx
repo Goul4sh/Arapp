@@ -573,7 +573,7 @@ function TaskManagementPage() {
 
                 <div className={styles.headerSection}>
                     <div>
-                        <h1 className={styles.pageTitle}>Kreator lekcji i zadań</h1>
+                        <h1 className={styles.pageTitle}>Kreator zawartości</h1>
                     </div>
                 </div>
 

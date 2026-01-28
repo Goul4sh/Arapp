@@ -7,6 +7,7 @@ import engineer.arabski.task.dto.TheoryCompendiumResponse;
 import engineer.arabski.task.dto.vocabulary.EnrichedTaskRequest;
 import engineer.arabski.task.model.Task;
 import engineer.arabski.task.service.TaskService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,16 +19,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/exercises")
+@RequiredArgsConstructor
 public class TaskController {
 
-
     private final TaskService taskService;
-
-
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
@@ -39,7 +34,6 @@ public class TaskController {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
-
     }
 
     @PostMapping

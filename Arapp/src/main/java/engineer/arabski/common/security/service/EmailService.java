@@ -21,16 +21,16 @@ public class EmailService {
     private String frontendUrl;
 
     @Async
-    public void sendVerificationEmail(User user, String token) {
+    public void sendVerificationEmail(String email, String token) {
         String link = backendUrl + "/api/auth/verify-email?token=" + token;
 
         SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo(user.getEmail());
+        msg.setTo(email);
         msg.setSubject("Potwierdzenie rejestracji konta - ArAppka");
         msg.setText("Aby potwierdzić adres e-mail oraz rejestrację konta kliknij w podany link: " + link);
 
         sender.send(msg);
-        System.out.println("Email verification email sent to " + user.getEmail());
+        System.out.println("Email verification email sent to " + email);
     }
     //TODO zmienić wyglad wysylanego maila na troche bardziej normalny
 

@@ -183,7 +183,9 @@ function WordGroupManagement() {
         if (deletingGroup === null) return;
 
         try {
-            await api.delete(`/api/admin/word-groups/${deletingGroup}`, {withCredentials: true});
+            console.log("Usuwam grupe o id:", deletingGroup);
+
+            await api.delete(`/api/word-groups/${deletingGroup}`, {withCredentials: true});
             setWordGroups(prev => prev.filter(g => g.id !== deletingGroup));
             setDeletingGroup(null);
         } catch (error) {
