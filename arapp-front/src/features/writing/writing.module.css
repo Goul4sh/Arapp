@@ -1,15 +1,13 @@
 /*alphabet path*/
 
-/*TODO poprawic kolory*/
-
 .pathContainer {
     display: grid;
 
     grid-template-columns: 260px 1px 1fr;
-    height: calc(100vh - 130px);
+    height: 80vh;
     max-width: 1400px;
     margin: 0 auto;
-    background-color: #f8f9fa;
+    background-color: white;
     gap: 0;
 
     border-radius: 15px;
@@ -25,7 +23,6 @@
 }
 
 .chapterList {
-    /*margin-top: 20px;*/
     margin-bottom: 20px;
     display: flex;
     flex-direction: column;
@@ -35,65 +32,83 @@
 
 .columnSeparator {
 
-    /*margin: 0 10px;*/
 
     width: 2px;
     background-color: #bebebe;
-    /*margin: 0 10px;*/
 }
 
 
 .pathRightColumn {
 
-
-    position: relative;
-    /*background-color: #fff;*/
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    overflow-x: auto;
-    min-width: 0;
 
+    min-width: 0;
+    padding-right: 30px;
+    padding-top: 20px;
+    max-height: 80vh;
+    overflow: hidden;
 }
 
 
 .stickyContentHeader {
 
-    position: sticky;
-    top: 0;
-    z-index: 10;
-
-    /*takie same wlasciowsci jak dla wiersza z lekcja*/
     display: flex;
-    /*gap: 2rem;*/
-    padding: 2rem 3rem 2rem 0;
-    max-width: 600px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     min-width: 500px;
+    padding-bottom: 40px;
 
-    background-color: transparent;
-
-    pointer-events: none;
 }
 
 
-/*TODO  i kolor zmienic*/
-/*//TODO zwiekszyc margin na dole strony - nie widac ze karta sie konczy */
-.stickyContent {
+.scrollableLessonList {
+
     flex-grow: 1;
+    /*position: relative;*/
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-right: 20px;
+    padding-bottom: 2rem;
+    scrollbar-width: thin;
+    scrollbar-color: #4cae4f #f0f0f0;
+}
+
+
+.scrollableLessonList::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollableLessonList::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+
+}
+
+.scrollableLessonList::-webkit-scrollbar-thumb {
+    background: #4cae4f;
+    border-radius: 10px;
+}
+
+.scrollableLessonList::-webkit-scrollbar-thumb:hover {
+    background: #45a049;
+}
+
+
+.stickyContent {
 
     background-color: #fff;
     border-radius: 20px;
     padding: 1.5rem 2rem;
-    border: 1px solid #e5e7eb;
+    /*border: 1px solid #e5e7eb;*/
 
     box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.1);
 
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-
-    pointer-events: auto;
 
 }
 
@@ -115,33 +130,12 @@
     flex-shrink: 0;
 }
 
-.scrollableLessonList {
-
-    flex-grow: 1;
-    overflow-y: auto;
-    position: relative;
-    padding: 0 3rem 2rem 0;
-
-    scrollbar-width: thin;
-    scrollbar-color: #d1d5db transparent;
-    min-width: max-content;
-
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-
-}
-
 .lessonRow {
 
     display: flex;
-
     margin-bottom: 0;
     padding-bottom: 2rem;
-
-    position: relative;
-    z-index: 1;
-    max-width: 650px;
+    padding-left: 2rem;
     min-width: 500px;
 
 }
@@ -157,9 +151,9 @@
 .lessonCard {
     background: #fff;
 
-    border: 1px solid #fff;
+    /*border: 1px solid #ff0000;*/
     border-radius: 20px;
-    padding: 1.5rem;
+    padding: 1rem;
 
     display: flex;
     flex-direction: row;
@@ -168,40 +162,101 @@
 
     gap: 2rem;
     transition: all 0.2s;
-    /*cursor: pointer;*/
     margin-bottom: 0;
 
+    min-width: 700px;
+    min-height: 80px;
+    box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+
 }
 
 
-.lessonDetails h4,
-.lessonDetails p {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.detailsColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: left;
+    gap: 0.3rem;
+}
+
+
+.detailsColumn p {
     margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
 }
 
-.lessonLetters {
+.detailsColumn h4 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
 
-    min-width: 40px;
+.taskCount {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 0.2rem;
+}
+
+.lessonIcon {
+
+    min-width: 55px;
     min-height: 40px;
+
+    background: red;
+}
+
+
+.detailsWrapper {
+
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
 }
 
 .lessonDetails {
 
     justify-items: left;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 
+    align-items: flex-start;
     text-align: left;
+    gap: 10px;
 
 }
 
 .lessonButton {
-
-
+    background-color: #4cae4f;
+    color: white;
+    /*padding: 15px 40px;*/
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(76, 174, 79, 0.3);
+    transition: transform 0.2s, background-color 0.2s;
 }
+
+.lessonButton:hover {
+    background-color: #439a46;
+}
+
+.lessonButton:disabled {
+    background-color: #cccccc;
+    border-color: #bbbbbb;
+    color: #666666;
+    opacity: 50%;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
 
 .buttonLocked {
     opacity: 0.5;
@@ -214,14 +269,21 @@
 }
 
 
+.cardAction {
+    width: 170px;
+    /*display: flex;*/
+    gap: 1rem;
+    align-items: center;
+}
+
 /* Kolumna Kropki */
 .dotColumn {
-    width: 90px;
+    width: 120px;
     display: flex;
     justify-content: center;
     padding-top: 1.5rem;
-
     position: relative;
+    z-index: 3;
 }
 
 .dotColumn::before {
@@ -236,7 +298,7 @@
     top: 48px;
     bottom: -6rem;
 
-    z-index: -1;
+    z-index: 2;
 }
 
 .dotColumnCompleted::before {
@@ -265,7 +327,7 @@
     transition: all 0.3s;
 
     position: relative;
-    z-index: 2;
+    z-index: 4;
 
     user-select: none;
 
@@ -279,13 +341,14 @@
 }
 
 
-
 .dotActive {
     border-color: #45a049;
 
 }
 
-.chapterItem:hover { background: #e5e7eb; }
+.chapterItem:hover {
+    background: #e5e7eb;
+}
 
 
 .selectedChapterItem:hover {
@@ -306,10 +369,6 @@
     justify-content: center;
 
     padding: 30px;
-    /*gap: 20px;*/
-
-    /*min-height: calc(100vh - 100px);*/
-    /*background-color: #f8f9fa;*/
 
 }
 
@@ -320,6 +379,8 @@
     gap: 8px;
     justify-content: center;
     align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+    border-radius: 15px;
 }
 
 
@@ -336,7 +397,6 @@
     margin-bottom: 30px;
 }
 
-/*TODO zmienic stylowanie przyciskow*/
 
 .headerButton {
 
@@ -391,10 +451,6 @@
 .selectedHeaderButton:hover {
     background-color: #45a049;
 }
-
-/*TODO poprawic style generowane przez intellij :D*/
-/*///*/
-
 
 .chapterItem {
     background: white;
@@ -476,9 +532,14 @@
 
 }
 
-.categoryItem:hover { background: #e5e7eb; }
+.categoryItem:hover {
+    background: #e5e7eb;
+}
 
-.separator { background: #e5e7eb; width: 1px; }
+.separator {
+    background: #e5e7eb;
+    width: 1px;
+}
 
 .contentColumn {
     padding: 2rem 3rem;
@@ -491,9 +552,20 @@
 
 }
 
-.categoryHeader { margin-bottom: 2rem; }
-.categoryHeader h2 { font-size: 2rem; margin: 0; color: green; }
-.categoryHeader p { color: #6b7280; margin-top: 0.5rem; }
+.categoryHeader {
+    margin-bottom: 2rem;
+}
+
+.categoryHeader h2 {
+    font-size: 2rem;
+    margin: 0;
+    color: green;
+}
+
+.categoryHeader p {
+    color: #6b7280;
+    margin-top: 0.5rem;
+}
 
 .itemsGrid {
     display: grid;
@@ -518,7 +590,7 @@
 .gridItem:hover:not(.locked) {
     border-color: #4cae4f;
     transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 
 }
 
@@ -538,18 +610,27 @@
 }
 
 
-.itemDesc { font-size: 0.9rem; color: #6b7280; line-height: 1.5; }
+.itemDesc {
+    font-size: 0.9rem;
+    color: #6b7280;
+    line-height: 1.5;
+}
 
 .locked {
     background: #f9fafb;
     cursor: not-allowed;
     border-style: dashed;
 }
-.locked .itemTitle, .locked .itemDesc { opacity: 0.4; }
+
+.locked .itemTitle, .locked .itemDesc {
+    opacity: 0.4;
+}
 
 .lockOverlay {
     position: absolute;
-    bottom: 0; left: 0; right: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background: rgba(243, 244, 246, 0.9);
     padding: 1rem;
     display: flex;
@@ -561,22 +642,43 @@
 }
 
 
-
-.detailView { max-width: 800px; margin: 0 auto; animation: fadeIn 0.3s ease; }
-.backButton {
-    background: none; border: none; color: #6b7280; cursor: pointer;
-    font-size: 0.9rem; margin-bottom: 2rem; padding: 0;
+.detailView {
+    max-width: 800px;
+    margin: 0 auto;
+    animation: fadeIn 0.3s ease;
 }
-.backButton:hover { color: #4cae4f; text-decoration: underline; }
 
-.articleTitle { font-size: 2.5rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; }
-.arabicChar { font-family: 'Amiri', serif; color: #3b82f6; background: #eff6ff; padding: 0 1rem; border-radius: 12px; }
+.backButton {
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    padding: 0;
+}
 
-.markdownWrapper { font-size: 1.1rem; line-height: 1.8; color: #374151; }
+.backButton:hover {
+    color: #4cae4f;
+    text-decoration: underline;
+}
+
+
+.markdownWrapper {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #374151;
+}
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 

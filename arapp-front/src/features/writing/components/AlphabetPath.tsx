@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import styles from "../writing.module.css"
 import type {Chapter, ProcessedChapter, ProcessedLesson} from "../writingTypes.ts";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCheck, faX} from "@fortawesome/free-solid-svg-icons";
+import {faCheck, faListCheck, faX} from "@fortawesome/free-solid-svg-icons";
 import api from "../../auth/api.ts";
 
 
@@ -25,8 +25,7 @@ function AlphabetPath() {
                     api.get<number[]>('/api/lessons/complete', {withCredentials: true})
 
                 ]);
-                console.log(chaptersResp.data);
-                console.log(completeResp.data);
+                console.log(" chapter data", chaptersResp.data);
 
                 const rawChapterData = chaptersResp.data.filter(ch => Array.isArray(ch.lessons) && ch.lessons.length > 0);
                 const completedIds = completeResp.data;
@@ -66,6 +65,8 @@ function AlphabetPath() {
                 });
 
                 processedChapters.sort((a, b) => a.orderIndex - b.orderIndex);
+
+                console.log("Aktywny chapter", processedChapters);
 
                 setChaptersData(processedChapters);
 
@@ -107,7 +108,6 @@ function AlphabetPath() {
 
     if (!activeChapter) {
 
-
         return <div className={styles.loading}>Ładowanie rozdziałów...</div>;
     }
 
@@ -144,8 +144,6 @@ function AlphabetPath() {
             <div className={styles.pathRightColumn}>
 
                 <div className={styles.stickyContentHeader}>
-
-                    <div className={styles.spacerHeader}></div>
 
                     <div className={styles.stickyContent}>
                         <h1>{activeChapter.title}</h1>
@@ -193,35 +191,55 @@ function AlphabetPath() {
                                         ${lesson.isCompleted ? styles.cardCompleted : ''}
                                     `}
                                     >
-                                        <div className={styles.lessonLetters}>{lesson.icon}</div>
-                                        <div className={styles.lessonDetails}>
-                                            <h4>{lesson.title}</h4>
-                                            <p>{lesson.description}</p>
+                                        <div className={styles.lessonIcon}>{lesson.description || "link ftoa?"}</div>
+
+
+                                        <div className={styles.detailsWrapper}>
+
+
+                                            <div className={styles.lessonDetails}>
+
+                                                <div className={styles.detailsColumn}>
+                                                    <h4>{lesson.title}</h4>
+                                                    <p>{lesson.icon || "sigma sigma 123"}</p>
+                                                </div>
+
+                                                <div className={styles.taskCount}>
+
+                                                    <FontAwesomeIcon
+                                                        icon={faListCheck}/>
+                                                    <span>{lesson.taskCount}</span>
+                                                </div>
+
+                                            </div>
+
+                                            <div className={styles.cardAction}>
+                                                {!lesson.isLocked ? (
+                                                    <button className={styles.lessonButton}
+                                                            onClick={() => handleLessonStart(lesson)}>
+                                                        {lesson.isCompleted ? 'Powtórz' : 'Start'}
+
+                                                    </button>
+                                                ) : (
+                                                    <button className={` ${styles.lessonButton} ${styles.buttonLocked}`}
+                                                            disabled={lesson.isLocked}
+                                                    >Zablokowane
+                                                    </button>
+
+                                                )}
+
+                                            </div>
+
                                         </div>
-                                        <div className={styles.cardAction}>
-                                            {!lesson.isLocked ? (
-                                                <button className={styles.lessonButton}
-                                                        onClick={() => handleLessonStart(lesson)}>
-                                                    {lesson.isCompleted ? 'Powtórz' : 'Start'}
-
-                                                </button>
-                                            ) : (
-                                                <button className={` ${styles.lessonButton} ${styles.buttonLocked}`}
-                                                        disabled={lesson.isLocked}
-                                                >Zablokowane
-                                                </button>
-
-                                            )}
 
 
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
                         )
                     })}
 
-                    <div className={styles.bottomSpacer}></div>
                 </div>
 
             </div>

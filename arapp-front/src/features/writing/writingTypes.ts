@@ -3,8 +3,8 @@
 export interface Lesson {
     id: string;
     title: string;
-    icon: string; // np. "ب ت ث"
     description: string;
+    icon: string; // np. "ب ت ث"
     isPublished: boolean;
     taskCount: number;
     orderIndex: number;

@@ -44,6 +44,7 @@ public class LessonService {
     }
 
     public LessonPreviewResponse toPreviewResponse(Lesson lesson) {
+
         return new LessonPreviewResponse(
                 lesson.getId(),
                 lesson.getName(),
@@ -51,8 +52,7 @@ public class LessonService {
                 lesson.getIcon(),
                 lesson.isPublished(),
                 lesson.getTasks().size(),
-                lesson.getOrderIndex()
-        );
+                lesson.getOrderIndex());
     }
 
 
