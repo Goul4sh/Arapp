@@ -67,6 +67,7 @@ public class Task {
                         ref.getDictionaryWord().getLemma(),
                         ref.getDictionaryWord().getTranslation(),
                         ref.getContextualTranslation(),
+                        ref.getDictionaryWord().getTransliteration(),
                         ref.getStartIndex(),
                         ref.getEndIndex(),
                         false

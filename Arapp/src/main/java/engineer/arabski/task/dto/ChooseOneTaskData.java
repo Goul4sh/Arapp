@@ -8,8 +8,6 @@ public record ChooseOneTaskData(
         String answer,
         Set<String> decoyAnswers
 
-
-
 ) implements TaskData {
     @Override
     public String type() {

@@ -6,6 +6,7 @@ public record WordReferenceResponse(
         String lemma,
         String dictionaryTranslation,
         String contextualTranslation,
+        String transliteration,
         int startIndex,
         int endIndex,
         boolean hasFlashcard

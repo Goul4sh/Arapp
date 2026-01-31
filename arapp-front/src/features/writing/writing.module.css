@@ -320,8 +320,6 @@
     gap: 8px;
     justify-content: center;
     align-items: center;
-
-    max-height: 85vh;
 }
 
 
@@ -447,13 +445,11 @@
 .compendiumContainer {
     display: grid;
     grid-template-columns: 260px 1px 1fr;
-    height: calc(100vh - 80px);
     max-width: 1400px;
-
     margin: 0 auto;
     background-color: white;
-
     border-radius: 15px;
+    min-height: 80vh;
 }
 
 .categoriesColumn {
@@ -461,13 +457,6 @@
     overflow-y: auto;
 }
 
-/*.headerTitle {*/
-/*    font-size: 0.9rem;*/
-/*    text-transform: uppercase;*/
-/*    color: #6b7280;*/
-/*    margin-bottom: 1.5rem;*/
-/*    letter-spacing: 1px;*/
-/*}*/
 
 .categoryItem {
 

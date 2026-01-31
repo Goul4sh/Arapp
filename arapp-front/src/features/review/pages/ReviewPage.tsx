@@ -9,9 +9,10 @@ import {faPencil, faPlus} from "@fortawesome/free-solid-svg-icons";
 import Modal from "../Modal.tsx";
 import FlashcardItemCard from "../components/FlashcardItem.tsx";
 import EditGroupModal from "../components/modals/EditGroupModal.tsx";
+import {useFlashcardActions} from "../useFlashcardActions.ts";
+import type {WordReference} from "../../exercises/components/text/InteractiveText.tsx";
 
 //TODO dodac wyswietlanie harakat
-//TODO dodanie widoku  dodawani fiszek do grupy fiszek
 
 const isFlashcardDue = (dateString: string | number | Date) => {
     return new Date(dateString) <= new Date();
@@ -22,7 +23,7 @@ function ReviewPage() {
 
     const [selectedGroup, setSelectedGroup] = useState<FlashcardsGroup | null>(null);
     const [flashcardGroups, setFlashcardGroups] = useState<FlashcardsGroup[]>([]);
-    const [recentlyEncounteredWords, setRecentlyEncounteredWords] = useState<Word[]>([]);
+    // const [recentlyEncounteredWords, setRecentlyEncounteredWords] = useState<Word[]>([]);
     const [selectedGroupIndex, setSelectedGroupIndex] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     // Training mode oznacza, ćwiczone są wszystkie fiszki, a nie tylko te do powtórki
@@ -39,6 +40,15 @@ function ReviewPage() {
     });
 
     const dueFlashcards: FlashcardItem[] = selectedGroup?.flashcardItems?.filter(f => isFlashcardDue(f.nextReviewDate)) || [];
+
+    const [initialRecentWords, setInitialRecentWords] = useState<Word[]>([]);
+
+    const {
+        words: recentWords,
+        setWords: setRecentWords,
+        handleAddToFlashcards,
+        handleRemoveFromFlashcards
+    } = useFlashcardActions(initialRecentWords);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -74,7 +84,17 @@ function ReviewPage() {
                 setSelectedGroup(finalGroups[0] || null);
                 setSelectedGroupIndex(-1);
 
-                setRecentlyEncounteredWords(wordsResp.data);
+
+                const mappedWords = wordsResp.data.map((word: WordReference) => ({
+                    id: word.dictionaryWordId,
+                    wordArabic: word.lemma,
+                    Transliteration: word.transliteration,
+                    wordTranslation: word.dictionaryTranslation,
+                    isInUserFlashcards: word.hasFlashcard
+                }));
+
+                setInitialRecentWords(mappedWords);
+                setRecentWords(mappedWords);
 
             } catch (err) {
                 console.error('Failed to fetch data:', err);
@@ -84,7 +104,6 @@ function ReviewPage() {
             }
 
         };
-
 
         fetchData();
 
@@ -340,14 +359,20 @@ function ReviewPage() {
                         </div>
                         <div className={styles.flashcardsSlider}>
 
-                            {!recentlyEncounteredWords || recentlyEncounteredWords.length === 0 ?
+                            {!recentWords || recentWords.length === 0 ?
                                 (<div className={styles.emptySliderState}>Brak ostatnio napotkanych słów</div>)
                                 :
-                                (recentlyEncounteredWords.map((word, index) => (
+                                (recentWords.map((word, index) => (
 
                                         <FlashcardItemCard
                                             key={index}
-                                            flashcard={word}/>
+                                            flashcard={word}
+                                            onAddToFlashcards={handleAddToFlashcards}
+                                            onRemoveFromFlashcards={handleRemoveFromFlashcards}
+                                            usage="wordBank"
+
+                                        />
+
                                     ))
                                 )}
 

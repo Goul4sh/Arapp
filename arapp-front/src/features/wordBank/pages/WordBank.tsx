@@ -4,9 +4,8 @@ import WordListModal from "../modals/WordListModal.tsx";
 import api from "../../auth/api.ts";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import type {IconProp} from "@fortawesome/fontawesome-svg-core";
-// import cardStyles from "./wordBank.module.css";
-// import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-// import type {IconProp} from "@fortawesome/fontawesome-svg-core";
+import FlashcardItemCard from "../../review/components/FlashcardItem.tsx";
+import {useFlashcardActions} from "../../review/useFlashcardActions.ts";
 
 interface WordGroup {
     id: number;
@@ -22,10 +21,11 @@ interface WordGroup {
 interface Word {
     id: number;
     wordArabic: string;
-    transliteration: string;
-    translation: string;
+    Transliteration: string;
+    wordTranslation: string;
     isInUserFlashcards: boolean;
 }
+
 
 interface WordGroupDetails {
     id: number;
@@ -33,25 +33,14 @@ interface WordGroupDetails {
 
 }
 
-interface RecentWordReference {
-
-    dictionaryWordId: number;
-    lemma: string;
-    dictionaryTranslation: string;
-    contextualTranslation: string;
-    startIndex: number;
-    endIndex: number;
-    hasFlashcard: boolean;
-}
-
-//TODO przetestować! front i endpointy backendu
 function WordBank() {
 
     const [wordGroups, setWordGroups] = useState<WordGroup[]>([]);
     const [selectedGroupWords, setSelectedGroupWords] = useState<Word[]>([]);
     // const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    const [recentWords, setRecentWords] = useState<RecentWordReference[]>([]);
+
+    const [initialRecentWords, setInitialRecentWords] = useState<Word[]>([]);
 
     const [selectedGroup, setSelectedGroup] = useState<WordGroup | null>(null);
     const [showGroupModal, setShowGroupModal] = useState(false);
@@ -60,6 +49,14 @@ function WordBank() {
     const [isLoadingWords, setIsLoadingWords] = useState(false);
 
     const [cachedGroupWords, setCachedGroupWords] = useState<Record<number, Word[]>>({});
+
+    const {
+        words: recentWords,
+        setWords: setRecentWords,
+        handleAddToFlashcards,
+        handleRemoveFromFlashcards
+    } = useFlashcardActions(initialRecentWords);
+
 
     useEffect(() => {
         fetchWordGroups();
@@ -91,9 +88,16 @@ function WordBank() {
 
             const response = await api.get('/api/words/recent', {withCredentials: true})
 
-            const fetchedWords = response.data as RecentWordReference[];
+            const mappedWords = response.data.map((word: any) => ({
+                id: word.dictionaryWordId,
+                wordArabic: word.lemma,
+                Transliteration: word.transliteration,
+                wordTranslation: word.dictionaryTranslation,
+                isInUserFlashcards: word.hasFlashcard
+            }));
 
-            setRecentWords(fetchedWords);
+            setInitialRecentWords(mappedWords);
+            setRecentWords(mappedWords);
             setIsLoading(false);
         } catch (error) {
             console.error("Błąd podczas pobierania ostatnio napotkanych słówek:", error);
@@ -138,7 +142,7 @@ function WordBank() {
         setShowGroupModal(false);
         setSelectedGroup(null);
     }
-    
+
     const handleFlashcardUpdate = (wordId: number, isInFlashcards: boolean) => {
         if (selectedGroup) {
             setCachedGroupWords(prev => ({
@@ -210,7 +214,6 @@ function WordBank() {
                                             <div className={styles.wordCardContent}>
 
                                                 <h3 className={styles.groupName}>{group.name}</h3>
-                                                {/*<p className={styles.groupCategory}>{group.category}</p>*/}
                                                 <div className={styles.wordCount}>
                                                     <span>{group.wordsCount || 0} słów</span>
                                                 </div>
@@ -242,26 +245,20 @@ function WordBank() {
                     <div className={styles.sectionHeader}>
                         <h2>Słówka z ostatnich lekcji</h2>
                     </div>
-                    {/*//TODO jesli zadziala to zmienic sposob wyswietlania na flashcard*/}
                     <div className={styles.recentWordsSlider}>
                         {!recentWords || recentWords.length === 0 ?
                             (<p className={styles.emptySliderState}>Brak ostatnio napotkanych słówek</p>)
                             :
                             (recentWords.map(word => (
-                                    <div key={word.dictionaryWordId} className={styles.wordCard}>
 
-                                        <div className={styles.wordCardContainer}>
+                                    <FlashcardItemCard
+                                        key={word.id}
+                                        flashcard={word}
+                                        onAddToFlashcards={handleAddToFlashcards}
+                                        onRemoveFromFlashcards={handleRemoveFromFlashcards}
+                                        usage="wordBank"
+                                    />
 
-                                            <h2 className={styles.wordArabic} lang="ar" dir="rtl">{word.lemma}</h2>
-                                            <p className={styles.transliteration}>{word.contextualTranslation}</p>
-                                            <p className={styles.translation}>{word.dictionaryTranslation}</p>
-                                            {word.hasFlashcard && (
-                                                <span className={styles.flashcardBadge}>W fiszkach</span>
-                                            )}
-
-                                        </div>
-
-                                    </div>
                                 ))
                             )}
                     </div>
@@ -286,6 +283,3 @@ function WordBank() {
 
 export default WordBank;
 
-
-{/*Do tego, jesli sie uda, dodac slowka napotkane ostatnio w lekcjach (na bazie ukończonych lekcji użytkownika)*/
-}

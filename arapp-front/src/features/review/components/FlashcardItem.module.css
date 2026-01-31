@@ -1,7 +1,6 @@
 
 .flashcardItem {
     flex: 0 0 280px;
-    height: 180px;
     background-color: #fff;
     border: 1px solid #f0f0f0;
     border-radius: 18px;
@@ -14,14 +13,17 @@
     position: relative;
     transition: transform 0.2s;
 
-    min-width: 140px;
-    min-height: 140px;
+    min-width: 190px;
+    min-height: 190px;
+
+    max-height: 280px;
+
 
 }
 
 .removeFlashcardBtn,
 .addFlashcardBtn {
-    min-width: 32px;
+    min-width: 210px;
     min-height: 32px;
     background-color: #fff;
     border: 2px solid #eee;
@@ -62,14 +64,22 @@
 }
 
 
-.flashcardContent {
+.wordActions {
+    padding-bottom: 15px;
+}
 
+.wordActions button {
+    font-weight: 700;
+    margin: 0 5px;
+}
+
+.flashcardContent {
     height: 100%;
+
+    padding: 20px;
 
     display: flex;
     flex-direction: column;
-
-
 
     align-items: center;
     justify-content: space-evenly;

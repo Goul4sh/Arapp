@@ -12,6 +12,10 @@ import engineer.arabski.wordBank.model.WordGroup;
 import engineer.arabski.wordBank.repository.WordGroupRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,15 +27,10 @@ import static java.util.stream.Collectors.toList;
 public class WordGroupService {
 
     private final WordGroupRepository wordGroupRepository;
-
     private final FlashcardRepository flashcardRepository;
-
     private final DictionaryWordRepository dictionaryWordRepository;
 
-    public void deleteWordGroup(Long groupId) {
-        wordGroupRepository.deleteById(groupId);
-    }
-
+    private final ApplicationContext applicationContext;
 
     public WordGroupPreviewResponse toResponsePreview(WordGroup wordGroup) {
 
@@ -71,6 +70,7 @@ public class WordGroupService {
         );
     }
 
+    @Cacheable(value = "word_groups_list_admin", key = "'all'")
     public List<WordGroupPreviewResponse> findAll() {
 
         List<WordGroup> wordGroups = wordGroupRepository.findAll();
@@ -80,6 +80,7 @@ public class WordGroupService {
                 .toList();
     }
 
+    @Cacheable(value = "word_groups_list_published", key = "'all'")
     public List<WordGroupPreviewResponse> findAllPublished() {
 
         List<WordGroup> wordGroups = wordGroupRepository.findAll();
@@ -89,45 +90,75 @@ public class WordGroupService {
                 .toList();
     }
 
-    // Wykorzystuje detailed response.
-    public WordGroupDetailResponse findById(Long groupId) {
-
+    @Cacheable(value = "word_group_details", key = "#groupId")
+    public WordGroupDetailResponse getRawGroupDetails(Long groupId) {
         WordGroup wordGroup = wordGroupRepository.findById(groupId).orElse(null);
-
         if (wordGroup != null) {
             return toResponseDetail(wordGroup);
-        } else {
-            return null;
         }
-
+        return null;
     }
 
     public WordGroupDetailResponse findByIdWithFlashcardInfo(Long groupId, Long userId) {
+        WordGroupService proxy = applicationContext.getBean(WordGroupService.class);
+        WordGroupDetailResponse cachedGroup = proxy.getRawGroupDetails(groupId);
 
-        Set<DictionaryWord> wordsInGroup = wordGroupRepository.findById(groupId)
-                .map(WordGroup::getWords)
-                .orElse(new HashSet<>());
+        if (cachedGroup == null) return null;
 
-        List<Long> wordIds = wordsInGroup.stream().map(DictionaryWord::getId).toList();
-        Set<Long> userFlashcardWordIds = flashcardRepository.findAllByWord_IdsAndFlashcardOwner_Id(wordIds, userId);
+        List<Long> wordIds = cachedGroup.words().stream()
+                .map(WordGroupItemResponse::id)
+                .toList();
 
-        return new WordGroupDetailResponse(
+        Set<Long> userFlashcardWordIds;
+        if (wordIds.isEmpty()) {
+            userFlashcardWordIds = Collections.emptySet();
+        } else {
+            userFlashcardWordIds = flashcardRepository.findAllByWord_IdsAndFlashcardOwner_Id(wordIds, userId);
+        }
 
-                groupId,
-                wordsInGroup.stream().map(word ->
-                        new WordGroupItemResponse(
-                                word.getId(),
-                                word.getLemma(),
-                                word.getTranslation(),
-                                word.getTransliteration(),
-                                word.getDiacritic(),
-                                userFlashcardWordIds.contains(word.getId())
-                        )).toList()
+        if (userFlashcardWordIds.isEmpty()) {
+            return cachedGroup;
+        }
 
-        );
+        List<WordGroupItemResponse> enrichedWords = cachedGroup.words().stream()
+                .map(word -> {
+                    boolean isKnown = userFlashcardWordIds.contains(word.id());
+                    if (word.isInUserFlashcards() == isKnown) return word;
 
+                    return new WordGroupItemResponse(
+                            word.id(),
+                            word.wordArabic(),
+                            word.wordTranslation(),
+                            word.Transliteration(),
+                            word.diacritic(),
+                            isKnown
+                    );
+                }).toList();
+
+        return new WordGroupDetailResponse(cachedGroup.id(), enrichedWords);
     }
 
+
+    public WordGroupDetailResponse findById(Long groupId) {
+        WordGroup wordGroup = wordGroupRepository.findById(groupId).orElse(null);
+        if (wordGroup != null) {
+            return toResponseDetail(wordGroup);
+        } else {return null;}
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "word_group_details", key = "#groupId"),
+            @CacheEvict(value = "word_groups_list_admin", allEntries = true),
+            @CacheEvict(value = "word_groups_list_published", allEntries = true)
+    })
+    public void deleteWordGroup(Long groupId) {
+        wordGroupRepository.deleteById(groupId);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "word_groups_list_admin", allEntries = true),
+            @CacheEvict(value = "word_groups_list_published", allEntries = true)
+    })
     public WordGroupPreviewResponse save(WordGroupRequest wordGroup) {
 
 
@@ -147,6 +178,11 @@ public class WordGroupService {
         return toResponsePreview(savedGroup);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "word_group_details", key = "#groupId"),
+            @CacheEvict(value = "word_groups_list_admin", allEntries = true), // Zmiana nazwy/ikony wpływa na listę
+            @CacheEvict(value = "word_groups_list_published", allEntries = true)
+    })
     public WordGroupPreviewResponse update(Long groupId, WordGroupRequest updatedGroupData) {
 
         Optional<WordGroup> existingGroupOpt = wordGroupRepository.findById(groupId);
@@ -177,6 +213,11 @@ public class WordGroupService {
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "word_group_details", key = "#groupId"),
+            @CacheEvict(value = "word_groups_list_admin", allEntries = true),
+            @CacheEvict(value = "word_groups_list_published", allEntries = true)
+    })
     public WordGroupPreviewResponse removeOrAddWordsToGroup(Long groupId, List<Long> wordIds, boolean removeMode) {
         WordGroup existingGroup = wordGroupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("Word group not found with id " + groupId));
@@ -208,7 +249,12 @@ public class WordGroupService {
 
     }
 
-
+    @Caching(evict = {
+            @CacheEvict(value = "word_group_details", key = "#groupId"),
+            @CacheEvict(value = "word_groups_list_admin", allEntries = true),
+            // Zmiana statusu published powoduje pojawienie się/zniknięcie z listy
+            @CacheEvict(value = "word_groups_list_published", allEntries = true)
+    })
     public void publishWordGroup(Long groupId, boolean published) {
         WordGroup wordGroup = wordGroupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("Word group not found with id " + groupId));

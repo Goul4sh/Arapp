@@ -135,24 +135,17 @@ public class TaskService {
     public Task addTaskWithVocab(EnrichedTaskRequest data) {
 
         if (data.linkedVocabulary().words().isEmpty()) {
-            System.out.println("Brak słów w linkedVocabulary. Tworzę zadanie bez słów.");
             return addTask(data.taskData());
         }
 
         Task task = new Task();
 
-        System.out.println("Jestem w addTaskWithVocab");
-
         TaskData taskData = data.taskData();
         LinkedVocabularyRequest vocabularyRequest = data.linkedVocabulary();
-
-        System.out.println("Zawartość vocabularyRequest: " + vocabularyRequest);
 
         task.setTaskData(taskData);
 
         for (SaveDictionaryWordWithReferenceRequest word : vocabularyRequest.words()) {
-
-            System.out.println("Przetwarzam słowo: " + word);
 
             DictionaryWord dictionaryWord = dictionaryService.saveOrGetDictionaryWord(
                     new NewDictionaryWordRequest(word.lemma(),
@@ -171,13 +164,6 @@ public class TaskService {
 
             task.getWordReferences().add(reference);
 
-        }
-
-        System.out.println("Adding task: " + task.getDescription() + " of type " + task.getTaskType());
-        System.out.println("References count: " + task.getWordReferences().size());
-        System.out.println("Referenced words: ");
-        for (TaskWordReference ref : task.getWordReferences()) {
-            System.out.println("- " + ref.getDictionaryWord().getLemma() + " (start: " + ref.getStartIndex() + ", end: " + ref.getEndIndex() + ")");
         }
 
         return taskRepository.save(task);

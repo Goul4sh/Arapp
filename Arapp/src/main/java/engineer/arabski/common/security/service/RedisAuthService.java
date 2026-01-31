@@ -51,4 +51,26 @@ public class RedisAuthService {
         return value != null;
     }
 
+    private static final String RESET_PASS_PREFIX = "reset_pass:";
+
+    public void saveResetPasswordToken(String token, String email) {
+        redisTemplate.opsForValue().set(
+                RESET_PASS_PREFIX + token,
+                email,
+                15, TimeUnit.MINUTES
+        );
+    }
+
+    public String validateResetPasswordToken(String token) {
+        String key = RESET_PASS_PREFIX + token;
+        String email = redisTemplate.opsForValue().get(key);
+
+        if (email != null) {
+            redisTemplate.delete(key);
+            return email;
+        }
+        return null;
+    }
+
+
 }

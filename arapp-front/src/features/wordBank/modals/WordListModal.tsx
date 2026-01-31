@@ -1,5 +1,5 @@
 import Modal from "../../review/Modal.tsx";
-import styles from "../pages/wordBank.module.css"
+import styles from "./wordListModal.module.css"
 import {useEffect, useState} from "react";
 import api from "../../auth/api.ts";
 import FlashcardItem from "../../review/components/FlashcardItem.tsx";
@@ -100,13 +100,13 @@ function WordListModal({isOpen, onClose, selectedGroup, groupWords, isLoadingWor
             <div className={styles.wordListModalContainer}>
 
                 <div className={styles.practiceContainer}>
+                <p> Ćwicz słówka zawarte w grupie dzięki automatycznie generowanym zadaniom. </p>
 
                     <button
                         className={styles.startPracticeButton}
                     onClick={handleStartPractice}>
                         Ćwicz teraz
                     </button>
-                    <p> Ćwicz słówka zawarte w grupie dzięki automatycznie generowanym zadaniom. </p>
                 </div>
 
                 {isLoadingWords ? (

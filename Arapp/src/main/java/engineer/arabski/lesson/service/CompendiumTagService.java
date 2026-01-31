@@ -3,6 +3,7 @@ package engineer.arabski.lesson.service;
 import engineer.arabski.lesson.dto.CompendiumTagDTO;
 import engineer.arabski.lesson.model.CompendiumTag;
 import engineer.arabski.lesson.repository.CompendiumTagRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,12 +35,14 @@ public class CompendiumTagService {
     }
 
 
+    @Cacheable(value = "compendium_tags", key = "'all_tags'")
     public List<CompendiumTagDTO> getAll() {
         List<CompendiumTag> tags = compendiumTagRepository.findAll();
         return tags.stream()
                 .map(tag -> new CompendiumTagDTO(tag.getName(), tag.getDisplayName()))
                 .toList();
     }
+
 
     public Set<CompendiumTag> getAllByName(Set<String> names)
     {

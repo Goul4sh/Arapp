@@ -6,21 +6,21 @@ import engineer.arabski.lesson.model.Chapter;
 import engineer.arabski.lesson.model.Lesson;
 import engineer.arabski.lesson.repository.ChapterRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ChapterService {
 
     private final ChapterRepository chapterRepository;
 
     private final LessonService lessonService;
-
-    public ChapterService(ChapterRepository chapterRepository, LessonService lessonService) {
-        this.chapterRepository = chapterRepository;
-        this.lessonService = lessonService;
-    }
 
 
     public Chapter findByIdEntity(long id) {
@@ -60,18 +60,21 @@ public class ChapterService {
         return toChapterResponse(chapter);
     }
 
-    public ChapterResponse findByIdPublishedOnly(long id) {
-        Chapter chapter = chapterRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Chapter not found with id: " + id));
 
-        return toChapterResponse(chapter);
-    }
-
-
+    @Caching(evict = {
+            @CacheEvict(value = "chapter_details", key = "#id"),
+            @CacheEvict(value = "chapters_list_published", allEntries = true),
+            @CacheEvict(value = "chapters_list_admin", allEntries = true)
+    })
     public void deleteChapter(Long id) {
         chapterRepository.deleteById(id);
     }
 
-
+    @Caching(evict = {
+            @CacheEvict(value = "chapter_details", allEntries = true),
+            @CacheEvict(value = "chapters_list_published", allEntries = true),
+            @CacheEvict(value = "chapters_list_admin", allEntries = true)
+    })
     public void moveChapter(Long id, String direction) {
         Chapter chapter = chapterRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Chapter not found with id: " + id));
@@ -105,27 +108,33 @@ public class ChapterService {
     }
 
 
+    @Cacheable(value = "chapters_list_admin", key = "'all'")
     public List<ChapterResponse> findAll() {
         return chapterRepository.findAll().stream()
                 .map(this::toChapterResponse)
                 .toList();
     }
 
+    @Cacheable(value = "chapters_list_published", key = "'all'")
     public List<ChapterResponse> findAllPublished() {
-
         return chapterRepository.findAll().stream()
                 .map(this::toChapterResponsePublishedOnly)
                 .toList();
     }
 
 
+    @Caching(evict = {
+            @CacheEvict(value = "chapter_details", key = "#id"),
+            @CacheEvict(value = "chapters_list_published", allEntries = true),
+            @CacheEvict(value = "chapters_list_admin", allEntries = true)
+    })
     public void editChapter(Long id, ChapterRequest request) {
-
         Chapter chapter = chapterRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Chapter not found with id: " + id));
 
         if (request.title() != null) {
             chapter.setName(request.title());
         }
+
         if (request.description() != null) {
             chapter.setDescription(request.description());
         }
@@ -133,11 +142,13 @@ public class ChapterService {
         chapterRepository.save(chapter);
     }
 
-    public Chapter addChapter(Chapter chapter) {
-        return chapterRepository.save(chapter);
-    }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "chapter_details", key = "#chapterId"),
+            @CacheEvict(value = "chapters_list_published", allEntries = true),
+            @CacheEvict(value = "chapters_list_admin", allEntries = true)
+    })
     public void addLessonToChapter(Long chapterId, Long lessonId) {
 
         Chapter chapter = chapterRepository.findById(chapterId)
@@ -153,9 +164,13 @@ public class ChapterService {
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "chapters_list_published", allEntries = true),
+            @CacheEvict(value = "chapters_list_admin", allEntries = true)
+    })
     public ChapterResponse addChapter(ChapterRequest chapterRequest) {
 
-        Chapter chapter = new Chapter(chapterRequest.title(), chapterRequest.description(),chapterRequest.orderIndex());
+        Chapter chapter = new Chapter(chapterRequest.title(), chapterRequest.description(), chapterRequest.orderIndex());
 
         if (!(chapterRequest.lessonIds() == null)) {
 
@@ -165,9 +180,7 @@ public class ChapterService {
             chapter.setLessons(List.of());
         }
 
-       return toChapterResponsePublishedOnly( chapterRepository.save(chapter));
-
+        return toChapterResponsePublishedOnly(chapterRepository.save(chapter));
     }
-
 
 }

@@ -83,6 +83,16 @@ function Dashboard(): JSX.Element {
         return `${minutes}m ${seconds % 60}s`;
     };
 
+    const isDetailsEmpty = (details: DailyDashboardData | null) => {
+
+        return !details ||
+            (details.durationSeconds === 0 &&
+                details.completedTasks === 0 &&
+                details.correctAnswers === 0 &&
+                details.incorrectAnswers === 0 &&
+                details.flashcardsReviewed === 0);
+    }
+
     const handleDateClick = async (dateString: string) => {
         if (dateString === selectedDate) {
             setSelectedDate(null);
@@ -90,7 +100,14 @@ function Dashboard(): JSX.Element {
             return;
         }
 
+        if (!dateString) {
+            setSelectedDate(null);
+            setDailyDetails(null);
+            return;
+        }
+
         setSelectedDate(dateString);
+
         try {
             console.log('Fetching details for date:', dateString);
             const dayStats = await api.get(`/api/statistics/history/${dateString}`, {
@@ -102,36 +119,27 @@ function Dashboard(): JSX.Element {
         }
     };
 
+
+
     return (
 
         <>
             <div className={styles.dashboardPage}>
                 <div className={styles.welcomeContainer}>
                     <h1 className={styles.welcomeText}>Cześć, {name}!</h1>
-
                 </div>
 
                 <div className={styles.contentContainer}>
-
-
-                    {/*TODO Poprawić rozszerzanie się kart przy pojawianiu się przycisków*/}
-
                     <div className={styles.statsContainer}>
-
                         <div className={styles.actionsContainer}>
                             <div className={styles.reviewCard}>
-
-
                                 {dueFlashcardsCount === 0 ? (
-
                                     <div className={styles.noFlashcardsText}>
                                         <div className={styles.cardIcon}>
                                             <FontAwesomeIcon icon={faFire}/>
                                         </div>
-
                                         <h2 className={styles.actionTitle}>Brak fiszek do powtórki</h2>
                                     </div>
-
                                 ) : (
                                     <div className={styles.reviewCardContent}>
 
@@ -147,31 +155,28 @@ function Dashboard(): JSX.Element {
                                         <Link to="/review" className={styles.actionLink}>Przejdź do powtórek</Link>
 
                                     </div>
-                                )
-                                }
+                                )}
 
                             </div>
 
                             <div className={styles.lessonCard}>
 
                                 <div className={styles.cardIcon}>
-
                                     <FontAwesomeIcon icon={faBookBookmark}/>
-
                                 </div>
 
                                 {nextLesson ? (
-                                    <>
+                                    <div className={styles.reviewCardContent}>
                                         <h2 className={styles.actionTitle}>Następna lekcja</h2>
                                         <p className={styles.nextLessonTitle}>{nextLesson.title}</p>
                                         <Link to={`/lessons/${nextLesson.id}`} className={styles.actionLink}>
                                             Rozpocznij</Link>
-                                    </>
+                                    </div>
                                 ) : (
-                                    <>
+                                    <div className={styles.reviewCardContent}>
                                         <h2 className={styles.actionTitle}>Brak kolejnych lekcji</h2>
                                         <p className={styles.nextLessonTitle}>Ukończyłeś wszystkie dostępne lekcje!</p>
-                                    </>
+                                    </div>
                                 )
 
                                 }
@@ -181,13 +186,9 @@ function Dashboard(): JSX.Element {
 
 
                         <div className={styles.overallBox}>
-
                             <div className={styles.statItem}>
-
                                 <div className={styles.cardIcon}>
-
                                     <FontAwesomeIcon icon={faFire}/>
-
                                 </div>
                                 <div className={styles.cardContent}>
                                     <h2 className={styles.cardStat}> {stats.currentStreak}</h2>
@@ -196,11 +197,8 @@ function Dashboard(): JSX.Element {
                             </div>
 
                             <div className={styles.statItem}>
-
                                 <div className={styles.cardIcon}>
-
                                     <FontAwesomeIcon icon={faClock}/>
-
                                 </div>
                                 <div className={styles.cardContent}>
                                     <h2> {formatTime(stats.totalDurationSeconds)}</h2>
@@ -208,11 +206,8 @@ function Dashboard(): JSX.Element {
                                 </div>
                             </div>
                             <div className={styles.statItem}>
-
                                 <div className={styles.cardIcon}>
-
                                     <FontAwesomeIcon icon={faListCheck}/>
-
                                 </div>
                                 <div className={styles.cardContent}>
                                     <h2> {stats.totalCompletedTasks}</h2>
@@ -220,11 +215,8 @@ function Dashboard(): JSX.Element {
                                 </div>
                             </div>
                             <div className={styles.statItem}>
-
                                 <div className={styles.cardIcon}>
-
                                     <FontAwesomeIcon icon={faCircleCheck}/>
-
                                 </div>
                                 <div className={styles.cardContent}>
                                     <h2> {stats.totalCorrectAnswers}</h2>
@@ -232,11 +224,8 @@ function Dashboard(): JSX.Element {
                                 </div>
                             </div>
                             <div className={styles.statItem}>
-
                                 <div className={styles.cardIcon}>
-
                                     <FontAwesomeIcon icon={faCircleXmark}/>
-
                                 </div>
                                 <div className={styles.cardContent}>
                                     <h2> {stats.totalIncorrectAnswers}</h2>
@@ -291,20 +280,21 @@ function Dashboard(): JSX.Element {
                                         <div className={styles.columnStatItem}>
                                             <div className={styles.columnStatContent}><p
                                                 className={styles.statText}>Powtórzone fiszki:</p>
-                                                <p className={styles.statValue}> {dailyStats.flashcardsReviewed} </p></div>
+                                                <p className={styles.statValue}> {dailyStats.flashcardsReviewed} </p>
+                                            </div>
 
                                         </div>
 
                                     </div>
                                 </div>
 
-                                <div className={styles.separator}></div>
+                                {/*<div className={styles.separator}></div>*/}
                             </div>
 
 
                             <div className={styles.rightColumn}>
 
-                                <div className={`${styles.contentCard} ${styles.activityCard}`}>
+                                <div className={`${styles.activityCard}`}>
                                     <h2 className={styles.cardTitle}>Ostatnia aktywność</h2>
                                     <div className={styles.calendarWrapper}>
 
@@ -313,61 +303,47 @@ function Dashboard(): JSX.Element {
 
                                     </div>
                                 </div>
-
                             </div>
 
-
-                        <div className={styles.rightMostColumn}>
-                            <div className={styles.contentBox}>
-                                <h2 className={styles.cardTitle}>
-                                    {selectedDate ? `Szczegóły z dnia ${selectedDate}` : 'Szczegóły aktywności'}
-                                </h2>
-                                <div className={styles.detailsContent}>
-                                    {dailyDetails ? (
-                                        <div className={styles.statsList}>
-                                            <div className={styles.columnStatItem}>
+                            <div className={styles.rightMostColumn}>
+                                <div className={styles.contentBox}>
+                                    <h2 className={styles.cardTitle}>
+                                        {selectedDate ? `Szczegóły z dnia ${selectedDate}` : 'Szczegóły aktywności'}
+                                    </h2>
+                                    <div className={styles.detailsContent}>
+                                        {!isDetailsEmpty(dailyDetails)  && dailyDetails != null ? (
+                                            <div className={styles.statsList}>
                                                 <div className={styles.columnStatContent}>
                                                     <p className={styles.statText}>Czas nauki:</p>
                                                     <p className={styles.statValue}>{formatTime(dailyDetails.durationSeconds)}</p>
                                                 </div>
-                                            </div>
 
-                                            <div className={styles.columnStatItem}>
                                                 <div className={styles.columnStatContent}>
                                                     <p className={styles.statText}>Ukończone zadania:</p>
                                                     <p className={styles.statValue}>{dailyDetails.completedTasks}</p>
                                                 </div>
-                                            </div>
 
-                                            <div className={styles.columnStatItem}>
                                                 <div className={styles.columnStatContent}>
                                                     <p className={styles.statText}>Poprawne odpowiedzi:</p>
                                                     <p className={styles.statValue}>{dailyDetails.correctAnswers}</p>
                                                 </div>
-                                            </div>
 
-                                            <div className={styles.columnStatItem}>
-                                                <div className={styles.columnStatContent}>
-                                                    <p className={styles.statText}>Złe odpowiedzi:</p>
-                                                    <p className={styles.statValue}>{dailyDetails.incorrectAnswers}</p>
-                                                </div>
-                                            </div>
-
-                                            <div className={styles.columnStatItem}>
                                                 <div className={styles.columnStatContent}>
                                                     <p className={styles.statText}>Powtórzone fiszki:</p>
                                                     <p className={styles.statValue}>{dailyDetails.flashcardsReviewed}</p>
                                                 </div>
+
+                                                {/*<div className={styles.separator}></div>*/}
+
                                             </div>
-                                        </div>
-                                    ) : (
-                                        <p className={styles.noDetailsText}>
-                                            {selectedDate ? 'Brak danych dla wybranego dnia.' : 'Kliknij na dzień w kalendarzu, aby zobaczyć szczegóły.'}
-                                        </p>
-                                    )}
+                                        ) : (
+                                            <p className={styles.noDetailsText}>
+                                                {selectedDate ? 'Brak danych dla wybranego dnia.' : 'Kliknij na dzień w kalendarzu, aby zobaczyć szczegóły.'}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
                         </div>
 

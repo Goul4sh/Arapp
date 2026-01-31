@@ -32,8 +32,6 @@ function FlashcardItemCard({flashcard, onAddToFlashcards, onRemoveFromFlashcards
         return 'word' in item;
     }
 
-    // console.log ('FlashcardItemCard render:', flashcard);
-
     return (
         <div className={styles.flashcardItem}>
             <div className={styles.flashcardContent}>
@@ -61,7 +59,7 @@ function FlashcardItemCard({flashcard, onAddToFlashcards, onRemoveFromFlashcards
                 )}
                 <div className={styles.flashcardText}>
                     <h1 lang="ar">{wordData.wordArabic}</h1>
-                    <p className={styles.transliteration}>{wordData.Transliteration}</p>
+                    <p className={styles.transliteration}>{wordData.Transliteration || "Nie podano"}</p>
                     <h2>{wordData.wordTranslation}</h2>
                 </div>
             </div>

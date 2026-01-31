@@ -19,11 +19,10 @@
 
     display: flex;
     flex-direction: column;
-
     gap: 20px;
 
-
 }
+
 .contentContainer {
 
     display: flex;
@@ -57,7 +56,6 @@
     composes: actionCard;
 
     border: 1px solid #fff;
-
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -74,15 +72,11 @@
     composes: actionCard;
 
     border: 1px solid #fff;
-
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-
-    /*gap: 60px;*/
     margin-bottom: 0;
-
 }
 
 .noFlashcardsText {
@@ -106,19 +100,15 @@
 .reviewCardContent h2 {
     margin: 0;
 
-    /*font-size: 20px;*/
-
 }
 
 .reviewCardContent p {
-
     font-size: 15px;
     margin: 0;
 }
 
 
 .contentText {
-
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -129,7 +119,6 @@
 
 
 }
-
 
 
 @keyframes shine-sweep {
@@ -186,7 +175,6 @@
 }
 
 .overallBox {
-
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -196,9 +184,6 @@
 }
 
 .columnsContainer {
-
-
-
     display: flex;
     flex-direction: row;
     align-items: stretch;
@@ -210,23 +195,21 @@
 .leftColumn {
 
     width: 33%;
+    box-sizing: border-box;
 
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 30px;
 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     background-color: #ffffff;
     padding: 20px;
-
 }
 
 
 .cardTitle {
-
     margin-top: 0;
     margin-bottom: 0;
 
@@ -245,7 +228,7 @@
 
     /*width: 70%;*/
     width: 33%;
-
+    box-sizing: border-box;
 
     display: flex;
     flex-direction: column;
@@ -260,6 +243,17 @@
     padding: 20px;
 
 }
+
+.activityCard {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+
+}
+
 
 .statItem {
     display: flex;
@@ -308,19 +302,35 @@
     margin-top: 5px;
     margin-bottom: 0;
 }
+
 .rightMostColumn {
 
     width: 33%;
+    box-sizing: border-box;
 
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-top: 30px;
     gap: 30px;
 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     background-color: #ffffff;
     padding: 20px;
+
+}
+
+.contentBox {
+    max-height: 344px;
+
+}
+
+.statsList {
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 
 }

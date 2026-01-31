@@ -1,6 +1,7 @@
 package engineer.arabski.common.security.jwt;
 
 import engineer.arabski.common.security.service.CustomDetailsService;
+import engineer.arabski.common.security.service.RedisAuthService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
@@ -24,22 +25,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     private final JwtUtil jwtUtil;
+
     @Setter
     private CustomDetailsService customUserDetailsService;
 
+    private final RedisAuthService redisAuthService;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, @Lazy CustomDetailsService customUserDetailsService) {
+
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, @Lazy CustomDetailsService customUserDetailsService, RedisAuthService redisAuthService) {
+        this.redisAuthService = redisAuthService;
         this.jwtUtil = jwtUtil;
         this.customUserDetailsService = customUserDetailsService;
     }
-
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         //Filtr pomija publiczne endpointy.
-
         String path = request.getRequestURI();
 
         if (path.startsWith("/api/auth/register") ||
@@ -64,6 +67,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (jwt != null) {
+
+            if (redisAuthService.isBlacklisted(jwt)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
+                return;
+            }
+
+
             try {
                 username = jwtUtil.extractUsername(jwt);
             } catch (ExpiredJwtException e) {
@@ -81,18 +91,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-          try {
-              UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
+            try {
+                UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
 
-              if (jwtUtil.validateToken(jwt, username)) {
-                  UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                          userDetails, null, userDetails.getAuthorities());
-                  authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                  SecurityContextHolder.getContext().setAuthentication(authentication);
-              }
-          } catch (UsernameNotFoundException e) {
+                if (jwtUtil.validateToken(jwt, username)) {
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (UsernameNotFoundException e) {
 //              SecurityContextHolder.clearContext();
-          }
+            }
         }
 
         filterChain.doFilter(request, response);

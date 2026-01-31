@@ -22,14 +22,11 @@ public class MorphologyTaskGenerator {
     public MorphologyPartsTaskData generatePartsTask(String translation, String arabicWord) {
 
         String trimmedWord = arabicWord.trim();
-//        String cleanWord = removeDiacritics(trimmedWord);
 
         List<String> correctOrder = new ArrayList<>();
         List<MorphologySegment> segments = new ArrayList<>();
 
         List<String> letterGroups = groupLettersWithDiacritics(trimmedWord);
-
-
 
         for (int i = 0; i < letterGroups.size(); i++) {
             String letterWithDiacritics = letterGroups.get(i);
@@ -38,16 +35,6 @@ public class MorphologyTaskGenerator {
             correctOrder.add(id);
             segments.add(new MorphologySegment(id, letterWithDiacritics));
         }
-
-//        for (int i = 0; i < cleanWord.length(); i++) {
-//            char currentChar = cleanWord.charAt(i);
-//            String content = String.valueOf(currentChar);
-//            String id = "seg_" + i;
-//
-//            correctOrder.add(id);
-//            segments.add(new MorphologySegment(id, content));
-//        }
-
 
         List<MorphologySegment> decoys = generateDecoySegments(letterGroups, 3);
 
@@ -67,21 +54,17 @@ public class MorphologyTaskGenerator {
         for (int i = 0; i < arabicText.length(); i++) {
             char c = arabicText.charAt(i);
 
-            // Sprawdź czy to znak diakrytyczny (harakaty: fatha, kasra, damma, sukun, shadda, etc.)
             if (isDiacritic(c)) {
                 currentGroup.append(c);
             } else {
-                // Jeśli mamy już grupę, dodaj ją do listy
                 if (currentGroup.length() > 0) {
                     groups.add(currentGroup.toString());
                 }
-                // Rozpocznij nową grupę z literą bazową
                 currentGroup = new StringBuilder();
                 currentGroup.append(c);
             }
         }
 
-        // Dodaj ostatnią grupę
         if (currentGroup.length() > 0) {
             groups.add(currentGroup.toString());
         }
@@ -90,39 +73,12 @@ public class MorphologyTaskGenerator {
     }
 
     private boolean isDiacritic(char c) {
-        // Znaki diakrytyczne w zakresie Unicode Arabic
-        return (c >= '\u064B' && c <= '\u065F') || // podstawowe harakaty
-                c == '\u0670' ||                      // alif khanjariyya
-                (c >= '\u0617' && c <= '\u061A') ||  // dodatkowe znaki
-                (c >= '\u06D6' && c <= '\u06ED');    // dodatkowe znaki Qur'aniczne
+        return (c >= '\u064B' && c <= '\u065F') ||
+                c == '\u0670' ||
+                (c >= '\u0617' && c <= '\u061A') ||
+                (c >= '\u06D6' && c <= '\u06ED');
     }
 
-//    private List<MorphologySegment> generateDecoySegments(String word, int count) {
-//
-//        Set<Character> usedLetters = new HashSet<>();
-//        for (char c : word.toCharArray()) {
-//            usedLetters.add(c);
-//        }
-//
-//        List<Character> allLetters = new ArrayList<>(LetterFormHelper.getAllLetters());
-//
-//        allLetters.removeAll(usedLetters);
-//
-//        List<MorphologySegment> decoys = new ArrayList<>();
-//
-//        for (int i = 0; i < Math.min(count, allLetters.size()); i++) {
-//            char decoyLetter = allLetters.get(i);
-//
-//            String decoyContent = getRandomLetterForm(decoyLetter);
-//
-//            decoys.add(new MorphologySegment(
-//                    "decoy_" + i,
-//                    decoyContent
-//            ));
-//        }
-//
-//        return decoys;
-//    }
 
     private List<MorphologySegment> generateDecoySegments(List<String> letterGroups, int count) {
         // Wyciągamy litery bazowe (bez diakrytyków) do porównania

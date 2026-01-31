@@ -67,7 +67,6 @@ public class DictionaryService {
 
     @Transactional
     public DictionaryWord saveOrGetDictionaryWord(NewDictionaryWordRequest word) {
-        System.out.println("Sprawdzam słowo w słowniku: " + word.lemma());
 
         Optional<DictionaryWord> existingWord = dictionaryWordRepository.findByLemma(word.lemma());
 

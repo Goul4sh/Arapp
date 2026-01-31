@@ -36,6 +36,15 @@ function WeeklyCalendar ({ activityDates, onDateClick }: WeekStreak) {
     };
 
     const handleDayClick = (date: Date) => {
+
+       if (selectedDate && selectedDate.toDateString() === date.toDateString()) {
+            setSelectedDate(null);
+            if (onDateClick) {
+                onDateClick('');
+            }
+            return;
+        }
+
         setSelectedDate(date);
 
         const dateString = date.toLocaleDateString('en-CA');

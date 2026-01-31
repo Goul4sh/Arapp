@@ -374,16 +374,22 @@
 }
 
 
+.wordReferences {
+    width: 100%;
+    max-width: 1260px;
+    margin: 0 auto 40px;
+    padding: 0 20px;
+}
+
 .referencesList {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 20px;
-    /*overflow-x: auto;*/
+    overflow-x: auto;
     padding: 10px 5px 20px 5px;
     scroll-behavior: smooth;
     scrollbar-width: thin;
-
 
 
 }

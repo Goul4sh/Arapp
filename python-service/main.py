@@ -99,7 +99,6 @@ async def analyze_text(req: TextRequest):
                 (a for a in word.analyses if a.analysis.get('root')),
                 word.analyses[0]
             )
-
             data = best_match.analysis
 
             raw_lemma = data.get('lex', original)

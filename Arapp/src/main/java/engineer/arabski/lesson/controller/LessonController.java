@@ -25,18 +25,6 @@ public class LessonController {
     }
 
 
-    @GetMapping
-    public ResponseEntity<?> findAll() {
-
-//        List<LessonPreviewResponse> lessons = lessonService.findAll();
-//        if (!lessons.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.OK).body(lessons);
-//        }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
-
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(
             @PathVariable Long id,

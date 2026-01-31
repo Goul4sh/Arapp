@@ -329,10 +329,10 @@ function EditGroupModal({
                             />
                         </div>
 
-                        <div className={localStyles.flashcardsGrid}>
+                        <div className={styles.flashcardsGrid}>
                             {filteredFlashcards.length === 0 ? (
                                 <div className={styles.emptyState}>
-                                    "Nie znaleziono fiszek"
+                                    Nie znaleziono fiszek
                                 </div>
                             ) : (
                                 filteredFlashcards.map((flashcard) => (

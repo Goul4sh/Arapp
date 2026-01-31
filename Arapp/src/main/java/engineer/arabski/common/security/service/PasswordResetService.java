@@ -17,8 +17,10 @@ import java.util.UUID;
 public class PasswordResetService {
 
     private final EmailService emailService;
+    private final RedisAuthService redisAuthService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
 
     @Transactional
     public void initiatePasswordReset(ForgotPasswordRequest request) {
@@ -26,9 +28,7 @@ public class PasswordResetService {
         userRepository.findByEmail(request.email()).ifPresent(user -> {
             String resetToken = UUID.randomUUID().toString();
 
-            user.setResetPasswordToken(resetToken);
-            user.setResetPasswordTokenExpiry(LocalDateTime.now().plusMinutes(15));
-            userRepository.save(user);
+            redisAuthService.saveResetPasswordToken(resetToken, user.getEmail());
 
             emailService.sendPasswordResetEmail(user.getEmail(), resetToken);
         });
@@ -37,18 +37,15 @@ public class PasswordResetService {
     @Transactional
     public void resetPassword(ResetPasswordRequest request) {
 
-        User user = userRepository.findByResetPasswordToken(request.token())
-                .orElseThrow(() -> new IllegalArgumentException("Nieprawidłowy lub nieistniejący token"));
+        String email = redisAuthService.validateResetPasswordToken(request.token());
 
-        if (user.getResetPasswordTokenExpiry() == null ||
-                user.getResetPasswordTokenExpiry().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Token wygasł");
+        if (email == null) {
+            throw new IllegalArgumentException("Nieprawidłowy lub wygasły token");
         }
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Użytkownik nie znaleziony"));
 
         user.setPassword(passwordEncoder.encode(request.newPassword()));
-
-        user.setResetPasswordToken(null);
-        user.setResetPasswordTokenExpiry(null);
 
         userRepository.save(user);
     }

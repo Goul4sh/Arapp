@@ -8,7 +8,8 @@ export interface WordReference {
     startIndex: number;
     endIndex: number;
     dictionaryTranslation: string;
-    contextualTranslation: string
+    contextualTranslation: string;
+    transliteration: string;
     lemma: string;
     hasFlashcard?: boolean;
 

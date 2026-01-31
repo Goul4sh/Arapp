@@ -104,7 +104,8 @@
     justify-content: center;
     /*background: linear-gradient(135deg, rgba(76, 174, 79, 0.2) 0%, rgba(102, 187, 106, 0.2) 100%);*/
     color: #888;
-    font-size: 0.9rem;}
+    font-size: 0.9rem;
+}
 
 .groupIcon {
 
@@ -139,8 +140,6 @@
 }
 
 
-
-
 .groupName {
     font-size: 1.1rem;
     font-weight: 600;
@@ -170,13 +169,6 @@
 }
 
 
-
-
-
-
-
-
-
 .sideColumn {
 
     display: flex;
@@ -200,6 +192,8 @@
     padding: 0 5px 20px 5px;
     scroll-behavior: smooth;
     scrollbar-width: thin;
+
+    align-items: center;
 }
 
 .emptySliderState {

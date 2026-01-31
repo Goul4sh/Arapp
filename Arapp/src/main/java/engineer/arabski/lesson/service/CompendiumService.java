@@ -6,6 +6,8 @@ import engineer.arabski.lesson.model.CompendiumTag;
 import engineer.arabski.lesson.model.Lesson;
 import engineer.arabski.lesson.repository.CompendiumRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -67,11 +69,7 @@ public class CompendiumService {
         return compendiumEntry;
     }
 
-    public void addCompendiumItem(CompendiumEntry compendiumEntry) {
-        compendiumRepository.save(compendiumEntry);
-    }
-
-
+    @CacheEvict(value = "compendium_items", key = "#id")
     public void editCompendiumItem(Long id, CompendiumRequest request) {
 
         CompendiumEntry entry = compendiumRepository.findById(id)
@@ -96,6 +94,7 @@ public class CompendiumService {
         compendiumRepository.save(entry);
     }
 
+    @CacheEvict(value = "compendium_items", key = "#id")
     public void deleteCompendiumItem(Long id) {
         compendiumRepository.deleteById(id);
     }
@@ -123,6 +122,7 @@ public class CompendiumService {
         compendiumRepository.save(compendiumEntry);
     }
 
+    @Cacheable(value = "compendium_items", key = "#id")
     public CompendiumDetailResponse getCompendiumDetailById(Long id) {
         CompendiumEntry entry = compendiumRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Compendium item not found with id " + id));
@@ -135,31 +135,22 @@ public class CompendiumService {
                 .toList();
     }
 
-
-
     public CompendiumEntry findByIdEntity(Long entryId) {
         return compendiumRepository.findById(entryId)
                 .orElse(null);
     }
 
-
     public void publishEntry(Long entryId, boolean published) {
-
         CompendiumEntry entry = findByIdEntity(entryId);
-
         if (entry == null) {
             throw new IllegalArgumentException("Lesson not found with id " + entryId);
         }
-
         entry.setPublished(published);
-
         compendiumRepository.save(entry);
-
     }
 
-
+    @Cacheable(value = "compendium_items", key = "'all_items_preview'")
     public List<CompendiumListResponse> findAllPublished() {
-
         return compendiumRepository.findAllByIsPublishedTrue().stream()
                 .map(this::itemToSummary)
                 .collect(Collectors.toList());
