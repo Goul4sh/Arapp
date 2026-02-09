@@ -88,6 +88,14 @@ function WordBank() {
 
             const response = await api.get('/api/words/recent', {withCredentials: true})
 
+
+            if (!response.data || !Array.isArray(response.data)) {
+                setInitialRecentWords([]);
+                setRecentWords([]);
+                setIsLoading(false);
+                return;
+            }
+
             const mappedWords = response.data.map((word: any) => ({
                 id: word.dictionaryWordId,
                 wordArabic: word.lemma,
@@ -220,9 +228,7 @@ function WordBank() {
 
                                                 <button
                                                     onClick={() => handleGroupClick(group)}>
-
                                                     Zobacz słówka
-
                                                 </button>
 
                                             </div>

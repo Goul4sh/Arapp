@@ -35,11 +35,7 @@ function WritingCoursePage() {
             </div>
 
             <div className={styles.sectionWrapper}>
-
-
                 {selectedSection === 'learningPath' ? (<AlphabetPath/>) : (<Compendium/>)}
-
-
             </div>
 
 

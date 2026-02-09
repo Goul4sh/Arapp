@@ -6,7 +6,6 @@ import api from "../api";
 import {useAuth} from "../auth";
 import {Link, useNavigate} from "react-router-dom";
 
-// TODO dodac komunikaty o bledach podczas logowania
 function Login(): JSX.Element {
 
 

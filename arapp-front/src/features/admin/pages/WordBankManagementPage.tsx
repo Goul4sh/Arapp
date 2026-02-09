@@ -44,10 +44,7 @@ function useDebounce<T>(value: T, delay: number): T {
 
 function WordBankManagementPage() {
 
-
     const [words, setWords] = useState<Word[]>([]);
-    // const [isLoading, setIsLoading] = useState(false);
-    //TODO zrobic loading
 
     const [currentPage, setCurrentPage] = useState(0);
     const pageSize = 20;
@@ -217,7 +214,6 @@ function WordBankManagementPage() {
         }
     }
 
-//TODO dodać wyswietlanie brak slow jesli nie ma slow
     return (
         <div className={styles.adminPageContainer}>
             <div className={styles.courseContentContainer}>

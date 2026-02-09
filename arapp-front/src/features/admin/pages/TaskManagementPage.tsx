@@ -274,11 +274,6 @@ function TaskManagementPage() {
                 return `${task.textToTranslate || ''}`;
             }
 
-            //TODO jesli reszta zadziala - dodać tu inne przypadki
-            case 'writing-assisted':
-            case 'theory':
-            case 'morphology-form':
-            case 'morphology-parts':
             default:
                 return taskData.description || "";
         }

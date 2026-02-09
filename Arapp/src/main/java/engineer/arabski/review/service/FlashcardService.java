@@ -44,11 +44,6 @@ public class FlashcardService {
         );
     }
 
-    public FlashcardItem createFlashcardItem(FlashcardItem flashcardItem) {
-        return flashcardRepository.save(flashcardItem);
-    }
-
-
     @Transactional
     public FlashcardItem createFlashcardItem(Long word_id, Long owner_id) {
 
@@ -59,16 +54,13 @@ public class FlashcardService {
         if (user == null) throw new RuntimeException("User not found");
 
         FlashcardItem flashcardItem = new FlashcardItem(user, dictionaryWord);
-
         FlashcardItem saved = flashcardRepository.save(flashcardItem);
-
         FlashcardGroup defaultGroup = getOrCreateDefaultGroup(user);
         if (defaultGroup != null) {
             defaultGroup.getFlashcardItems().add(saved);
             flashcardGroupRepository.save(defaultGroup);
         }
         return saved;
-
 
     }
 

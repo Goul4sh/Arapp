@@ -12,13 +12,39 @@ function ResetPasswordPage() {
 
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    // const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
 
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+    const validatePassword = (pwd: string): { isValid: boolean; errors: string[] } => {
+        const errors: string[] = [];
+
+        if (pwd.length < 8) {
+            errors.push('Hasło musi mieć co najmniej 8 znaków');
+        }
+        if (!/[A-Z]/.test(pwd)) {
+            errors.push('Hasło musi zawierać przynajmniej jedną wielką literę');
+        }
+        if (!/[a-z]/.test(pwd)) {
+            errors.push('Hasło musi zawierać przynajmniej jedną małą literę');
+        }
+        if (!/[0-9]/.test(pwd)) {
+            errors.push('Hasło musi zawierać przynajmniej jedną cyfrę');
+        }
+        if (!/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) {
+            errors.push('Hasło musi zawierać przynajmniej jeden znak specjalny');
+        }
+
+        return {
+            isValid: errors.length === 0,
+            errors
+        };
+    };
 
     const passwordsMatch = password === confirmPassword;
-    const isPasswordValid = password.length >= 6; //TODO: bardziej zaawansowana walidacja hasla
+    const passwordValidation = validatePassword(password);
+    const isPasswordValid = passwordValidation.isValid;
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
@@ -29,8 +55,9 @@ function ResetPasswordPage() {
             return;
         }
 
-        if (!isPasswordValid) {
-            setErrorMessage('Hasło musi mieć co najmniej 6 znaków.');
+        const validation = validatePassword(password);
+        if (!validation.isValid) {
+            setErrorMessage(validation.errors.join(' '));
             return;
         }
 
@@ -47,16 +74,15 @@ function ResetPasswordPage() {
             setStatus('success');
             setTimeout(() => navigate("/login"), 3000);
 
-        } catch (error: any) {
+        } catch (error) {
             setStatus('error');
 
-            if (error.response && error.response.data) {
-
-                setErrorMessage(typeof error.response.data === 'string'
-                    ? error.response.data
+            if (error instanceof Error && 'response' in error) {
+                const axiosError = error as { response?: { data?: unknown } };
+                setErrorMessage(typeof axiosError.response?.data === 'string'
+                    ? axiosError.response.data
                     : "Token jest nieprawidłowy lub wygasł.");
-            } else if (error.request) {
-                setErrorMessage("Brak połączenia z serwerem.");
+
             } else {
                 setErrorMessage("Wystąpił nieoczekiwany błąd.");
             }
@@ -81,9 +107,7 @@ function ResetPasswordPage() {
 
     return (
         <>
-
             <div className={styles.signUpPage}>
-
                 <h1 className={styles.signupTopText}>
                     Resetowanie hasła
                 </h1>
@@ -114,6 +138,33 @@ function ResetPasswordPage() {
                                disabled={status === 'loading'}
                         />
                     </div>
+
+                    // W JSX, pod polem hasła:
+                    {password && (
+                        <div className={styles.passwordRequirements}>
+                            <p style={{ fontSize: '0.85rem', marginBottom: '0.5rem', color: '#666' }}>
+                                Wymagania dotyczące hasła:
+                            </p>
+                            <ul style={{ fontSize: '0.8rem', margin: 0, paddingLeft: '1.5rem' }}>
+                                <li style={{ color: password.length >= 8 ? '#4cae4f' : '#e74c3c' }}>
+                                    Co najmniej 8 znaków
+                                </li>
+                                <li style={{ color: /[A-Z]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
+                                    Przynajmniej jedna wielka litera
+                                </li>
+                                <li style={{ color: /[a-z]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
+                                    Przynajmniej jedna mała litera
+                                </li>
+                                <li style={{ color: /[0-9]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
+                                    Przynajmniej jedna cyfra
+                                </li>
+                                <li style={{ color: /[!@#$%^&*(),.?":{}|<>]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
+                                    Przynajmniej jeden znak specjalny (!@#$%^&\*...)
+                                </li>
+                            </ul>
+                        </div>
+                    )}
+
 
                     {errorMessage && (
                         <div style={{color: 'red', marginBottom: '15px', marginTop: '0px'}}>

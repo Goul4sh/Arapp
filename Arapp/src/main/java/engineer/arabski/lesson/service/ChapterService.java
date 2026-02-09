@@ -19,7 +19,6 @@ import java.util.List;
 public class ChapterService {
 
     private final ChapterRepository chapterRepository;
-
     private final LessonService lessonService;
 
 

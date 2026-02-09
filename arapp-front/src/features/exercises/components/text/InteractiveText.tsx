@@ -22,7 +22,6 @@ export interface InteractiveTextProps {
 
 function InteractiveText({text, references} : InteractiveTextProps) {
 
-
     const parts = useMemo(() => {
 
         const result = [];
@@ -48,18 +47,15 @@ function InteractiveText({text, references} : InteractiveTextProps) {
                 content={wordContent}
                 />
             );
-
             lastIndex = ref.endIndex;
         });
 
         if (lastIndex < text.length)
-        {
-            result.push(
+        {result.push(
                 <span key={`text-end`}>
                     {text.substring(lastIndex)}
                 </span>
-            );
-        }
+            );}
 
         return result;
     }, [text, references]);

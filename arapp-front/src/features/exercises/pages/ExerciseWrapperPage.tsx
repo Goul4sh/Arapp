@@ -77,16 +77,12 @@ function ExerciseWrapperPage() {
 
                 });
 
-
         } else if (source === 'word-group') {
 
             api.get(`/api/task-generation/groups/${groupId}`, {withCredentials: true})
                 .then(resp => {
 
                     const tasks = resp.data;
-
-                    console.log("Taski ktore dostalem to", tasks);
-
 
                     const tasksWithIds = tasks.map((task: Task, index: number) => ({
                         ...task,
@@ -161,7 +157,6 @@ function ExerciseWrapperPage() {
 
             const newIncorrectAnswers = sessionStats.incorrectAnswers + 1;
 
-
             setSessionStats(prev => ({
                 ...prev,
                 incorrectAnswers: newIncorrectAnswers
@@ -181,9 +176,9 @@ function ExerciseWrapperPage() {
         }
 
     }
-
-
+    
     const finishSession = (completedCount: number, correctAnswers: number, incorrectAnswers: number) => {
+
         const duration = Math.floor((Date.now() - sessionStats.startTime) / 1000);
 
         setSessionStats(prev => ({...prev, finalDuration: duration}));
@@ -266,11 +261,8 @@ function ExerciseWrapperPage() {
 
     return (
         <div>
-
             <div className={styles.exercisePage}>
-
                 <div className={progressBarStyles.topBar}>
-
                     <div className={progressBarStyles.exitButton}>
                         <button onClick={handleExitClick}>
                             X

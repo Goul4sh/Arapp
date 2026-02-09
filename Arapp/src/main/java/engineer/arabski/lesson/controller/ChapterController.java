@@ -3,6 +3,7 @@ package engineer.arabski.lesson.controller;
 import engineer.arabski.lesson.dto.ChapterRequest;
 import engineer.arabski.lesson.dto.ChapterResponse;
 import engineer.arabski.lesson.service.ChapterService;
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,28 +11,22 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/chapters")
+@RequiredArgsConstructor
 public class ChapterController {
 
-
-
     private final ChapterService chapterService;
-
-    public ChapterController(ChapterService chapterService) {
-        this.chapterService = chapterService;
-    }
-
-
-    @GetMapping
-    public ResponseEntity<?> findAll() {
-
-        return ResponseEntity.status(HttpStatus.OK).body(chapterService.findAll());
-
-    }
 
     @GetMapping("/published")
     public ResponseEntity<?> findAllPublished() {
 
         return ResponseEntity.status(HttpStatus.OK).body(chapterService.findAllPublished());
+
+    }
+
+    @GetMapping
+    public ResponseEntity<?> findAll() {
+
+        return ResponseEntity.status(HttpStatus.OK).body(chapterService.findAll());
 
     }
 

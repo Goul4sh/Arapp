@@ -1,9 +1,3 @@
-//             {/*TODO*/}
-//             {/*Mozliwosc dodania zdjecia lub grafiki do slowka poprzez umieszczenie linku do obrazka - to zdjecie bedzie*/}
-//             {/*wyswietlac sie dodatkowo w fiszce lub podczas przchodzenia przez zadania ze slownicwa*/}
-//
-
-
 import styles from "./adminGlobalStyles.module.css";
 import localStyles from "./wordBankManagement.module.css";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";

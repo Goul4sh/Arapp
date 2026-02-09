@@ -27,11 +27,8 @@ function ChooseOneTask({task}: { task: ChooseOneTaskType }) {
 
         setStatus(isCorrect ? 'correct' : 'wrong');
 
-
-        //TODO dodać dzwieki uzywajac use-sound i darmowych zrodel
         setTimeout(() => {
             submitAnswer(isCorrect);
-            // const [playSuccess] = useSound(successSfx, { soundEnabled: !isMuted });
             setSelectedOption(null);
             setStatus('idle');
         }, 1500);

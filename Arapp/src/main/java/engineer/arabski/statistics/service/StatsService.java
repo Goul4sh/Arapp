@@ -46,9 +46,7 @@ public class StatsService {
     public GlobalStatsResponse getUserDashboardStats(Long userId) {
 
         GlobalUserStats overall = globalUserStatsRepository.findById(userId).orElse(new GlobalUserStats());
-
         List<LocalDate> dates = dailyUserStatsRepository.findActivityDatesByUserId(userId);
-
 
         int currentStreak = overall.getCurrentStreak();
         LocalDate lastActivityDate = overall.getLastActivityDate();
@@ -57,11 +55,9 @@ public class StatsService {
         if (lastActivityDate == null) {
             currentStreak = 0;
         } else {
-
             if (lastActivityDate.isBefore(today.minusDays(1))) {
                 currentStreak = 0;
             }
-
         }
 
         List<String> dateStrings = dates.stream()
@@ -82,9 +78,14 @@ public class StatsService {
     @Transactional
     public void saveSessionStats(Long userId, UserStatsRequest request) {
         User user = userService.getUserById(userId);
-
         LocalDate today = LocalDate.now();
 
+        updateDailyStats(userId, user, today, request);
+        updateGlobalStats(userId, user, today, request);
+    }
+
+
+    private void updateDailyStats(Long userId, User user, LocalDate today, UserStatsRequest request) {
         DailyUserStats dailyStat = dailyUserStatsRepository.findByUserIdAndDate(userId, today)
                 .orElse(new DailyUserStats(null, user, today, 0L, 0L, 0L, 0L, 0L));
 
@@ -92,44 +93,49 @@ public class StatsService {
         dailyStat.setDailyCorrectAnswers(dailyStat.getDailyCorrectAnswers() + request.correctAnswers());
         dailyStat.setDailyIncorrectAnswers(dailyStat.getDailyIncorrectAnswers() + request.incorrectAnswers());
         dailyStat.setDailyLearningTime(dailyStat.getDailyLearningTime() + request.durationSeconds());
-        if (request.flashcardsReviewed() != null) {
-            dailyStat.setDailyFlashcardsReviewed(dailyStat.getDailyFlashcardsReviewed() + request.flashcardsReviewed());
-        } else
-        {
-            dailyStat.setDailyFlashcardsReviewed(dailyStat.getDailyFlashcardsReviewed() + 0L);
-        }
+        dailyStat.setDailyFlashcardsReviewed(
+                dailyStat.getDailyFlashcardsReviewed() +
+                        (request.flashcardsReviewed() != null ? request.flashcardsReviewed() : 0L)
+        );
 
         dailyUserStatsRepository.save(dailyStat);
+    }
 
+    private void updateGlobalStats(Long userId, User user, LocalDate today, UserStatsRequest request) {
         GlobalUserStats globalStats = globalUserStatsRepository.findById(userId)
                 .orElse(new GlobalUserStats(null, user, 0L, 0L, 0L, 0L, 0L, 0, null));
 
-        LocalDate lastDate = globalStats.getLastActivityDate();
-
-        // Obliczanie serii dni
-        if (lastDate == null) {
-            globalStats.setCurrentStreak(1);
-
-        } else if (lastDate.isEqual(today)) {
-
-            // Nic nie robimy, bo to ten sam dzień
-        } else if (lastDate.isEqual(today.minusDays(1))) {
-            globalStats.setCurrentStreak(globalStats.getCurrentStreak() + 1);
-
-        } else {
-
-            globalStats.setCurrentStreak(1);
-        }
-
+        updateStreak(globalStats, today);
         globalStats.setLastActivityDate(today);
 
         globalStats.setTotalTasksCompleted(globalStats.getTotalTasksCompleted() + request.completedTasks());
         globalStats.setTotalCorrectAnswers(globalStats.getTotalCorrectAnswers() + request.correctAnswers());
         globalStats.setTotalIncorrectAnswers(globalStats.getTotalIncorrectAnswers() + request.incorrectAnswers());
         globalStats.setTotalDurationSeconds(globalStats.getTotalDurationSeconds() + request.durationSeconds());
-        globalStats.setTotalFlashcardsReviewed(globalStats.getTotalFlashcardsReviewed() + request.flashcardsReviewed());
+        globalStats.setTotalFlashcardsReviewed(
+                globalStats.getTotalFlashcardsReviewed() +
+                        (request.flashcardsReviewed() != null ? request.flashcardsReviewed() : 0L)
+        );
 
         globalUserStatsRepository.save(globalStats);
     }
+
+    private void updateStreak(GlobalUserStats globalStats, LocalDate today) {
+
+        LocalDate lastDate = globalStats.getLastActivityDate();
+
+        // Obliczanie serii dni
+        if (lastDate == null) {
+            globalStats.setCurrentStreak(1);
+        } else if (lastDate.isEqual(today)) {
+            // Nic nie robimy, bo to ten sam dzień
+        } else if (lastDate.isEqual(today.minusDays(1))) {
+            globalStats.setCurrentStreak(globalStats.getCurrentStreak() + 1);
+        } else {
+            globalStats.setCurrentStreak(1);
+        }
+
+    }
+
 
 }

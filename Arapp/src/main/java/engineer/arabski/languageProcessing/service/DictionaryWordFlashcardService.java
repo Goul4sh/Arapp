@@ -18,25 +18,19 @@ public class DictionaryWordFlashcardService {
 
     public static WordResponse toResponseFlashcard(DictionaryWord word) {
 
-
-
         return new WordResponse(
-
                 word.getLemma(),
                 word.getDiacritic(),
                 word.getTranslation(),
                 word.getTransliteration()
-
         );
     }
 
     public static DictionaryWord toEntityFlashcard(WordRequest response) {
         DictionaryWord dictionaryWord = new DictionaryWord();
-
         dictionaryWord.setLemma(response.wordArabic());
         dictionaryWord.setTranslation(response.wordTranslation());
         dictionaryWord.setTransliteration(response.Transliteration());
-
         return dictionaryWord;
     }
 
@@ -44,18 +38,6 @@ public class DictionaryWordFlashcardService {
     public DictionaryWord getWordEntity(Long id) {
 
         return dictionaryWordRepository.findById(id).orElse(null);
-    }
-
-    public WordResponse getTemporaryWord(Long id) {
-
-        DictionaryWord word = dictionaryWordRepository.findById(id).orElse(null);
-
-        if (word == null) {
-            return null;
-        }
-
-
-        return toResponseFlashcard(word);
     }
 
     public List<WordResponse> getAll() {

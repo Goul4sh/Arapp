@@ -3,12 +3,33 @@ import {useEffect, useState} from "react";
 import styles from "../writing.module.css"
 import type {Chapter, ProcessedChapter, ProcessedLesson} from "../writingTypes.ts";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCheck, faListCheck, faX} from "@fortawesome/free-solid-svg-icons";
+import {
+    faBook,
+    faCheck, faCog, faFlag,
+    faGraduationCap, faHeart,
+    faLightbulb,
+    faListCheck,
+    faPuzzlePiece, faRocket, faStar, faTrophy,
+    faX
+} from "@fortawesome/free-solid-svg-icons";
 import api from "../../auth/api.ts";
+import type {IconDefinition} from "@fortawesome/fontawesome-svg-core";
 
-
-//TODO dokonczyc widok
 function AlphabetPath() {
+
+
+    const iconMap: Record<string, IconDefinition> = {
+        'book': faBook,
+        'graduation-cap': faGraduationCap,
+        'lightbulb': faLightbulb,
+        'puzzle-piece': faPuzzlePiece,
+        'rocket': faRocket,
+        'star': faStar,
+        'trophy': faTrophy,
+        'heart': faHeart,
+        'cog': faCog,
+        'flag': faFlag
+    };
 
     const navigate = useNavigate();
 
@@ -191,17 +212,19 @@ function AlphabetPath() {
                                         ${lesson.isCompleted ? styles.cardCompleted : ''}
                                     `}
                                     >
-                                        <div className={styles.lessonIcon}>{lesson.description || "link ftoa?"}</div>
+                                        <div className={styles.lessonIcon}>
+                                            {/*{lesson.description || "link ftoa?"}*/}
+                                            {lesson.icon && <FontAwesomeIcon icon={iconMap[lesson.icon] || faBook}/>}
 
+                                        </div>
 
                                         <div className={styles.detailsWrapper}>
-
 
                                             <div className={styles.lessonDetails}>
 
                                                 <div className={styles.detailsColumn}>
                                                     <h4>{lesson.title}</h4>
-                                                    <p>{lesson.icon || "sigma sigma 123"}</p>
+                                                    <p>{lesson.description || "sigma sigma 123"}</p>
                                                 </div>
 
                                                 <div className={styles.taskCount}>
@@ -231,7 +254,6 @@ function AlphabetPath() {
                                             </div>
 
                                         </div>
-
 
 
                                     </div>

@@ -190,17 +190,12 @@
     text-decoration: underline;
 }
 
-
-
-/*TODO ustalić ujednolicone kolory */
 .vocabularyModalContainer {
     display: flex;
     flex-direction: column;
     gap: 20px;
     padding: 10px;
 }
-
-
 
 .vocabularyModalContainer > div:first-child {
     background-color: #f9fafb;

@@ -14,6 +14,7 @@ import api from "../../auth/api.ts";
 
 import type {Chapter, Lesson} from "../../writing/writingTypes.ts";
 import Modal from "../../review/Modal.tsx";
+import IconSelector from "./components/forms/IconSelector.tsx";
 
 interface LessonResponse {
 
@@ -53,7 +54,7 @@ function LessonManagement() {
 
 
     const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
-    const [editingLessonData, setEditingLessonData] = useState({title: '', description: ''});
+    const [editingLessonData, setEditingLessonData] = useState({title: '', description: '', icon: ''});
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -164,13 +165,13 @@ function LessonManagement() {
     const startEditingLesson = (lesson: LocalLesson, e: React.MouseEvent) => {
         e.stopPropagation();
         setEditingLessonId(lesson.id);
-        setEditingLessonData({title: lesson.title, description: lesson.description});
+        setEditingLessonData({title: lesson.title, description: lesson.description, icon: lesson.icon});
     };
 
     const cancelEditingLesson = (e?: React.MouseEvent) => {
         e?.stopPropagation();
         setEditingLessonId(null);
-        setEditingLessonData({title: '', description: ''});
+        setEditingLessonData({title: '', description: '', icon: ''});
     };
 
 
@@ -184,7 +185,8 @@ function LessonManagement() {
 
         const isChanged =
             originalLesson.title !== editingLessonData.title ||
-            originalLesson.description !== editingLessonData.description;
+            originalLesson.description !== editingLessonData.description ||
+            originalLesson.icon !== editingLessonData.icon;
         if (!isChanged) {
             cancelEditingLesson();
             return;
@@ -201,7 +203,7 @@ function LessonManagement() {
                 ...ch,
                 lessons: ch.lessons.map(l =>
                     l.id === lessonId
-                        ? {...l, title: editingLessonData.title, description: editingLessonData.description}
+                        ? {...l, title: editingLessonData.title, description: editingLessonData.description, icon: editingLessonData.icon}
                         : l
                 )
             };
@@ -213,7 +215,7 @@ function LessonManagement() {
             await api.patch(`/api/lessons/${lessonId}`, {
                 title: editingLessonData.title,
                 description: editingLessonData.description,
-                icon: '',
+                icon: editingLessonData.icon,
                 taskIds: []
             }, {withCredentials: true});
         } catch (error) {
@@ -624,6 +626,14 @@ function LessonManagement() {
                                                                                 description: e.target.value
                                                                             })}
                                                                             placeholder="Krótki opis"
+                                                                        />
+
+                                                                        <IconSelector
+                                                                            selectedIcon={editingLessonData.icon}
+                                                                            onIconSelect={(iconName) => setEditingLessonData({
+                                                                                ...editingLessonData,
+                                                                                icon: iconName
+                                                                            })}
                                                                         />
                                                                     </div>
                                                                 )}

@@ -258,7 +258,7 @@ function CompendiumDataManagement() {
                                             <h3 className={styles.chapterTitle}>{entry.title}</h3>
                                             <div className={styles.chapterMeta}>
                                                 <span>{entry.subtitle || '—'}</span>
-                                                <span>Lekcja: {entry.requiredLessonId || '—'}</span>
+                                                <span>Lekcja: {entry.requiredLessonId || '0 '}</span>
                                                 <span>{formatTags(entry.tags)}</span>
                                             </div>
                                         </div>

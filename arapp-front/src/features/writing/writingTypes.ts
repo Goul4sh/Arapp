@@ -1,5 +1,3 @@
-// TODO odpowiednio zmienic nazwy i atrybuty lekcji do tego co bedzie wyswietlane
-
 export interface Lesson {
     id: string;
     title: string;

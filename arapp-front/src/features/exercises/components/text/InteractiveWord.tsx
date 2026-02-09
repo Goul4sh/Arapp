@@ -30,13 +30,11 @@ function InteractiveWord({reference, content}: { reference: WordReference, conte
 
     return (
         <span className={styles.wordWrapper}>
-
             <span className={styles.highlightedWord}>
             {content}
             </span>
 
             <div className={styles.tooltip}>
-
                 <div className={styles.tooltipHeader}>
                     <span className={styles.translation}>{reference.dictionaryTranslation}</span>
                 </div>
@@ -45,7 +43,6 @@ function InteractiveWord({reference, content}: { reference: WordReference, conte
                         Lemat: {reference.lemma}
                     </div>
                 )}
-
                 <button
                     onClick={handleAddToFlashcards}
                     className={`${styles.addBtn} ${isInFlashcards ? styles.added : ''}`}>

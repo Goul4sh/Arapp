@@ -12,8 +12,6 @@ import EditGroupModal from "../components/modals/EditGroupModal.tsx";
 import {useFlashcardActions} from "../useFlashcardActions.ts";
 import type {WordReference} from "../../exercises/components/text/InteractiveText.tsx";
 
-//TODO dodac wyswietlanie harakat
-
 const isFlashcardDue = (dateString: string | number | Date) => {
     return new Date(dateString) <= new Date();
 };

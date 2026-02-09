@@ -160,6 +160,7 @@
     border-radius: 8px;
     padding: 10px 20px;
     font-size: 0.95rem;
+    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s;
 }
@@ -185,6 +186,8 @@
 
 
 .recentWordsSlider {
+    max-height: 765px ;
+
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -197,7 +200,7 @@
 }
 
 .emptySliderState {
-    width: 100%;
+    width: 99%;
     height: 178px;
     display: flex;
     flex-direction: column;

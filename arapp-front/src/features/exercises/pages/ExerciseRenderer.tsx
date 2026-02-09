@@ -19,55 +19,37 @@ interface ExerciseRendererProps {
     data?: Task;
 }
 
-function ExerciseRenderer({currentTask}: { currentTask: ExerciseRendererProps | Task;}) {
 
-console.log("Rzecz ktora dostalem do renderera zadan:", currentTask);
+const taskComponentMap: Record<string, React.FC<{ task: any }>> = {
+    "multiple-choice": MultipleChoiceTask,
+    "fill-in-the-blank": FillInTheBlankTask,
+    "match-pairs": MatchPairsTask,
+    "choose-one": ChooseOneTask,
+    "morphology-form": MorphologyFormTask,
+    "morphology-parts": MorphologyPartsTask,
+    "theory": TheoryTask,
+    "writing-assisted": AssistedWritingTask,
+    "translate": TranslateTask,
+} as const;
+
+function ExerciseRenderer({currentTask}: { currentTask: ExerciseRendererProps | Task; }) {
 
     const task: Task = 'data' in currentTask && currentTask.data
         ? currentTask.data
         : currentTask as Task;
 
-    function TaskSelector({task}: { task: Task }) {
 
-        console.log("Rzecz ktora dostalem do selectora zadan:", task);
+    const TaskComponent = taskComponentMap[task.type];
 
-        switch (task.type) {
-            case 'multiple-choice':
-                return <MultipleChoiceTask task={task}/>;
-            case 'fill-in-the-blank':
-                return <FillInTheBlankTask task={task}/>;
-            case 'match-pairs':
-                return <MatchPairsTask task={task}/>;
-            case 'choose-one':
-                return <ChooseOneTask task={task}/>;
-            case "morphology-form":
-                return <MorphologyFormTask task={task}/>;
-            case "morphology-parts":
-                return <MorphologyPartsTask task={task}/>;
-            case "theory":
-                return <TheoryTask task={task}/>;
-            case "writing-assisted":
-                return <AssistedWritingTask task={task}/>
-            case "translate":
-                return <TranslateTask task={task}/>
-
-            default:
-                return <div>Unknown task type</div>;
-
-        }
+    if (!TaskComponent) {
+        return <div>Unknown task type</div>;
     }
 
     return (<>
-
             <div className={styles.rendererContainer}>
-
-                <TaskSelector task={task}/>
-
+                <TaskComponent task={task}/>
             </div>
-
         </>
-
-
     );
 
 }

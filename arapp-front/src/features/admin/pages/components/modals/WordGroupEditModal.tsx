@@ -4,6 +4,7 @@ import Modal from "../../../../review/Modal.tsx";
 import {useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import type {IconProp} from "@fortawesome/fontawesome-svg-core";
+import IconSelector from "../forms/IconSelector.tsx";
 
 
 interface WordGroup {
@@ -107,12 +108,23 @@ function WordGroupEditModal({isOpen, onClose, onSave, group}: WordGroupEditModal
 
                     <div className={styles.formGroup}>
                         <label>Ikona</label>
-                        <input
-                            type="text"
-                            value={formData.icon}
-                            onChange={(e) => setFormData({...formData, icon: e.target.value})}
-                            placeholder="Brak ikony"
+
+                        <IconSelector
+                            selectedIcon={formData.icon}
+                            onIconSelect={(iconName) => setFormData({
+                                ...formData,
+                                icon: iconName
+                            })}
+                            allowEmpty={true}
+
                         />
+
+                        {/*<input*/}
+                        {/*    type="text"*/}
+                        {/*    value={formData.icon}*/}
+                        {/*    onChange={(e) => setFormData({...formData, icon: e.target.value})}*/}
+                        {/*    placeholder="Brak ikony"*/}
+                        {/*/>*/}
                     </div>
 
                     <div className={styles.buttonsContainer}>

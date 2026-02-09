@@ -5,9 +5,6 @@ import api from "../api.ts";
 import {Link, useNavigate} from "react-router-dom";
 import GoogleLogo from "../../../assets/Google__G__logo.svg";
 
-// TODO dodac komunikaty o bledach podczas rejestracji
-
-
 function Signup(): JSX.Element {
 
     const [email, setEmail] = React.useState('');
@@ -18,14 +15,49 @@ function Signup(): JSX.Element {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 
+    // const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+
+    const validatePassword = (pwd: string): { isValid: boolean; errors: string[] } => {
+        const errors: string[] = [];
+
+        if (pwd.length < 8) {
+            errors.push('Hasło musi mieć co najmniej 8 znaków');
+        }
+        if (!/[A-Z]/.test(pwd)) {
+            errors.push('Hasło musi zawierać przynajmniej jedną wielką literę');
+        }
+        if (!/[a-z]/.test(pwd)) {
+            errors.push('Hasło musi zawierać przynajmniej jedną małą literę');
+        }
+        if (!/[0-9]/.test(pwd)) {
+            errors.push('Hasło musi zawierać przynajmniej jedną cyfrę');
+        }
+        if (!/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) {
+            errors.push('Hasło musi zawierać przynajmniej jeden znak specjalny');
+        }
+
+        return {
+            isValid: errors.length === 0,
+            errors
+        };
+    };
+
     const navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setError('');
+        setErrorMessage(null);
+
 
         if (password !== confirmPassword) {
             setError('Podane hasła muszą być identyczne.');
+            return;
+        }
+
+        const validation = validatePassword(password);
+        if (!validation.isValid) {
+            setError(validation.errors.join(' '));
             return;
         }
 
@@ -41,22 +73,19 @@ function Signup(): JSX.Element {
 
             }
 
-        } catch (error : any) {
+        } catch (error : unknown) {
 
-            if (error.response) {
-
-                const backendMessage = error.response.data?.message;
+            if (error instanceof Error && 'response' in error) {
+                const axiosError = error as { response?: { data?: { message?: string }; status?: number } };
+                const backendMessage = axiosError.response?.data?.message;
 
                 if (backendMessage) {
                     setErrorMessage(backendMessage);
-                } else if (error.response.status === 409) {
+                } else if (axiosError.response?.status === 409) {
                     setErrorMessage("Konto z podanym adresem email już istnieje.");
                 } else {
                     setErrorMessage("Wystąpił błąd rejestracji.");
                 }
-            } else if (error.request) {
-
-                setErrorMessage("Brak połączenia z serwerem.");
             } else {
                 setErrorMessage("Wystąpił nieoczekiwany błąd.");
             }
@@ -74,7 +103,6 @@ function Signup(): JSX.Element {
         <>
 
             <div className={styles.signUpPage}>
-
 
                 <h1 className={styles.signupTopText}>
                     Zarejestruj się</h1>
@@ -136,6 +164,32 @@ function Signup(): JSX.Element {
                         />
                     </div>
 
+
+                    {password && (
+                        <div className={styles.passwordRequirements}>
+                            <p style={{ fontSize: '0.85rem', marginBottom: '0.5rem', color: '#666' }}>
+                                Wymagania dotyczące hasła:
+                            </p>
+                            <ul style={{ fontSize: '0.8rem', margin: 0, paddingLeft: '1.5rem' }}>
+                                <li style={{ color: password.length >= 8 ? '#4cae4f' : '#e74c3c' }}>
+                                    Co najmniej 8 znaków
+                                </li>
+                                <li style={{ color: /[A-Z]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
+                                    Przynajmniej jedna wielka litera
+                                </li>
+                                <li style={{ color: /[a-z]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
+                                    Przynajmniej jedna mała litera
+                                </li>
+                                <li style={{ color: /[0-9]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
+                                    Przynajmniej jedna cyfra
+                                </li>
+                                <li style={{ color: /[!@#$%^&*(),.?":{}|<>]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
+                                    Przynajmniej jeden znak specjalny (!@#$%^&*...)
+                                </li>
+                            </ul>
+                        </div>
+                    )}
+
                     <div className={styles.submitContainer}>
 
                         {errorMessage && (
@@ -147,9 +201,10 @@ function Signup(): JSX.Element {
                         <button
                             type="submit"
                             className={`${styles.button} ${styles.signup}`}
-                            disabled={!password || !confirmPassword || password !== confirmPassword}
+                            disabled={!password || !confirmPassword || password !== confirmPassword || !validatePassword(password).isValid}
                         >Zarejestruj się
                         </button>
+
                     </div>
 
                 </form>

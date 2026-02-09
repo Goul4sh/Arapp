@@ -91,7 +91,6 @@ public class AuthController {
         }
 
         try {
-
             User user = userService.createUser(registerRequest);
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -99,17 +98,15 @@ public class AuthController {
             }
 
             String token = emailVerificationService.createToken(registerRequest.email());
-
             emailService.sendVerificationEmail(registerRequest.email(), token);
-
             return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+
         } catch (UserAlreadyExistsException e) {
             System.out.println("User already exists");
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(new ErrorResponse("Konto z tym adresem e-mail już istnieje."));
 
         } catch (Exception e) {
-
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ErrorResponse("Wystąpił błąd serwera przy rejestracji."));
         }

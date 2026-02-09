@@ -43,8 +43,6 @@ public class TaskService {
     }
 
 
-//    @Transactional
-
     public void deleteTask(Long taskId) {
         taskRepository.deleteById(taskId);
     }
@@ -114,9 +112,7 @@ public class TaskService {
     public Task addTaskWithVocabReferences(TaskData taskData, Long wordId) {
 
         Task task = new Task();
-
         task.setTaskData(taskData);
-
         DictionaryWord dictionaryWord = dictionaryService.findByIdEntity(wordId);
 
         if (dictionaryWord == null) {
@@ -135,18 +131,15 @@ public class TaskService {
     public Task addTaskWithVocab(EnrichedTaskRequest data) {
 
         if (data.linkedVocabulary().words().isEmpty()) {
-            return addTask(data.taskData());
-        }
+            return addTask(data.taskData());}
 
         Task task = new Task();
 
         TaskData taskData = data.taskData();
         LinkedVocabularyRequest vocabularyRequest = data.linkedVocabulary();
-
         task.setTaskData(taskData);
 
         for (SaveDictionaryWordWithReferenceRequest word : vocabularyRequest.words()) {
-
             DictionaryWord dictionaryWord = dictionaryService.saveOrGetDictionaryWord(
                     new NewDictionaryWordRequest(word.lemma(),
                             "",
@@ -158,12 +151,10 @@ public class TaskService {
             TaskWordReference reference = new TaskWordReference();
             reference.setTask(task);
             reference.setDictionaryWord(dictionaryWord);
-
             reference.setStartIndex(word.startIndex());
             reference.setEndIndex(word.endIndex());
 
             task.getWordReferences().add(reference);
-
         }
 
         return taskRepository.save(task);

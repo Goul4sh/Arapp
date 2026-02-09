@@ -395,7 +395,7 @@
 }
 
 .emptySliderState {
-    width: 100%;
+    width: 99%;
     height: 178px;
     display: flex;
     flex-direction: column;

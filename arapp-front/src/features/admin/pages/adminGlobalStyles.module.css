@@ -20,13 +20,13 @@
     border-radius: 12px;
     border: 1px solid #e5e7eb;
     margin-bottom: 15px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    /*overflow: hidden;*/
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     transition: box-shadow 0.2s;
 }
 
 .chapterCard:hover {
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
 }
 
 .chapterHeader {
@@ -192,20 +192,50 @@
 }
 
 
-
 .dot {
     width: 10px;
     height: 10px;
     border-radius: 50%;
 }
-.dot.published { background-color: #4cae4f; }
-.dot.draft { background-color: #d1d5db; }
+
+.dot.published {
+    background-color: #4cae4f;
+}
+
+.dot.draft {
+    background-color: #d1d5db;
+}
 
 .lessonInfo {
     flex-grow: 1;
     display: flex;
     align-items: center;
     gap: 15px;
+}
+
+.editModeInputs {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-direction: row;
+}
+
+
+.editModeInputs input {
+
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+
+}
+
+.editModeInputs input:focus
+{
+    outline: none;
+    border-color: #4cae4f;
+    box-shadow: 0 0 0 3px rgba(76, 174, 79, 0.1);
 }
 
 .lessonTitle {
@@ -222,14 +252,6 @@
     color: #9ca3af;
 }
 
-.draftTag {
-    background-color: #fef3c7;
-    color: #d97706;
-    padding: 1px 5px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 0.7rem;
-}
 
 .lessonActions {
     display: flex;
@@ -296,12 +318,14 @@
     margin-bottom: 10px;
 
 }
+
 .secondaryBtn {
     background-color: #ffffff;
     color: #374151;
     border: 1px solid #d1d5db;
     box-shadow: none;
 }
+
 .secondaryBtn:hover {
     background-color: #f9fafb;
     border-color: #9ca3af;
@@ -369,3 +393,50 @@
 }
 
 /*TODO trzeba zrobic stylowanie do edycji rozdzialu*/
+
+.editorActions {
+
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    padding-top: 10px;
+
+}
+
+.button {
+
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    /*border: none;*/
+
+}
+
+.createButton {
+    composes: button;
+    background-color: #4cae4f;
+    color: white;
+    box-shadow: 0 2px 4px rgba(76, 174, 79, 0.2);
+}
+
+.createButton:hover {
+    background-color: #3d8b3d;
+    box-shadow: 0 4px 8px rgba(76, 174, 79, 0.3);
+}
+
+.cancelButton {
+    composes: button;
+    background-color: #ffffff;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.cancelButton:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+}

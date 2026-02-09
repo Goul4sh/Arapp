@@ -193,4 +193,40 @@
 
 margin: 0;
 }
+.passwordRequirements {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.passwordRequirements p {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    color: #666;
+    text-align: left;
+}
+
+.passwordRequirements ul {
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
+    text-align: left;
+}
+
+.passwordRequirements li {
+    font-size: 0.8rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.passwordRequirements li::before {
+    content: "●";
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+}
 

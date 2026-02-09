@@ -1,0 +1,96 @@
+.iconSelectorContainer {
+    margin: 1rem 0;
+    position: relative;
+}
+
+.dropdownWrapper {
+    position: relative;
+}
+
+.dropdownButton {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #d1d5db;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    min-width: 200px;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.dropdownButton:hover {
+    border-color: #9ca3af;
+}
+
+.dropdownButton:focus {
+    outline: none;
+    border-color: #4cae4f;
+    box-shadow: 0 0 0 3px rgba(76, 174, 79, 0.1);
+}
+
+.selectedIcon {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+}
+
+.selectedIcon svg {
+    font-size: 1.25rem;
+}
+
+.dropdownMenu {
+    min-width: 200px;
+    position: absolute;
+    /*top: 100%;*/
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    /*margin-top: 0.25rem;*/
+    margin-bottom: 0.25rem;
+    background: white;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.noIcon {
+    font-style: italic;
+    color: #666;
+}
+
+
+.iconOption {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: background 0.2s;
+    text-align: left;
+}
+
+.iconOption:hover {
+    background: #f3f4f6;
+}
+
+.iconOption.selected {
+    background: #e5f3ff;
+    color: #4cae4f;
+}
+
+.iconOption svg {
+    font-size: 1.25rem;
+}
+
+.iconOption span {
+    font-size: 0.9rem;
+}
