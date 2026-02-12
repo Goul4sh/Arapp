@@ -1,4 +1,3 @@
-// src/features/admin/pages/components/forms/MorphologyPartsForm.tsx
 import styles from "./TaskForms.module.css";
 import type {MorphologyPartsFormType} from "./formTaskTypes.ts";
 import {useEffect, useState} from "react";
@@ -82,7 +81,7 @@ const MorphologyPartsForm = ({onDataChange, initialData}: Props) => {
                     className={styles.formTextarea}
                     value={formData.question}
                     onChange={(e) => setFormData({...formData, question: e.target.value})}
-                    placeholder="Np. Wybierz poprawne części morfologiczne słowa"
+                    placeholder="Ułóż słowo w poprawnej kolejności, korzystając z podanych segmentów."
                     rows={1}
                     disabled={formData.id > 0}
                 />

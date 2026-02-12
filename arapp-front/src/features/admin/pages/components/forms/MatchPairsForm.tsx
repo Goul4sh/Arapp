@@ -94,7 +94,6 @@ const MatchPairsForm = ({onDataChange, initialData}: Props) => {
                                     value={pair.key}
                                     onChange={(e) => updatePair(index, 'key', e.target.value)}
                                     placeholder="Lewa strona"
-                                    // style={{ flex: 1 }}
                                 />
 
                                 <input
@@ -103,7 +102,6 @@ const MatchPairsForm = ({onDataChange, initialData}: Props) => {
                                     value={pair.value}
                                     onChange={(e) => updatePair(index, 'value', e.target.value)}
                                     placeholder="Prawa strona (Po arabsku)"
-                                    // style={{ flex: 1 }}
                                     dir={"rtl"}
                                     lang={"ar"}
                                 />

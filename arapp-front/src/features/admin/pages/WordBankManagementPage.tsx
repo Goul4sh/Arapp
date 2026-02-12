@@ -10,20 +10,12 @@ import AddWordModal from "./components/modals/AddWordModal.tsx";
 
 interface Word {
     wordId: number;
-    // wordArabic: string;
     transliteration: string;
     translation: string;
     lemma: string;
     root: string;
     partOfSpeech: string;
 }
-
-// interface PaginatedResponse {
-//     content: Word[];
-//     totalPages: number;
-//     totalElements: number;
-//     number: number;
-// }
 
 
 function useDebounce<T>(value: T, delay: number): T {
@@ -55,7 +47,6 @@ function WordBankManagementPage() {
 
     const [editingWordId, setEditingWordId] = useState<number | null>(null);
     const [editingWordData, setEditingWordData] = useState<Omit<Word, 'wordId'>>({
-        // wordArabic: '',
         transliteration: '',
         translation: '',
         lemma: '',
@@ -78,7 +69,6 @@ function WordBankManagementPage() {
 
 
     const fetchWords = async () => {
-        // setIsLoading(true);
         try {
             const response = await api.get('/api/admin/dictionary', {
                 params: {
@@ -96,14 +86,12 @@ function WordBankManagementPage() {
         } catch (error) {
             console.error("Error fetching words:", error);
         } finally {
-            // setIsLoading(false);
         }
     }
 
     const startEditingWord = (word: Word) => {
         setEditingWordId(word.wordId);
         setEditingWordData({
-            // wordArabic: word.wordArabic || '',
             transliteration: word.transliteration || '',
             translation: word.translation || '',
             lemma: word.lemma || '',
@@ -115,7 +103,6 @@ function WordBankManagementPage() {
     const cancelEditingWord = () => {
         setEditingWordId(null);
         setEditingWordData({
-            // wordArabic: '',
             transliteration: '',
             translation: '',
             lemma: '',
@@ -154,7 +141,6 @@ function WordBankManagementPage() {
         if (!originalWord) return;
 
         const isDataChanged =
-            // originalWord.wordArabic !== editingWordData.wordArabic ||
             originalWord.transliteration !== editingWordData.transliteration ||
             originalWord.translation !== editingWordData.translation ||
             originalWord.lemma !== editingWordData.lemma ||

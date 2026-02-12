@@ -45,13 +45,8 @@
 }
 
 .adminCard:hover {
-    /*transform: translateY(-5px); !* Lekkie uniesienie *!*/
-    /*box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);*/
-    /*border-color: #e5e7eb;*/
-
 
     transform: translateY(-3px);
-    /*border-color: #4cae4f;*/
     box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 
 }

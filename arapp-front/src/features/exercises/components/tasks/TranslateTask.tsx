@@ -88,7 +88,6 @@ function TranslateTask({task}: { task: TranslateTaskType }) {
 
             <div className={styles.translateSourceContainer}>
                 <div className={styles.translateSource}>
-                    {isAnswerArabic ? "Polski" : "Arabski"}:
                 </div>
 
                 {task.textToTranslate && task.references ? (
@@ -102,11 +101,12 @@ function TranslateTask({task}: { task: TranslateTaskType }) {
                 )}
             </div>
 
-            <div className={styles.separator}/>
+            <div className={styles.separator}
+                 style = {{marginTop: '10px', marginBottom: '10px'}}
+            />
 
             <div className={styles.translateInputContainer}>
-                <div className={styles.translateInput}>
-                    {isAnswerArabic ? "Arabski" : "Polski"}:
+                <div className={styles.translateSource}>
                 </div>
                 <textarea
                     ref={textareaRef}

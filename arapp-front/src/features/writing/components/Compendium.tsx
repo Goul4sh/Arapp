@@ -19,8 +19,6 @@ function Compendium() {
     const [selectedItem, setSelectedItem] = useState<CompendiumEntryFull | null>(null);
 
     const [isLoading, setIsLoading] = useState(true);
-    // const [isLoadingDetail, setIsLoadingDetail] = useState(true);
-
 
     useEffect(() => {
         const fetchCompendiumData = async () => {
@@ -65,7 +63,6 @@ function Compendium() {
 
         if (!isUnlocked(entry)) return;
 
-        // setIsLoadingDetail(true);
         try {
             const response =
                 await api.get<CompendiumEntryDetailResponse>(`/api/compendium/${entry.id}`,
@@ -79,7 +76,6 @@ function Compendium() {
         } catch (error) {
             console.error("Błąd pobierania szczegółów wpisu", error);
         } finally {
-            // setIsLoadingDetail(false);
         }
     }
 
@@ -154,8 +150,6 @@ function Compendium() {
                             <h2>{activeTagName}</h2>
 
                         </div>
-
-                        {/*{isLoadingDetail && <div className={styles.loadingOverlay}>Pobieranie wpisów...</div>}*/}
 
                         <div className={styles.itemsGrid}>
                             {filteredEntries.map(item => {

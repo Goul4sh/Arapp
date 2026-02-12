@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +20,12 @@ import java.util.Set;
 
 public class CompendiumEntry {
 
-    public CompendiumEntry(String description, String title, String icon, String content, Long requiredLessonId, Set<CompendiumTag> tags) {
+    public CompendiumEntry(String description, String title, String icon, String content, Lesson requiredLesson, Set<CompendiumTag> tags) {
         this.description = description;
         this.title = title;
         this.icon = icon;
         this.content = content;
-        this.requiredLessonId = requiredLessonId;
+        this.requiredLesson = requiredLesson;
         this.tags = tags;
     }
 
@@ -38,7 +40,11 @@ public class CompendiumEntry {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private Long requiredLessonId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "required_lesson_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    private Lesson requiredLesson;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

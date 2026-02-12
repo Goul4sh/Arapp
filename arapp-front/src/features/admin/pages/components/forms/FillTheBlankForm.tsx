@@ -21,8 +21,6 @@ const FillTheBlankForm = ({onDataChange, initialData}: Props) => {
         onDataChange(formData)
     }, [formData, onDataChange])
 
-    //TODO dodać tutaj możliwość wyświetlania ikony.
-
     return (
         <div className={styles.formContainer}>
 

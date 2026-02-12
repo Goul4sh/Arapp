@@ -47,32 +47,38 @@ function AlphabetPath() {
 
                 ]);
                 console.log(" chapter data", chaptersResp.data);
+                console.log(" completeResp", completeResp.data);
 
                 const rawChapterData = chaptersResp.data.filter(ch => Array.isArray(ch.lessons) && ch.lessons.length > 0);
                 const completedIds = completeResp.data;
 
-                let previousLessonCompleted = true;
-
                 const processedChapters: ProcessedChapter[] = rawChapterData.map((chapter) => {
-
                     const processedLessons: ProcessedLesson[] = chapter.lessons
                         .map((lesson) => {
                             const orderIndex = Number(lesson.orderIndex ?? 0);
                             const isCompleted = completedIds.includes(Number(lesson.id));
-                            const isLocked = !previousLessonCompleted;
-
-                            if (!isCompleted) {
-                                previousLessonCompleted = false;
-                            }
 
                             return {
                                 ...lesson,
                                 orderIndex,
                                 isCompleted,
-                                isLocked
+                                isLocked: false
                             };
                         })
                         .sort((a, b) => a.orderIndex - b.orderIndex);
+                    
+                    let previousLessonCompleted = true;
+                    processedLessons.forEach((lesson, index) => {
+                        if (index === 0) {
+                            lesson.isLocked = false;
+                            previousLessonCompleted = lesson.isCompleted;
+                        } else {
+                            lesson.isLocked = !previousLessonCompleted;
+                            if (!lesson.isCompleted) {
+                                previousLessonCompleted = false;
+                            }
+                        }
+                    });
 
                     const chapterOrderIndex = Number(chapter.orderIndex ?? 0);
                     const isChapterLocked = processedLessons.length > 0 && processedLessons[0].isLocked;
@@ -213,7 +219,6 @@ function AlphabetPath() {
                                     `}
                                     >
                                         <div className={styles.lessonIcon}>
-                                            {/*{lesson.description || "link ftoa?"}*/}
                                             {lesson.icon && <FontAwesomeIcon icon={iconMap[lesson.icon] || faBook}/>}
 
                                         </div>

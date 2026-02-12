@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-//Uwaga! Na ten moment sciezka zawiera exercises zamiast tasks.
-// Bedzie to zmienione w przyszlosci, tak jak pozostale nazwy klas
-
 @RestController
 @RequestMapping("/api/exercises")
 @RequiredArgsConstructor

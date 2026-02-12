@@ -21,6 +21,7 @@ export interface InteractiveTextProps {
 }
 
 function InteractiveText({text, references} : InteractiveTextProps) {
+    const isArabic = /[\u0600-\u06FF]/.test(text);
 
     const parts = useMemo(() => {
 
@@ -62,7 +63,8 @@ function InteractiveText({text, references} : InteractiveTextProps) {
 
 
     return (
-        <div className={styles.interactiveTextContainer}>
+        <div className={styles.interactiveTextContainer}
+        dir = {isArabic ? "rtl" : "ltr"}>
             {parts}
         </div>
     )

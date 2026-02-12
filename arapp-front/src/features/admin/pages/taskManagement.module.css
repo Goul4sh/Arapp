@@ -213,7 +213,6 @@
 
 .errorMessage p {
 
-
     color: #ef4444 !important;
 
 }
@@ -287,16 +286,13 @@
 
 
 .tableIcon {
-
     display: flex;
     align-items: center;
     justify-content: center;
 
-
 }
 
 .translationInput {
-    /*width: 100%;*/
     padding: 8px 12px;
     border: 1px solid #d1d5db;
     border-radius: 6px;

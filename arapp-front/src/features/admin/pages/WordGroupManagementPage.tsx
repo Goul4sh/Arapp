@@ -33,11 +33,6 @@ import WordGroupSearchWordModal from "./components/modals/WordGroupSearchWordMod
     words?: Word[];
 }
 
-// interface WordGroupDetailResponse {
-//     id: number;
-//     words: Word[];
-// }
-
 function WordGroupManagement() {
     const [wordGroups, setWordGroups] = useState<WordGroup[]>([]);
     const [expandedGroupId, setExpandedGroupId] = useState<number | null>(null);

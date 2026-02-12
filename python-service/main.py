@@ -8,7 +8,6 @@ from contextlib import asynccontextmanager
 
 models = {}
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Ładowanie modeli CAMeL Tools...")
@@ -59,7 +58,6 @@ async def analyze_text(req: TextRequest):
 
     # Analiza słów w tekście
     disambiguated_result = mle.disambiguate(words)
-
     if not disambiguated_result:
         raise HTTPException(status_code=404, detail="Analysis failed")
 
@@ -107,6 +105,9 @@ async def analyze_text(req: TextRequest):
             root = data.get('root', 'unknown')
             if '#' in root:
                 root = ""
+
+            if root == "NTWS":
+                lemma = original
 
             pos = data.get('pos', 'unknown')
             diacritized = data.get('diac', original)

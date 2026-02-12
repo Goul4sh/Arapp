@@ -69,8 +69,6 @@ function FillInTheBlankTask({task}: { task: FillInTheBlankTaskType }) {
     };
 
     const renderSentence = () => {
-        // const inputWidth = `${Math.max(task.answer.length + 2, 4)}ch`;
-
         const parts = task.sentenceWithBlank.split('__');
 
         if (parts.length === 1) {

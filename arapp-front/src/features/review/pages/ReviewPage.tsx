@@ -21,7 +21,6 @@ function ReviewPage() {
 
     const [selectedGroup, setSelectedGroup] = useState<FlashcardsGroup | null>(null);
     const [flashcardGroups, setFlashcardGroups] = useState<FlashcardsGroup[]>([]);
-    // const [recentlyEncounteredWords, setRecentlyEncounteredWords] = useState<Word[]>([]);
     const [selectedGroupIndex, setSelectedGroupIndex] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     // Training mode oznacza, ćwiczone są wszystkie fiszki, a nie tylko te do powtórki

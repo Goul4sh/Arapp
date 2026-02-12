@@ -288,7 +288,6 @@ function Dashboard(): JSX.Element {
                                     </div>
                                 </div>
 
-                                {/*<div className={styles.separator}></div>*/}
                             </div>
 
 
@@ -332,8 +331,6 @@ function Dashboard(): JSX.Element {
                                                     <p className={styles.statText}>Powtórzone fiszki:</p>
                                                     <p className={styles.statValue}>{dailyDetails.flashcardsReviewed}</p>
                                                 </div>
-
-                                                {/*<div className={styles.separator}></div>*/}
 
                                             </div>
                                         ) : (

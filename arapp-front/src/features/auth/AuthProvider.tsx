@@ -3,7 +3,7 @@ import {AuthContext} from "./auth";
 import api from "./api.ts";
 
 export function AuthProvider({children}: { children: ReactNode }) {
-    const [user, setUser] = useState<{ id: string; name: string } | null>(null);
+    const [user, setUser] = useState<{ id: string; name: string; role: string } | null>(null);
     const [loading, setLoading] = useState(true);
 
     const logout = async () => {
@@ -13,7 +13,6 @@ export function AuthProvider({children}: { children: ReactNode }) {
             if (resp.status === 200 || resp.status === 204) {
                 setUser(null);
                 localStorage.removeItem("user");
-                window.location.reload();
             }
 
         } catch (error) {
@@ -25,13 +24,14 @@ export function AuthProvider({children}: { children: ReactNode }) {
     useEffect(() => {
         const fetchUser = async () => {
 
-            // if (user){}
-
             try {
                 const resp = await api.get("/api/auth/validate", {withCredentials: true});
-                setUser(resp.data);
+                const userData = resp.data;
+                setUser(userData);
+                localStorage.setItem("user", JSON.stringify(userData));
             } catch {
                 setUser(null);
+                localStorage.removeItem("user");
             } finally {
                 setLoading(false);
             }

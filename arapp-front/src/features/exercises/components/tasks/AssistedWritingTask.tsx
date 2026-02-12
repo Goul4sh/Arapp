@@ -78,7 +78,6 @@ function AssistedWritingTask({task}: { task: AssistedWritingTaskType }) {
         }
     };
 
-    // przycisk
     const handleCheck = () => {
         if (!isTaskCompleted || isSubmitted) return;
 
@@ -138,10 +137,8 @@ function AssistedWritingTask({task}: { task: AssistedWritingTaskType }) {
 
                     {task.svgPathStrokes.map((stroke, index) => {
 
-
                             //dawne kreski
                             if (index < activeStrokeIndex) {
-
                                 return (
                                     <path
                                         key={index}
@@ -170,7 +167,6 @@ function AssistedWritingTask({task}: { task: AssistedWritingTaskType }) {
                                     />
                                 );
                             }
-
 
                             return (
 

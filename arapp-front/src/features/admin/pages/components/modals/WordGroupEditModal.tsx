@@ -119,12 +119,6 @@ function WordGroupEditModal({isOpen, onClose, onSave, group}: WordGroupEditModal
 
                         />
 
-                        {/*<input*/}
-                        {/*    type="text"*/}
-                        {/*    value={formData.icon}*/}
-                        {/*    onChange={(e) => setFormData({...formData, icon: e.target.value})}*/}
-                        {/*    placeholder="Brak ikony"*/}
-                        {/*/>*/}
                     </div>
 
                     <div className={styles.buttonsContainer}>
@@ -166,9 +160,6 @@ function WordGroupEditModal({isOpen, onClose, onSave, group}: WordGroupEditModal
                                     ) : null
                                 }
 
-                                {/*<FontAwesomeIcon*/}
-                                {/*    icon={formData.icon ? ['fas', formData.icon] as IconProp : ['fas', 'book'] as IconProp}*/}
-                                {/*/>*/}
                             </div>
 
                         </div>
@@ -176,7 +167,6 @@ function WordGroupEditModal({isOpen, onClose, onSave, group}: WordGroupEditModal
                         <div className={cardStyles.wordCardContent}>
 
                             <h3 className={cardStyles.groupName}>{formData.name}</h3>
-                            {/*<p className={cardStyles.groupCategory}>{group.category}</p>*/}
                             <div className={cardStyles.wordCount}>
                                 <span>0 słów</span>
                             </div>

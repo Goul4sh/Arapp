@@ -6,7 +6,6 @@ import Dashboard from "../features/home/pages/Dashboard.tsx";
 
 import ReviewPage from "../features/review/pages/ReviewPage.tsx";
 import ProtectedDashboardLayout from '../common/layouts/ProtectedDashboardLayout';
-import ExercisePlaylist from "../features/exercises/pages/ExercisePlaylist.tsx";
 import ProtectedExerciseLayout from "../common/layouts/ProtectedExerciseLayout.tsx";
 import ExerciseWrapperPage from "../features/exercises/pages/ExerciseWrapperPage.tsx";
 import ReviewPracticePage from "../features/review/pages/ReviewPracticePage.tsx";
@@ -34,7 +33,6 @@ function App() {
                 <Route path="/signup" element={<Signup/>}/>
                 <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
                 <Route path="/reset-password" element={<ResetPasswordPage/>}/>
-                {/*TODO zmienic linki do stron na pasujace do zawartosci */}
 
                 {/*Trasy dostepne po logowaniu, uzywajace widoku dashboard (header)*/}
                 <Route element={<ProtectedDashboardLayout/>}>
@@ -42,7 +40,6 @@ function App() {
                     <Route path="/review" element={<ReviewPage/>}/>
                     <Route path="/letters" element={<WritingCoursePage/>}/>
                     <Route path="/words" element={<WordBank/>}/>
-                    <Route path="/exercises" element={<ExercisePlaylist/>}/>
                 </Route>
 
                 {/*Trasa pozwalająca na wykonywanie ćwiczeń zależnie od id*/}

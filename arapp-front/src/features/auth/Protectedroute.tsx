@@ -1,5 +1,5 @@
-import { Navigate } from "react-router-dom";
-import { useAuth } from "./auth";
+import {Navigate} from "react-router-dom";
+import {useAuth} from "./auth";
 import type {JSX} from "react";
 
 interface ProtectedRouteProps {
@@ -7,16 +7,17 @@ interface ProtectedRouteProps {
     requiredRole?: 'ADMIN' | 'USER';
 }
 
-const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
-    const { user , loading} = useAuth();
-console.log("Jestem w protectedRoute, user:", user);
-    if (loading) return <div></div>;
+const ProtectedRoute = ({children, requiredRole}: ProtectedRouteProps) => {
+    const {user, loading} = useAuth();
+    if (loading){
+        return <div>Ładowanie...</div>;
+    }
     if (!user) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/login" replace/>;
     }
 
     if (requiredRole && user.role !== requiredRole) {
-        return <Navigate to={user.role === 'ADMIN' ? "/admin/dashboard" : "/dashboard"} replace />;
+        return <Navigate to={user.role === 'ADMIN' ? "/admin/dashboard" : "/dashboard"} replace/>;
     }
 
     return children;

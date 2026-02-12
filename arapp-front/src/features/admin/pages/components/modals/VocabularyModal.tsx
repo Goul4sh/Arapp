@@ -67,11 +67,13 @@ function VocabularyModal({isOpen, onClose, onSave, vocabularyItems}: ModalProps)
         }
 
         onSave(items);
+        setItems([]);
         onClose();
     }
 
 
     const handleClose = () => {
+        setItems([]);
         onClose();
     }
 
@@ -127,7 +129,6 @@ function VocabularyModal({isOpen, onClose, onSave, vocabularyItems}: ModalProps)
                                     />
                                 </td>
                                 <td>
-                                    {/*//TODO poprawic na kolory ktorych gdzies uzywam*/}
                                     <div className={styles.tableIcon}>
 
                                         {item.wordId > 0 ? (

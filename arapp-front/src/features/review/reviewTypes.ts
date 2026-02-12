@@ -5,17 +5,6 @@ export interface FlashcardItem {
     nextReviewDate: string;
 }
 
-// interface Word {
-//     wordId: number;
-//     // wordArabic: string;
-//     transliteration: string;
-//     translation: string;
-//     lemma: string;
-//     root: string;
-//     partOfSpeech: string;
-// }
-
-
 export interface Word {
     id: number;
     wordArabic: string;
@@ -23,14 +12,6 @@ export interface Word {
     wordTranslation: string;
     isInUserFlashcards: boolean;
 }
-
-// export interface TemporaryWord {
-//
-//     wordArabic: string;
-//     wordTranslation: string;
-//     Transliteration: string;
-//
-// }
 
 export interface FlashcardsGroup {
 

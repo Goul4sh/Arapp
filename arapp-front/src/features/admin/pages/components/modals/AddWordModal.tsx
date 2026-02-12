@@ -21,18 +21,6 @@ interface ModalProps {
 
 }
 
-
-// type VocabularyItem = {
-//
-//     original: string;
-//     lemma: string,
-//     partOfSpeech: string,
-//     root: string,
-//     wordId: number,
-//     translation: string
-//
-// }
-
 function AddWordModal({isOpen, onClose, onSave}: ModalProps) {
 
     const [analysisMessage, setAnalysisMessage] = useState<string>('');

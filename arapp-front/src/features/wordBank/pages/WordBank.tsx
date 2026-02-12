@@ -37,7 +37,6 @@ function WordBank() {
 
     const [wordGroups, setWordGroups] = useState<WordGroup[]>([]);
     const [selectedGroupWords, setSelectedGroupWords] = useState<Word[]>([]);
-    // const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
     const [initialRecentWords, setInitialRecentWords] = useState<Word[]>([]);

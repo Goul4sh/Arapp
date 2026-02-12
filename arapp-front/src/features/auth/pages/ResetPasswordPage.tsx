@@ -12,7 +12,6 @@ function ResetPasswordPage() {
 
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    // const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
 
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
     const [errorMessage, setErrorMessage] = useState<string | null>(null);

@@ -1,15 +1,12 @@
 import styles from "./adminGlobalStyles.module.css"
 import localStyles from "./taskManagement.module.css"
+import type {Task} from "../../exercises/taskTypes.ts";
 import * as TaskTypes from "../../exercises/taskTypes.ts"
 import {useEffect, useState} from "react"
 import api from "../../auth/api.ts";
 import type {Chapter} from "../../writing/writingTypes.ts";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {
-    faChevronDown, faChevronRight,
-    faListCheck, faPlus, faTrash,
-} from "@fortawesome/free-solid-svg-icons";
-import type {Task} from "../../exercises/taskTypes.ts";
+import {faChevronDown, faChevronRight, faListCheck, faPlus, faTrash,} from "@fortawesome/free-solid-svg-icons";
 import {TaskPreviewRenderer} from "./components/taskCreation/TaskPreviewRenderer.tsx";
 import {TaskCreator} from "./components/taskCreation/TaskCreator.tsx"
 import VocabularyModal from "./components/modals/VocabularyModal.tsx";
@@ -39,8 +36,6 @@ type VocabularyItem = {
     lemma: string,
     partOfSpeech: string,
     root: string,
-    // diacritic: string,
-    // String definition,
     wordId: number,
     translation: string
     isIncluded: boolean;
@@ -268,7 +263,11 @@ function TaskManagementPage() {
                 const task = taskData as Partial<TaskTypes.FillInTheBlankTaskType>;
                 return `${task.sentenceWithBlank || ''}`;
             }
-            case 'match-pairs':
+            case 'match-pairs': {
+                const task = taskData as Partial<TaskTypes.MatchPairsTaskType>;
+                return task.pairs ? Object.values(task.pairs).join(' ') : '';
+            }
+
             case 'translate': {
                 const task = taskData as Partial<TaskTypes.TranslateTaskType>;
                 return `${task.textToTranslate || ''}`;
@@ -284,13 +283,11 @@ function TaskManagementPage() {
         try {
 
             const textForAnalysis = extractTextForAnalysis(taskData);
-            // const payload = {text: taskData.description || ""};
             const response = await
                 api.post('/api/admin/dictionary/analyze', {text: textForAnalysis},
                     {withCredentials: true});
 
             console.log("Otrzymana analiza słownictwa:", response.data);
-            // setTaskVocabAnalysis(response.data);
             return response.data;
 
         } catch (error) {
@@ -641,7 +638,6 @@ function TaskManagementPage() {
                                                         </div>
                                                     ) : (
                                                         lessonTasks[lesson.id]?.map((task, index) => {
-                                                                // console.log("Renderuję task:", task);
                                                                 return (
 
                                                                     <div

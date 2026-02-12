@@ -24,7 +24,6 @@
 .formInput,
 .formTextarea,
 .formSelect {
-    /*width: 100%;*/
     padding: 10px 15px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
@@ -80,14 +79,6 @@
     flex: 1;
 }
 
-.formActions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #e5e7eb;
-}
 
 .formButton {
     padding: 10px 20px;
@@ -97,52 +88,6 @@
     cursor: pointer;
     transition: all 0.2s;
     border: none;
-}
-
-.primaryButton {
-    background-color: #4cae4f;
-    color: white;
-    box-shadow: 0 2px 4px rgba(76, 174, 79, 0.2);
-}
-
-.primaryButton:hover {
-    background-color: #3d8b3d;
-    box-shadow: 0 4px 8px rgba(76, 174, 79, 0.3);
-}
-
-.primaryButton:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background-color: #cccccc;
-    color: #666666;
-}
-
-.secondaryButton {
-    background-color: #ffffff;
-    color: #374151;
-    border: 1px solid #d1d5db;
-}
-
-.secondaryButton:hover {
-    background-color: #f9fafb;
-    border-color: #9ca3af;
-}
-
-.deleteButton {
-    background-color: #fee2e2;
-    color: #ef4444;
-    border: 1px solid #fecaca;
-}
-
-.deleteButton:hover {
-    background-color: #fecaca;
-    border-color: #ef4444;
-}
-
-.errorMessage {
-    color: #ef4444;
-    font-size: 0.85rem;
-    margin-top: 4px;
 }
 
 .helperText {
@@ -205,7 +150,6 @@
     background: none;
     border: 2px dashed #d1d5db;
     color: #6b7280;
-    /*width: 100%;*/
     padding: 10px;
     border-radius: 8px;
     cursor: pointer;

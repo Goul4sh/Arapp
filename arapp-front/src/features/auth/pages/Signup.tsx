@@ -13,9 +13,7 @@ function Signup(): JSX.Element {
     const [confirmPassword, setConfirmPassword] = React.useState('');
     const [error, setError] = React.useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-
-    // const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+    const [successMessage, setSuccessMessage] = useState<boolean>(false);
 
     const validatePassword = (pwd: string): { isValid: boolean; errors: string[] } => {
         const errors: string[] = [];
@@ -48,6 +46,7 @@ function Signup(): JSX.Element {
         event.preventDefault();
         setError('');
         setErrorMessage(null);
+        setSuccessMessage(null);
 
 
         if (password !== confirmPassword) {
@@ -62,18 +61,13 @@ function Signup(): JSX.Element {
         }
 
         try {
-            console.log('Signup form submitted');
-
             const resp = await api.post("/api/auth/register", {email, password, username}, {withCredentials: true});
-
             if (resp.status === 201) {
-                console.log("User created successfully");
-
-                navigate("/login");
-
+                setSuccessMessage(true)
+                setTimeout(() => navigate("/login"), 5500);
             }
 
-        } catch (error : unknown) {
+        } catch (error: unknown) {
 
             if (error instanceof Error && 'response' in error) {
                 const axiosError = error as { response?: { data?: { message?: string }; status?: number } };
@@ -89,7 +83,6 @@ function Signup(): JSX.Element {
             } else {
                 setErrorMessage("Wystąpił nieoczekiwany błąd.");
             }
-
         }
 
     }
@@ -110,8 +103,6 @@ function Signup(): JSX.Element {
                 <form className={styles.signupForm} onSubmit={handleSubmit}>
 
                     <div className={styles.emailContainer}>
-                        {/*<label htmlFor="email">Email:</label>*/}
-
                         <input type="email"
                                id="email"
                                name="email"
@@ -124,7 +115,6 @@ function Signup(): JSX.Element {
                     </div>
 
                     <div className={styles.usernameContainer}>
-                        {/*<label htmlFor="username">Nazwa użytkownika:</label>*/}
                         <input type="text"
                                id="username"
                                name="username"
@@ -136,7 +126,6 @@ function Signup(): JSX.Element {
                     </div>
 
                     <div className={styles.passwordContainer}>
-                        {/*<label htmlFor="password">Hasło:</label>*/}
                         <input type="password"
                                id="password"
                                name="password"
@@ -151,7 +140,6 @@ function Signup(): JSX.Element {
                     {error && <div className={styles.error}>{error}</div>}
 
                     <div className={styles.confirmPasswordContainer}>
-                        {/*<label htmlFor="confirmPassword">Potwierdź Hasło:</label>*/}
                         <input type="password"
                                id="confirmPassword"
                                name="confirmPassword"
@@ -167,23 +155,23 @@ function Signup(): JSX.Element {
 
                     {password && (
                         <div className={styles.passwordRequirements}>
-                            <p style={{ fontSize: '0.85rem', marginBottom: '0.5rem', color: '#666' }}>
+                            <p style={{fontSize: '0.85rem', marginBottom: '0.5rem', color: '#666'}}>
                                 Wymagania dotyczące hasła:
                             </p>
-                            <ul style={{ fontSize: '0.8rem', margin: 0, paddingLeft: '1.5rem' }}>
-                                <li style={{ color: password.length >= 8 ? '#4cae4f' : '#e74c3c' }}>
+                            <ul style={{fontSize: '0.8rem', margin: 0, paddingLeft: '1.5rem'}}>
+                                <li style={{color: password.length >= 8 ? '#4cae4f' : '#e74c3c'}}>
                                     Co najmniej 8 znaków
                                 </li>
-                                <li style={{ color: /[A-Z]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
+                                <li style={{color: /[A-Z]/.test(password) ? '#4cae4f' : '#e74c3c'}}>
                                     Przynajmniej jedna wielka litera
                                 </li>
-                                <li style={{ color: /[a-z]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
+                                <li style={{color: /[a-z]/.test(password) ? '#4cae4f' : '#e74c3c'}}>
                                     Przynajmniej jedna mała litera
                                 </li>
-                                <li style={{ color: /[0-9]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
+                                <li style={{color: /[0-9]/.test(password) ? '#4cae4f' : '#e74c3c'}}>
                                     Przynajmniej jedna cyfra
                                 </li>
-                                <li style={{ color: /[!@#$%^&*(),.?":{}|<>]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
+                                <li style={{color: /[!@#$%^&*(),.?":{}|<>]/.test(password) ? '#4cae4f' : '#e74c3c'}}>
                                     Przynajmniej jeden znak specjalny (!@#$%^&*...)
                                 </li>
                             </ul>
@@ -193,7 +181,7 @@ function Signup(): JSX.Element {
                     <div className={styles.submitContainer}>
 
                         {errorMessage && (
-                            <div style={{ color: 'red', marginBottom: '15px',marginTop: '0px' }}>
+                            <div style={{color: 'red', marginBottom: '15px', marginTop: '0px'}}>
                                 {errorMessage}
                             </div>
                         )}
@@ -209,6 +197,14 @@ function Signup(): JSX.Element {
 
                 </form>
 
+                {successMessage && (
+                    <div className={styles.successMessage}>
+                        <p>Link aktywacyjny został wysłany na adres ${email}.</p>
+                        <p>Sprawdź swoją skrzynkę pocztową i kliknij w link, aby aktywować konto.</p>
+                        <p>Za chwilę zostaniesz przekierowany do strony logowania.</p>
+                    </div>)
+                }
+
                 <div className={styles.separator}></div>
 
                 <button type="button" className={`${styles.button} ${styles.google}`} onClick={handleGoogleSignIn}>
@@ -218,12 +214,8 @@ function Signup(): JSX.Element {
 
                 <div className={styles.register}>
                     <p>Masz już konto? </p> <Link to={"/login"}>Zaloguj się </Link>
-
-
                 </div>
-
             </div>
-
         </>
     )
 }

@@ -50,7 +50,6 @@ function AdminDashboard(): JSX.Element {
         <div className={styles.dashboardPage}>
             <div className={styles.welcomeContainer}>
                 <h1 className={styles.welcomeText}>Panel administratora</h1>
-                {/*<p className={styles.subtitle }>Wybierz moduł, aby zarządzać treścią.</p>*/}
             </div>
 
             <div className={styles.gridContainer}>

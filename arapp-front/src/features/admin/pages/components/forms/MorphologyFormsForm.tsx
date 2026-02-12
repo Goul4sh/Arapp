@@ -72,7 +72,6 @@ const MorphologyFormsForm = ({onDataChange, initialData}: Props) => {
         }
     }
 
-    //TODO po tym poprawic koncowy ekran w fiszkach
     //TODO a po tym poprawic losowanie slow przy generacji zadan
 
     return (

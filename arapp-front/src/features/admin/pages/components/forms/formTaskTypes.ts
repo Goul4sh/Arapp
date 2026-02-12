@@ -85,21 +85,6 @@ export interface TranslateFormType extends BaseTask{
     translatedText: string;
 }
 
-// export interface AssistedWritingTaskType {
-//     type: 'writing-assisted';
-//     description: string;
-//     svgPathStrokes: string[];
-//     viewBox: string;
-// }
-//
-// // Work in progress!
-//
-// export interface FreehandWritingTaskType {
-//     type: 'writing-freehand';
-//     description: string;
-//     strokes: Array<Array<{ x: number; y: number }>>;
-// }
-
 export type Task =
   (  ChooseOneFormType
     | MultipleChoiceFormType
@@ -108,6 +93,4 @@ export type Task =
     | MorphologyFormType
     | MorphologyPartsFormType
     | TheoryFormType
-    // | AssistedWritingFormType
-    // | FreehandWritingFormType
       )

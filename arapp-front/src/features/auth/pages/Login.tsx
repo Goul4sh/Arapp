@@ -80,8 +80,6 @@ function Login(): JSX.Element {
                 <form className={styles.loginForm} onSubmit={handleSubmit}>
 
                     <div className={styles.emailContainer}>
-                        {/*<label htmlFor="email">Email:</label>*/}
-
                         <input type="email"
                                id="email"
                                name="email"
@@ -93,7 +91,6 @@ function Login(): JSX.Element {
                                onChange={(e) => setEmail(e.target.value)}/>
                     </div>
                     <div className={styles.passwordContainer}>
-                        {/*<label htmlFor="password">Hasło:</label>*/}
                         <input type="password"
                                id="password"
                                name="password"

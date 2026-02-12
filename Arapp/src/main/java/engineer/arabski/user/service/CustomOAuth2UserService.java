@@ -25,15 +25,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-
-        ////
         Map<String, Object> attributes = oAuth2User.getAttributes();
         attributes.forEach((key, value) -> {
             System.out.println(key + " = " + value);
         });
 
         userService.processOAuthPostLogin(oAuth2User);
-        ////
 
         return oAuth2User;
     }

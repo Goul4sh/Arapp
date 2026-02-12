@@ -2,9 +2,6 @@ import {Link} from "react-router-dom";
 import styles from './Home.module.css'
 import type {JSX} from "react";
 
-
-//TODO poprawic pierwszy widok, moze cos dodac
-
 function Home(): JSX.Element {
     return (
         <>

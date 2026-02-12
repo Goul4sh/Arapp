@@ -6,8 +6,10 @@ import engineer.arabski.languageProcessing.model.DictionaryWord;
 import engineer.arabski.languageProcessing.service.DictionaryService;
 import engineer.arabski.lesson.model.CompendiumEntry;
 import engineer.arabski.lesson.model.CompendiumTag;
+import engineer.arabski.lesson.model.Lesson;
 import engineer.arabski.lesson.repository.CompendiumRepository;
 import engineer.arabski.lesson.service.CompendiumTagService;
+import engineer.arabski.lesson.service.LessonService;
 import engineer.arabski.task.dto.*;
 import engineer.arabski.task.dto.vocabulary.EnrichedTaskRequest;
 import engineer.arabski.task.dto.vocabulary.LinkedVocabularyRequest;
@@ -28,6 +30,7 @@ public class TaskService {
     private final DictionaryService dictionaryService;
     private final CompendiumRepository compendiumRepository;
     private final CompendiumTagService compendiumTagService;
+    private final LessonService lessonService;
 
 
     public Task addTask(TaskData taskData) {
@@ -73,7 +76,11 @@ public class TaskService {
             linkedEntry.setContent(theoryData.compendiumContent());
             linkedEntry.setIcon(theoryData.compendiumIcon());
             linkedEntry.setDescription(theoryData.description());
-            linkedEntry.setRequiredLessonId(theoryData.requiredLessonId());
+
+            if (theoryData.requiredLessonId() != null && theoryData.requiredLessonId() > 0) {
+                Lesson lesson = lessonService.findByIdEntityOrNull(theoryData.requiredLessonId());
+                linkedEntry.setRequiredLesson(lesson);
+            }
 
             if (theoryData.tagNames() != null && !theoryData.tagNames().isEmpty()) {
                 Set<CompendiumTag> tags = compendiumTagService.getAllByName(theoryData.tagNames());

@@ -59,7 +59,6 @@ export const TaskCreator = ({task, onSave, onDataChange, onCancel}: Props) => {
             case "multiple-choice":
                 return <MultipleChoiceForm onDataChange={handleFormChange} key={task.id} initialData={localTaskData}/>
             case "fill-in-the-blank":
-                //Nie wyswietla miejsca na input
                 return <FillTheBlankForm onDataChange={handleFormChange} key={task.id} initialData={localTaskData}/>
             case "match-pairs":
                 return <MatchPairsForm onDataChange={handleFormChange} key={task.id} initialData={localTaskData}/>

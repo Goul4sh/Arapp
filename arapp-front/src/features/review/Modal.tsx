@@ -36,7 +36,6 @@ function Modal({isOpen, onClose, title, children, headerClassName}: ModalProps) 
             <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                 <div className={`${styles.modalHeader} ${headerClassName || ''}`}>
 
-                    {/*<h2 className={styles.modalTitle}>{title}</h2>*/}
                     <button className={styles.closeButton} onClick={onClose}>&times;</button>
                 </div>
                 <div className={styles.modalBody}>

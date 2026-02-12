@@ -1,40 +1,40 @@
-/* InteractiveText.module.css */
-
-.textContainer {
-    font-family: 'Amiri', serif; /* Ważne dla arabskiego */
-    font-size: 1.8rem;
-    line-height: 2.2; /* Większa linia, żeby tooltipy się mieściły */
-    color: #374151;
+.interactiveTextContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
 }
 
 .wordWrapper {
-    position: relative; /* To jest kotwica dla tooltipa (absolute) */
+    position: relative;
     display: inline-block;
     cursor: pointer;
+    font-size: 3rem;
+    line-height: 2.2;
+    font-family: "Noto Sans Arabic", serif;
+
 }
 
 .highlightableWord {
     transition: all 0.2s;
-    border-bottom: 2px solid transparent;
+    border-bottom: 2px dotted #9ca3af;
     padding: 0 2px;
+    cursor: pointer;
 }
 
-/* Hover effect na słowo */
-.wordWrapper:hover .highlightableWord {
-    background-color: #e0f2fe; /* Delikatny niebieski */
-    border-bottom-color: #0ea5e9;
-    color: #0284c7;
-    border-radius: 4px;
+.highlightableWord:hover {
+    color: #2563eb;
+
 }
 
-/* Tooltip - domyślnie ukryty */
+
+
 .tooltip {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    bottom: 120%; /* Nad słowem */
+    bottom: 75%;
     left: 50%;
-    transform: translateX(-50%); /* Wyśrodkowanie */
+    transform: translateX(-50%);
 
     width: max-content;
     min-width: 120px;
@@ -49,15 +49,18 @@
 
     transition: opacity 0.2s ease-in-out, transform 0.2s;
 
-    /* Reset kierunku tekstu w tooltipie na LTR (polski) */
     direction: ltr;
     text-align: center;
-    font-family: 'Inter', sans-serif; /* Powrót do fontu UI */
+    font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
     line-height: 1.4;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
 }
 
-/* Mały trójkącik na dole dymka */
 .tooltip::after {
     content: "";
     position: absolute;
@@ -69,25 +72,32 @@
     border-color: #ffffff transparent transparent transparent;
 }
 
-/* Pokaż tooltip po najechaniu */
 .wordWrapper:hover .tooltip {
     visibility: visible;
     opacity: 1;
-    bottom: 110%; /* Lekka animacja w górę */
+    bottom: 75%;
 }
 
-/* Wnętrze tooltipa */
 .tooltipHeader {
     font-weight: 700;
     margin-bottom: 4px;
     color: #111827;
 }
 
-.tooltipMeta {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-bottom: 8px;
-    font-style: italic;
+
+.arabicLemma {
+    font-family: "Noto Sans Arabic", serif;
+    font-weight: normal;
+
+}
+
+.tooltipLemma {
+    display: flex;
+    flex-direction: row;
+    font-size: 1rem;
+    gap : 5px;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
 .addBtn {

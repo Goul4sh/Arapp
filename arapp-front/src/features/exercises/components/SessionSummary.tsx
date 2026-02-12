@@ -11,14 +11,6 @@ const formatTime = (seconds: number) => {
     return `${minutes}m ${seconds % 60}s`;
 };
 
-interface Word {
-    id: number;
-    wordArabic: string;
-    Transliteration: string;
-    wordTranslation: string;
-    isInUserFlashcards: boolean;
-}
-
 const SessionSummary = ({
                             correct,
                             incorrect,
@@ -44,43 +36,6 @@ const SessionSummary = ({
         isInUserFlashcards: ref.hasFlashcard,
         Transliteration: ref.transliteration
     })) || [];
-
-    // const handleAddToFlashcards = async (wordId: number) => {
-    //
-    //     setWords(
-    //         words.map(w =>
-    //             w.id === wordId ? {...w, isInUserFlashcards: true} : w)
-    //     )
-    //
-    //     try {
-    //         await api.post(`/api/flashcards`, {word_id: wordId}, {withCredentials: true})
-    //         // onFlashcardUpdate?.(wordId, true);
-    //         console.log(`Dodano słowo o ID ${wordId} do fiszek użytkownika.`);
-    //     } catch (error) {
-    //         console.error("Błąd podczas dodawania słowa do fiszek:", error);
-    //     }
-    //
-    // }
-    //
-    // const handleRemoveFromFlashcards = async (wordId: number) => {
-    //
-    //     setWords(
-    //         words.map(w =>
-    //             w.id === wordId ? {...w, isInUserFlashcards: false} : w)
-    //     )
-    //
-    //     try {
-    //         await api.delete(`/api/flashcards/${wordId}/word`, {withCredentials: true})
-    //         // onFlashcardUpdate?.(wordId, false);
-    //     } catch (error) {
-    //         console.error("Błąd podczas usuwania słowa z fiszek:", error);
-    //         setWords(prevWords =>
-    //             prevWords.map(w =>
-    //                 w.id === wordId ? {...w, isInUserFlashcards: true} : w)
-    //         );
-    //     }
-    //     console.log(`Usunięto słowo o ID ${wordId} z fiszek użytkownika.`);
-    // }
 
     const { words, handleAddToFlashcards, handleRemoveFromFlashcards } = useFlashcardActions(initialWords);
 
@@ -137,7 +92,6 @@ const SessionSummary = ({
                     Kontynuuj
                 </button>
             </div>
-
 
         </div>
     );

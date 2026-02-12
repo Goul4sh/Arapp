@@ -1,32 +1,24 @@
 
 export interface BaseTask {
-    // id: string;
     id: number;
     type: string;
     description: string;
     references?: any;
 }
 
-//Uwaga ! możliwe ze bedzie trzeba zmienic nazwy atrybutow, aby zgadzaly sie z jsonem z backendu
-
 export interface ChooseOneTaskType extends BaseTask {
-    // id: number;
     type: 'choose-one';
     decoyAnswers: string[];
     answer: string;
 }
 
 export interface MultipleChoiceTaskType extends BaseTask {
-    // id: number;
-
     type: 'multiple-choice';
     decoyAnswers: string[];
     answers: string[];
 }
 
 export interface FillInTheBlankTaskType extends BaseTask {
-    // id: number;
-
     type: 'fill-in-the-blank';
     translatedSentence: string;
     sentenceWithBlank: string;
@@ -34,15 +26,11 @@ export interface FillInTheBlankTaskType extends BaseTask {
 }
 
 export interface MatchPairsTaskType extends BaseTask {
-    // id: number;
-
     type: 'match-pairs';
     pairs: Record<string, string>;
 }
 
 export interface TheoryTaskType extends BaseTask {
-    // id: number;
-
     type: 'theory';
     content: string;
     createCompendiumEntry?: boolean;
@@ -55,8 +43,6 @@ export interface TheoryTaskType extends BaseTask {
 }
 
 export interface MorphologyPartsTaskType extends BaseTask {
-    // id: number;
-
     type: 'morphology-parts';
     question: string;
     correctOrder : string[];
@@ -71,8 +57,6 @@ export interface MorphologySegment {
 }
 
 export interface MorphologyFormTaskType extends BaseTask {
-    // id: number;
-
     type: 'morphology-form';
     question: string;
     steps: MorphologyStep[];
@@ -94,22 +78,10 @@ export interface MorphologyOption {
 
 
 export interface AssistedWritingTaskType extends BaseTask{
-    // id: number;
-
     type: 'writing-assisted';
     description: string;
     svgPathStrokes: string[];
     viewBox: string;
-}
-
-// Work in progress!
-
-export interface FreehandWritingTaskType extends BaseTask{
-    // id: number;
-
-    type: 'writing-freehand';
-    description: string;
-    strokes: Array<Array<{ x: number; y: number }>>;
 }
 
 export interface TranslateTaskType extends BaseTask {
@@ -127,8 +99,6 @@ export type Task =
     | MorphologyFormTaskType
     | MorphologyPartsTaskType
     | TheoryTaskType
-    | AssistedWritingTaskType
-    | FreehandWritingTaskType)
+    | AssistedWritingTaskType)
     | TranslateTaskType
-    // & { id: number }
     ;

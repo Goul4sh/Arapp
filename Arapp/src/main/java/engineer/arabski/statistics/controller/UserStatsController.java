@@ -16,8 +16,6 @@ import java.time.LocalDate;
 @RequestMapping("/api/statistics")
 public class UserStatsController {
 
-    //TODO przetestowac
-
     private final StatsService statsService;
 
     public UserStatsController(StatsService statsService) {

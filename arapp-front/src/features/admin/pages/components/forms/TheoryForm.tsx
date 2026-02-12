@@ -116,12 +116,11 @@ function TheoryForm({initialData, onDataChange}: Props) {
 
             <hr style={{border: '0', borderTop: '1px solid #e5e7eb', margin: '10px 0'}}/>
 
-            {formData.id > 0 && (
+            {formData.compendiumEntryId > 0 && (
                 <div className={styles.formSection}>
 
                     <label
                         htmlFor="ompendiumEntryNotice"
-                        // className={styles.checkboxLabel}
                         style={{fontSize: '1rem', fontWeight: 600, marginLeft: '10px'}}
                     >
                         <FontAwesomeIcon icon={faBook} style={{

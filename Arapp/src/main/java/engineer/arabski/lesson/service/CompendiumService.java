@@ -6,6 +6,7 @@ import engineer.arabski.lesson.model.CompendiumTag;
 import engineer.arabski.lesson.model.Lesson;
 import engineer.arabski.lesson.repository.CompendiumRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -16,17 +17,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class CompendiumService {
 
 
     private final CompendiumRepository compendiumRepository;
-
     private final CompendiumTagService compendiumTagService;
-
-    public CompendiumService(CompendiumRepository compendiumRepository, CompendiumTagService compendiumTagService) {
-        this.compendiumRepository = compendiumRepository;
-        this.compendiumTagService = compendiumTagService;
-    }
+    private final LessonService lessonService;
 
     public CompendiumTagDTO tagToResponse(CompendiumTag tag) {
         return new CompendiumTagDTO(
@@ -41,7 +38,7 @@ public class CompendiumService {
                 entry.getTitle(),
                 entry.getIcon(),
                 entry.getDescription(),
-                entry.getRequiredLessonId(),
+                entry.getRequiredLesson() != null ? entry.getRequiredLesson().getId() : null,
                 entry.getTags().stream().map(this::tagToResponse).toList(),
                 entry.isPublished()
         );
@@ -62,14 +59,16 @@ public class CompendiumService {
         compendiumEntry.setIcon(request.subtitle()); // Uwaga! Ten atrybut moze zostac zmieniony w przyszlosci
         compendiumEntry.setDescription(request.description());
         compendiumEntry.setContent(request.content());
-        compendiumEntry.setRequiredLessonId(request.requiredLessonId());
-
-        // tagi obslugiwane sa poza ta funkjca
+//        compendiumEntry.setRequiredLessonId(request.requiredLessonId());
+        if (request.requiredLessonId() != null && request.requiredLessonId() > 0) {
+            Lesson lesson = lessonService.findByIdEntityOrNull(request.requiredLessonId());
+            compendiumEntry.setRequiredLesson(lesson);
+        }
 
         return compendiumEntry;
     }
 
-    @CacheEvict(value = "compendium_items", key = "#id")
+    @CacheEvict(value = "compendium_items", allEntries = true)
     public void editCompendiumItem(Long id, CompendiumRequest request) {
 
         CompendiumEntry entry = compendiumRepository.findById(id)
@@ -88,17 +87,23 @@ public class CompendiumService {
             entry.setContent(request.content());
         }
         if (request.requiredLessonId() != null) {
-            entry.setRequiredLessonId(request.requiredLessonId());
+            if (request.requiredLessonId() > 0) {
+                Lesson lesson = lessonService.findByIdEntityOrNull(request.requiredLessonId());
+                entry.setRequiredLesson(lesson);
+            } else {
+                entry.setRequiredLesson(null);
+            }
         }
 
         compendiumRepository.save(entry);
     }
 
-    @CacheEvict(value = "compendium_items", key = "#id")
+    @CacheEvict(value = "compendium_items", allEntries = true)
     public void deleteCompendiumItem(Long id) {
         compendiumRepository.deleteById(id);
     }
 
+    @CacheEvict(value = "compendium_items", allEntries = true)
     @Transactional
     public void addCompendiumItem(CompendiumRequest request) {
 
@@ -140,6 +145,7 @@ public class CompendiumService {
                 .orElse(null);
     }
 
+    @CacheEvict(value = "compendium_items", allEntries = true)
     public void publishEntry(Long entryId, boolean published) {
         CompendiumEntry entry = findByIdEntity(entryId);
         if (entry == null) {

@@ -4,34 +4,23 @@ import remarkGfm from "remark-gfm";
 import styles from "../Tasks.module.css"
 import {useContext} from "react";
 import {LessonContext} from "../LessonContext.tsx";
-
-// import markdownStyles from "../theoryMarkdown.module.css"
-
-const isArabic = (text: string) => /[\u0600-\u06FF]/.test(text);
-
+//TODO stlowanie jak compendium!
 function TheoryTask({task}: { task: TheoryTaskType }) {
 
     const {submitAnswer} = useContext(LessonContext)
-
-
     const handleNext = () => {
-
 
         submitAnswer(true);
     }
 
-
     return (
         <div className={styles.theorTaskContainer}>
-
             <div className={styles.markdownContainer}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
 
                     {task.content}
 
                 </ReactMarkdown>
-
-
             </div>
 
             <div className={styles.checkButtonContainer}>
@@ -43,11 +32,7 @@ function TheoryTask({task}: { task: TheoryTaskType }) {
                     Dalej
 
                 </button>
-
-
             </div>
-
-
         </div>
     )
 }

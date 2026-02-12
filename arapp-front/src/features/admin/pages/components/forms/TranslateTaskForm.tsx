@@ -37,8 +37,6 @@ const TranslateTaskForm = ({ onDataChange, initialData }: Props) => {
                 />
             </div>
 
-            {/*<hr style={{ border: '0', borderTop: '1px solid #e5e7eb', margin: '10px 0' }} />*/}
-
             <div className={styles.formSection}>
 
                 <div>
