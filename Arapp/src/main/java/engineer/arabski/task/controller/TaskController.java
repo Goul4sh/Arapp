@@ -11,6 +11,7 @@ import engineer.arabski.task.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class TaskController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createTask(@RequestBody TaskData data) {
 
         Task createdTask = taskService.addTask(data);
@@ -49,6 +51,7 @@ public class TaskController {
     }
 
     @PostMapping("/theory")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createTheoryTask(@RequestBody CreateTheoryTaskCompendiumRequest data) {
 
         TheoryCompendiumResponse createdTask = taskService.addTheoryTask(data);
@@ -62,6 +65,7 @@ public class TaskController {
     }
 
     @PostMapping("/with-vocab/{wordId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createTaskWithVocabDataReference(
             @RequestBody TaskData data,
             @PathVariable Long wordId) {
@@ -75,6 +79,7 @@ public class TaskController {
     }
 
     @PostMapping("/with-vocab")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createTaskWithVocabData(
             @RequestBody EnrichedTaskRequest data) {
 
@@ -87,6 +92,7 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody TaskData data) {
         TaskData updatedTask = taskService.updateTask(id, data);
         if (updatedTask != null) {
@@ -98,6 +104,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -105,6 +112,7 @@ public class TaskController {
     }
 
     @GetMapping("/assisted-writing/preview")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAssistedWritingTasks() {
         List<WritingPreviewResponse> taskData = taskService.getAssistedWritingTaskPreviews();
         return ResponseEntity.status(HttpStatus.OK).body(taskData);
@@ -112,6 +120,7 @@ public class TaskController {
     }
 
     @GetMapping("/assisted-writing/detail/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAssistedWritingTaskDetail(@PathVariable Long id) {
         TaskData taskData = taskService.getAssistedWritingTaskDetail(id);
         if (taskData != null) {

@@ -8,6 +8,7 @@ import engineer.arabski.wordBank.service.WordGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,8 @@ public class WordGroupController {
 
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+
     public ResponseEntity<?> findAll() {
 
         List<WordGroupPreviewResponse> wordGroups = wordGroupService.findAll();
@@ -66,6 +69,7 @@ public class WordGroupController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createWordGroup(@RequestBody WordGroupRequest wordGroupRequest) {
         WordGroupPreviewResponse savedWordGroup = wordGroupService.save(wordGroupRequest);
 
@@ -78,6 +82,7 @@ public class WordGroupController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateMetaData(@PathVariable Long id, @RequestBody WordGroupRequest wordGroupRequest) {
         WordGroupPreviewResponse updatedWordGroup = wordGroupService.update(id, wordGroupRequest);
 
@@ -90,6 +95,7 @@ public class WordGroupController {
     }
 
     @PatchMapping("/{id}/add-words")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addWordsToGroup(@PathVariable Long id, @RequestBody List<Long> wordIds) {
         WordGroupPreviewResponse updatedWordGroup = wordGroupService.removeOrAddWordsToGroup(id, wordIds, false);
 
@@ -103,6 +109,7 @@ public class WordGroupController {
 
 
     @PatchMapping("/{id}/remove-words")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> removeWordsFromGroup(@PathVariable Long id, @RequestBody List<Long> wordIds) {
         WordGroupPreviewResponse updatedWordGroup = wordGroupService.removeOrAddWordsToGroup(id, wordIds, true);
 
@@ -115,12 +122,14 @@ public class WordGroupController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteWordGroup(@PathVariable Long id) {
         wordGroupService.deleteWordGroup(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping("/{id}/publish/{isPublished}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> publishLesson(@PathVariable Long id, @PathVariable boolean isPublished) {
         try {
             wordGroupService.publishWordGroup(id, isPublished);

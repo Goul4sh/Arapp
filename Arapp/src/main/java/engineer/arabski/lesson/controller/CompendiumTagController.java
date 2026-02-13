@@ -4,6 +4,7 @@ import engineer.arabski.lesson.dto.CompendiumTagDTO;
 import engineer.arabski.lesson.service.CompendiumTagService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -25,6 +26,7 @@ public class CompendiumTagController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addTag(@RequestBody CompendiumTagDTO request) {
         compendiumTagService.addTag(request);
         return ResponseEntity.status(HttpStatus.OK).build();

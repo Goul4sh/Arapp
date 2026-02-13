@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,6 +25,7 @@ public class ChapterController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> findAll() {
 
         return ResponseEntity.status(HttpStatus.OK).body(chapterService.findAll());
@@ -31,6 +33,7 @@ public class ChapterController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> findById(@PathVariable Long id) {
 
         try {
@@ -44,6 +47,7 @@ public class ChapterController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateChapter(@PathVariable Long id ,@RequestBody ChapterRequest chapterRequest) {
 
         try {
@@ -58,6 +62,7 @@ public class ChapterController {
     }
 
     @PatchMapping("/{id}/position")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateChapterPosition(@PathVariable Long id, @RequestParam("direction") String direction) {
         try {
             chapterService.moveChapter(id, direction);
@@ -70,6 +75,7 @@ public class ChapterController {
 
 
     @PatchMapping("/{id}/lessons/{lessonId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addLessonToChapter(@PathVariable Long id, @PathVariable Long lessonId) {
         try {
             chapterService.addLessonToChapter(id, lessonId);
@@ -80,6 +86,7 @@ public class ChapterController {
         }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createChapter(@RequestBody ChapterRequest chapterRequest) {
 
         try {
@@ -94,6 +101,7 @@ public class ChapterController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteChapter(@PathVariable Long id) {
         try {
             chapterService.deleteChapter(id);

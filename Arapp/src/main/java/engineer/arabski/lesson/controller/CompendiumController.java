@@ -5,6 +5,7 @@ import engineer.arabski.lesson.dto.CompendiumRequest;
 import engineer.arabski.lesson.service.CompendiumService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,6 +41,7 @@ private final CompendiumService compendiumService;
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createCompendiumItem(@RequestBody CompendiumRequest request) {
 
         compendiumService.addCompendiumItem(request);
@@ -47,12 +49,14 @@ private final CompendiumService compendiumService;
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteCompendiumItem(@PathVariable Long id) {
         compendiumService.deleteCompendiumItem(id);
         return ResponseEntity.status(HttpStatus.OK).body("Compendium entry deleted successfully");
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> editCompendiumItem(@PathVariable Long id, @RequestBody CompendiumRequest request) {
         try {
             compendiumService.editCompendiumItem(id, request);
@@ -64,6 +68,7 @@ private final CompendiumService compendiumService;
 
 
     @PatchMapping("/{id}/publish/{isPublished}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> publishLesson(@PathVariable Long id, @PathVariable boolean isPublished) {
         try {
             compendiumService.publishEntry(id, isPublished);

@@ -7,6 +7,7 @@ import engineer.arabski.taskGeneration.service.TaskGenerationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class TaskGenerationController {
 
 
     @PostMapping("/morphology-forms")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> generateMorphologyFormsTask(@RequestBody MorphologyRequest request) {
 
         List<TaskData> task = taskGenerationService.generateMorphologyFormsTasks(List.of(request), 1);
@@ -33,6 +35,8 @@ public class TaskGenerationController {
     }
 
     @PostMapping("/morphology-parts")
+    @PreAuthorize("hasRole('ADMIN')")
+
     public ResponseEntity<?> generateMorphologyPartsTask(@RequestBody MorphologyRequest request) {
 
         List<TaskData> task = taskGenerationService.generateMorphologyPartsTasks(List.of(request), 1);
