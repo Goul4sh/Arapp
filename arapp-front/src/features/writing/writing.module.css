@@ -30,13 +30,6 @@
     padding: 0 20px;
 }
 
-.columnSeparator {
-
-
-    width: 2px;
-    background-color: #bebebe;
-}
-
 
 .pathRightColumn {
 
@@ -49,7 +42,6 @@
     max-height: 80vh;
     overflow: hidden;
 }
-
 
 .stickyContentHeader {
 
@@ -122,11 +114,6 @@
 
 }
 
-.spacerHeader {
-    background-color: transparent;
-    width: 90px;
-    flex-shrink: 0;
-}
 
 .lessonRow {
 
@@ -357,10 +344,6 @@
     background-color: #d1fae5;
 }
 
-.bottomSpacer {
-    height: 2rem;
-}
-
 /*writing course page*/
 
 .writingPage {
@@ -461,11 +444,6 @@
     background-color: #f3f4f6;
 }
 
-.chapterHeader {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
 
 .chapterInfo p {
     margin: 0;
@@ -647,11 +625,6 @@
 }
 
 
-.markdownWrapper {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: #374151;
-}
 
 @keyframes fadeIn {
     from {

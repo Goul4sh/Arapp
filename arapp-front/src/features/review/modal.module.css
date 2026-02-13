@@ -52,10 +52,6 @@
     padding: 0 25px 25px 25px;
 }
 
-.modalTitle {
-    font-family: inherit}
-
-
 .tabContainer {
     display: flex;
     flex-direction: row;
@@ -258,7 +254,6 @@
     font-size: 1rem;
 }
 
-
 .flashcardsGrid {
 
     display: grid;
@@ -267,6 +262,5 @@
     max-height: 400px;
     overflow-y: auto;
     padding: 10px;
-
 
 }

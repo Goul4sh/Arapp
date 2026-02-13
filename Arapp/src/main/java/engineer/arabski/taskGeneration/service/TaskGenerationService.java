@@ -2,6 +2,7 @@ package engineer.arabski.taskGeneration.service;
 
 import engineer.arabski.task.dto.*;
 import engineer.arabski.task.dto.MorphologyFormTaskData;
+import engineer.arabski.taskGeneration.TaskGenerationConfig;
 import engineer.arabski.taskGeneration.dto.GeneratedTaskResponse;
 import engineer.arabski.taskGeneration.dto.MorphologyRequest;
 import engineer.arabski.taskGeneration.dto.TaskGenerationData;
@@ -19,11 +20,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TaskGenerationService {
-
+    //TODO dodac losowanie.
     private final MorphologyTaskGenerator morphologyTaskGenerator;
-
     private final WordGroupRepository wordGroupRepository;
-
 
     public List<GeneratedTaskResponse> generateTasksForWordGroup(Long wordGroupId, int count) {
 
@@ -40,46 +39,61 @@ public class TaskGenerationService {
                         item.getTranslation()
 
                 ))
-                .toList();
+                .collect(Collectors.toList());
 
-        int wordsPerTask = count / 4; // Zakładadmy na sztywno 4 typy zadań.
+        if (words.isEmpty()) {
+            throw new IllegalArgumentException("No words found in the group");
+        }
+
+        Collections.shuffle(words);
+
+        TaskGenerationConfig config = TaskGenerationConfig.withDefaults(count);
 
         List<TaskData> generatedTasks = new ArrayList<>();
 
-        generatedTasks.addAll(generateChooseOneTasksForWordGroup(
-                words.subList(0, Math.min(wordsPerTask, words.size())),
-                wordsPerTask));
+        int offset = 0;
 
-        generatedTasks.addAll(generateTranslationTasks(
-                words.subList(wordsPerTask, Math.min(wordsPerTask * 2, words.size())),
-                wordsPerTask));
+        List<TaskGenerationData> chooseOneWords = getWordsSubset(words, offset, config.chooseOneTasks());
+        offset += config.chooseOneTasks();
+        generatedTasks.addAll(generateChooseOneTasksForWordGroup(chooseOneWords, config.chooseOneTasks()));
 
-        generatedTasks.addAll(generateMatchingPairsTasks(
-                words.subList(wordsPerTask * 2, Math.min(wordsPerTask * 3, words.size())),
-                1));
 
-        List<MorphologyRequest> morphologyWords = words.subList(
-                        wordsPerTask * 3,
-                        Math.min(wordsPerTask * 5, words.size())
-                ).stream()
+        List<TaskGenerationData> translationWords = getWordsSubset(words, offset, config.translationTasks());
+        offset += config.translationTasks();
+        generatedTasks.addAll(generateTranslationTasks(translationWords, config.translationTasks()));
+
+        List<TaskGenerationData> matchingPairsWords = getWordsSubset(words, offset, config.matchingPairsTasks() * config.wordsPerMatchingTask());
+        offset += config.matchingPairsTasks() * config.wordsPerMatchingTask();
+        generatedTasks.addAll(generateMatchingPairsTasks(matchingPairsWords, config.matchingPairsTasks(), config.wordsPerMatchingTask()));
+
+        List<TaskGenerationData> morphologyPartsWords = getWordsSubset(words, offset, config.morphologyPartsTasks());
+        offset += config.morphologyPartsTasks();
+        List<MorphologyRequest> morphologyPartsRequests = morphologyPartsWords.stream()
                 .map(w -> new MorphologyRequest(w.wordArabic(), w.wordTranslation()))
                 .toList();
+        generatedTasks.addAll(generateMorphologyPartsTasks(morphologyPartsRequests, config.morphologyPartsTasks()));
 
-        generatedTasks.addAll(generateMorphologyPartsTasks(
-                morphologyWords.subList(0, Math.min(wordsPerTask, morphologyWords.size())),
-                wordsPerTask));
+        List<TaskGenerationData> morphologyFormsWords = getWordsSubset(words, offset, config.morphologyFormsTasks());
+        offset += config.morphologyFormsTasks();
+        List<MorphologyRequest> morphologyFormsRequests = morphologyFormsWords.stream()
+                .map(w -> new MorphologyRequest(w.wordArabic(), w.wordTranslation()))
+                .toList();
+        generatedTasks.addAll(generateMorphologyFormsTasks(morphologyFormsRequests, config.morphologyFormsTasks()));
 
-//        generatedTasks.addAll(generateMorphologyFormsTasks(
-//                morphologyWords.subList(
-//                        Math.min(wordsPerTask, morphologyWords.size()),
-//                        morphologyWords.size()
-//                ),
-//                wordsPerTask
-//        ));
+        Collections.shuffle(generatedTasks);
 
         return generatedTasks.stream()
                 .map(GeneratedTaskResponse::new)
                 .toList();
+    }
+
+
+    private List<TaskGenerationData> getWordsSubset(List<TaskGenerationData> words, int offset, int count) {
+        if (offset >= words.size()) {
+            return Collections.emptyList();
+        }
+        int end = Math.min(offset + count, words.size());
+        return new ArrayList<>(words.subList(offset, end));
     }
 
 
@@ -116,17 +130,25 @@ public class TaskGenerationService {
         return tasks;
     }
 
-    public List<TaskData> generateMatchingPairsTasks(List<TaskGenerationData> words, int count) {
-
+    public List<TaskData> generateMatchingPairsTasks(List<TaskGenerationData> words, int taskCount, int wordsPerTask) {
         List<TaskData> tasks = new ArrayList<>();
-        TaskData taskdata = new MatchPairsTaskData(
-                "Połącz pary słów z ich tłumaczeniami",
-                words.stream().limit(count).collect(Collectors.toMap(
-                        TaskGenerationData::wordTranslation,
-                        TaskGenerationData::wordArabic
-                        ))
-        );
-        tasks.add(taskdata);
+
+        for (int i = 0; i < taskCount; i++) {
+
+            int startIndex = i * wordsPerTask;
+            int endIndex = Math.min(startIndex + wordsPerTask, words.size());
+
+            if (startIndex >= words.size()) {break;}
+            List<TaskGenerationData> taskWords = words.subList(startIndex, endIndex);
+            TaskData taskdata = new MatchPairsTaskData(
+                    "Połącz pary słów z ich tłumaczeniami",
+                    taskWords.stream().collect(Collectors.toMap(
+                            TaskGenerationData::wordTranslation,
+                            TaskGenerationData::wordArabic
+                    ))
+            );
+            tasks.add(taskdata);
+        }
         return tasks;
     }
 
@@ -152,7 +174,7 @@ public class TaskGenerationService {
 
         List<TaskData> tasks = new ArrayList<>();
         List<MorphologyRequest> selectedWords = words.subList(0, Math.min(count, words.size()));
-        for ( MorphologyRequest word : selectedWords ) {
+        for (MorphologyRequest word : selectedWords) {
             MorphologyPartsTaskData taskData = morphologyTaskGenerator.generatePartsTask(word.wordTranslation(), word.wordArabic());
             tasks.add(taskData);
         }
@@ -162,9 +184,9 @@ public class TaskGenerationService {
 
     public List<TaskData> generateMorphologyFormsTasks(List<MorphologyRequest> words, int count) {
 
-        List<TaskData> tasks = new  ArrayList<>();
+        List<TaskData> tasks = new ArrayList<>();
         List<MorphologyRequest> selectedWords = words.subList(0, Math.min(count, words.size()));
-        for ( MorphologyRequest word : selectedWords ) {
+        for (MorphologyRequest word : selectedWords) {
 
             MorphologyFormTaskData taskData = morphologyTaskGenerator.generateFormsTask(word.wordTranslation(), word.wordArabic());
             tasks.add(taskData);

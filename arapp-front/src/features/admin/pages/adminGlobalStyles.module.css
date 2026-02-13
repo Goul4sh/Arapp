@@ -123,7 +123,6 @@
     }
     to {
         opacity: 1;
-        max-height: 1000px;
         padding: 1rem;
     }
 
@@ -328,66 +327,6 @@
 .secondaryBtn:hover {
     background-color: #f9fafb;
     border-color: #9ca3af;
-}
-
-.taskContainer {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.taskTypeSelector {
-    margin: 20px 0;
-    padding: 20px;
-    background-color: #f9fafb;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-}
-
-.taskTypeSelector label {
-    display: block;
-    margin-bottom: 10px;
-    color: #374151;
-    font-size: 1rem;
-}
-
-.taskTypeDropdown {
-    width: 100%;
-    max-width: 400px;
-    padding: 10px 15px;
-    font-size: 1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    background-color: #ffffff;
-    color: #374151;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.taskTypeDropdown:hover {
-    border-color: #9ca3af;
-}
-
-.taskTypeDropdown:focus {
-    outline: none;
-    border-color: #4cae4f;
-    box-shadow: 0 0 0 3px rgba(76, 174, 79, 0.1);
-}
-
-.taskForm {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    margin-bottom: 20px;
-}
-
-.taskPreview {
-    background-color: #f9fafb;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    min-height: 300px;
 }
 
 .editorActions {

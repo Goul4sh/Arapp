@@ -5,26 +5,6 @@
     margin-left: 1rem;
 }
 
-.wordEditInputs {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    width: 100%;
-}
-
-.wordEditInputs input {
-    padding: 8px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 0.9rem;
-}
-
-.arabicInput {
-    font-size: 1.1rem !important;
-    text-align: right;
-    direction: rtl;
-}
-
 .searchSection {
     margin-bottom: 20px;
     padding: 16px;
@@ -58,12 +38,6 @@
 
 .searchInput:hover {
     border-color: #9ca3af;
-}
-
-.resultsInfo {
-    color: #6b7280;
-    font-size: 0.9rem;
-    font-weight: 500;
 }
 
 .wordsTable {
