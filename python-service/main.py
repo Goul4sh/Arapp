@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 
 models = {}
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Ładowanie modeli CAMeL Tools...")
@@ -16,9 +17,11 @@ async def lifespan(app: FastAPI):
         print("Modele załadowane pomyślnie")
     except Exception as e:
         print(f"Błąd ładowania modelu: {e}")
+        raise
     yield
     print("Zamykanie serwera")
     models.clear()
+
 
 app = FastAPI(lifespan=lifespan)
 
@@ -56,21 +59,20 @@ async def analyze_text(req: TextRequest):
 
     mle = models["mle"]
 
-    # Analiza słów w tekście
     disambiguated_result = mle.disambiguate(words)
     if not disambiguated_result:
-        raise HTTPException(status_code=404, detail="Analysis failed")
+        raise HTTPException(status_code=500, detail="Analysis failed")
 
     results = []
 
     word_index_cursor = 0
 
-    # Przetwarzanie wyników analizy
     for i, word in enumerate(disambiguated_result):
         original = words[i]
 
-        # Szukanie pozycji słowa w tekście
         start_idx = text.find(original, word_index_cursor)
+        if start_idx == -1:
+            start_idx = word_index_cursor
         end_id = start_idx + len(original)
         word_index_cursor = end_id
 
@@ -102,17 +104,15 @@ async def analyze_text(req: TextRequest):
             raw_lemma = data.get('lex', original)
             lemma = raw_lemma.split('_')[0]
 
-            root = data.get('root', 'unknown')
+            root = data.get('root', '')
             if '#' in root:
                 root = ""
 
-            if root == "NTWS":
+            elif root == "NTWS":
                 lemma = original
 
             pos = data.get('pos', 'unknown')
             diacritized = data.get('diac', original)
-
-        print("Indeksy słowa:", start_idx, end_id)
 
         results.append(LemmaResponse(
             original=original,

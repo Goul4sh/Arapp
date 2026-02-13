@@ -138,7 +138,7 @@ export const TaskPreviewRenderer = ({ taskType, taskData }: Props) => {
                     id: 0,
                     type: "theory",
                     description: data.description || "Podgląd pytania...",
-                    content: data.content || "hihohihih # 45"
+                    content: data.content || "Przykładowy tekst"
                 };
 
                 return <TheoryTask task={theoryTask}/>;}

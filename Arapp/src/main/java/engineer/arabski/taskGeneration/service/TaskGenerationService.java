@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TaskGenerationService {
-    //TODO dodac losowanie.
     private final MorphologyTaskGenerator morphologyTaskGenerator;
     private final WordGroupRepository wordGroupRepository;
 
@@ -30,8 +29,6 @@ public class TaskGenerationService {
         if (wordGroup == null) {
             throw new IllegalArgumentException("Word group not found");
         }
-        System.out.println("Jestem w generowaniu z " + wordGroup.getWords().size() + " słowami.");
-
         List<TaskGenerationData> words = wordGroup.getWords().stream()
                 .map(item -> new TaskGenerationData(
                         item.getId(),
@@ -98,9 +95,6 @@ public class TaskGenerationService {
 
 
     public List<TaskData> generateChooseOneTasksForWordGroup(List<TaskGenerationData> words, int count) {
-
-        System.out.println("Generuję Choose One z " + words.size() + " słowami.");
-        System.out.println(words.getFirst().wordArabic());
 
         List<TaskGenerationData> mutableWords = new ArrayList<>(words);
         Collections.shuffle(mutableWords);

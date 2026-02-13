@@ -28,7 +28,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
-    // powiązane z aktywacją konta w mailu
     private boolean enabled = false;
 
     @Column(name = "reset_password_token")
@@ -45,7 +44,6 @@ public class User {
     }
 
     public User(RegisterRequest registerRequest, String role) {
-//        this.role = role;
         this.email = registerRequest.email();
         this.username = registerRequest.username();
         this.password = registerRequest.password();

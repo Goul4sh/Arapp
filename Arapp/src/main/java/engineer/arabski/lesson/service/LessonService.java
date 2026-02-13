@@ -266,7 +266,6 @@ public class LessonService {
 
 
         if (tasks.size() != request.taskIds().size()) {
-            System.out.println("Requested Task IDs: " + request.taskIds());
             throw new IllegalArgumentException("One or more Task IDs are invalid");
         }
 
@@ -283,7 +282,6 @@ public class LessonService {
         List<Lesson> tasks = lessonRepository.findAllById(longs);
 
         if (tasks.size() != longs.size()) {
-            System.out.println("Requested Lesson IDs: " + longs);
             throw new IllegalArgumentException("One or more Lesson IDs are invalid");
         }
         return tasks;

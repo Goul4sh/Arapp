@@ -76,11 +76,6 @@ public class FlashcardGroupService {
     }
 
 
-    public FlashcardGroup createFlashcardGroup(FlashcardGroup flashcardGroup) {
-
-        return flashcardGroupRepository.save(flashcardGroup);
-    }
-
     public FlashcardGroupResponse updateFlashcardGroup(FlashcardGroupRequest request, Long id) {
 
         FlashcardGroup flashcardGroup = flashcardGroupRepository.findById(id)
@@ -91,7 +86,6 @@ public class FlashcardGroupService {
         flashcardGroup.setDescription(request.description());
         flashcardGroup.setCategory(request.category());
 
-        // Jeżeli podano nowe flashcardItem_Ids, to aktualizuj powiązania
         if (request.flashcardItem_Ids() != null) {
 
             Set<Long> uniqueIds = new HashSet<>(request.flashcardItem_Ids());
@@ -113,9 +107,6 @@ public class FlashcardGroupService {
         return toResponse(flashcardGroupRepository.save(flashcardGroup));
     }
 
-    public void deleteFlashcardGroup(FlashcardGroup flashcardGroup) {
-        flashcardGroupRepository.delete(flashcardGroup);
-    }
 
     public void deleteFlashcardGroup(Long id) {
 
@@ -137,11 +128,6 @@ public class FlashcardGroupService {
         }
 
         return toResponse(flashcardGroup);
-    }
-
-    public FlashcardGroup getFlashcardGroupByOwner(Long ownerId) {
-        return flashcardGroupRepository.findByOwner_Id(ownerId).orElse(null);
-
     }
 
     public List<FlashcardGroupResponse> getAllFlashcardGroupByOwner(Long ownerId) {

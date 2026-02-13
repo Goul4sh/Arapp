@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "completed_lessons", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "lesson_id"}) // User nie może ukończyć tej samej lekcji 2 razy, zmieniać się będzie tylko timestamp
+        @UniqueConstraint(columnNames = {"user_id", "lesson_id"})
 })
 @Getter
 @Setter

@@ -28,7 +28,6 @@ public class EmailVerificationService {
         try {
 
             String email = redisAuthService.validateEmailVerificationToken(token);
-            System.out.println("Znaleziono token: " + token + ". Zmienianie statusu użytkownika na aktywny.");
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + email));
             user.setEnabled(true);

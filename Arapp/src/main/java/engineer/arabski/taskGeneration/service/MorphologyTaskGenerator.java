@@ -14,7 +14,6 @@ public class MorphologyTaskGenerator {
 
 
     private String removeDiacritics(String input) {
-        // Regex usuwający znaki diaktryczne, np. harakarty
         return input.replaceAll("[\\u064B-\\u065F\\u0670]", "");
     }
 

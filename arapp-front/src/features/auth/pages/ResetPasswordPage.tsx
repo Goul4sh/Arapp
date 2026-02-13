@@ -3,6 +3,7 @@ import styles from "./Signup.module.css";
 import { useState, type FormEvent } from "react";
 import {useSearchParams, useNavigate} from "react-router-dom";
 import api from "../api.ts";
+import PasswordRequirements from "../components/PasswordRequirements.tsx";
 
 function ResetPasswordPage() {
 
@@ -97,7 +98,7 @@ function ResetPasswordPage() {
     );
 
     if (status === "success") return (
-        <div className={styles.signUpPage} style={{textAlign: 'center'}}>
+        <div className={styles.signUpPage}>
             <h2 style={{color: '#4cae4f'}}> Sukces!</h2>
             <p>Hasło zostało zmienione.</p>
             <p>Zaraz zostaniesz przekierowany do strony logowania.</p>
@@ -138,32 +139,7 @@ function ResetPasswordPage() {
                         />
                     </div>
 
-                    // W JSX, pod polem hasła:
-                    {password && (
-                        <div className={styles.passwordRequirements}>
-                            <p style={{ fontSize: '0.85rem', marginBottom: '0.5rem', color: '#666' }}>
-                                Wymagania dotyczące hasła:
-                            </p>
-                            <ul style={{ fontSize: '0.8rem', margin: 0, paddingLeft: '1.5rem' }}>
-                                <li style={{ color: password.length >= 8 ? '#4cae4f' : '#e74c3c' }}>
-                                    Co najmniej 8 znaków
-                                </li>
-                                <li style={{ color: /[A-Z]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
-                                    Przynajmniej jedna wielka litera
-                                </li>
-                                <li style={{ color: /[a-z]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
-                                    Przynajmniej jedna mała litera
-                                </li>
-                                <li style={{ color: /[0-9]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
-                                    Przynajmniej jedna cyfra
-                                </li>
-                                <li style={{ color: /[!@#$%^&*(),.?":{}|<>]/.test(password) ? '#4cae4f' : '#e74c3c' }}>
-                                    Przynajmniej jeden znak specjalny (!@#$%^&\*...)
-                                </li>
-                            </ul>
-                        </div>
-                    )}
-
+                    {password && <PasswordRequirements password={password}/> }
 
                     {errorMessage && (
                         <div style={{color: 'red', marginBottom: '15px', marginTop: '0px'}}>

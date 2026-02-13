@@ -2,9 +2,10 @@ import type {TheoryTaskType} from "../../taskTypes.ts";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from "remark-gfm";
 import styles from "../Tasks.module.css"
+import markdownStyles from "../../../writing/components/CompendiumContent.module.css"
 import {useContext} from "react";
 import {LessonContext} from "../LessonContext.tsx";
-//TODO stlowanie jak compendium!
+
 function TheoryTask({task}: { task: TheoryTaskType }) {
 
     const {submitAnswer} = useContext(LessonContext)
@@ -15,7 +16,7 @@ function TheoryTask({task}: { task: TheoryTaskType }) {
 
     return (
         <div className={styles.theorTaskContainer}>
-            <div className={styles.markdownContainer}>
+            <div className={markdownStyles.markdownWrapper}>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
 
                     {task.content}

@@ -43,7 +43,7 @@ const FillTheBlankForm = ({onDataChange, initialData}: Props) => {
                 </div>
 
                 <label className={styles.formLabel}>
-                    Zdanie z luką (Kontekst)
+                    Zdanie z luką
                 </label>
 
 
@@ -53,7 +53,7 @@ const FillTheBlankForm = ({onDataChange, initialData}: Props) => {
                         type="text"
                         value={formData.sentenceWithBlank}
                         onChange={(e) => setFormData({...formData, sentenceWithBlank: e.target.value})}
-                        placeholder="Np. The cat ___ on the mat."
+                        placeholder="The cat ___ on the mat."
                         dir="auto"
                     />
 
@@ -70,7 +70,7 @@ const FillTheBlankForm = ({onDataChange, initialData}: Props) => {
                         type="text"
                         value={formData.answer}
                         onChange={(e) => setFormData({...formData, answer: e.target.value})}
-                        placeholder="Np. sat"
+                        placeholder="sat"
 
                     />
                 </div>

@@ -188,6 +188,13 @@
 
 }
 
+.successMessage {
+    color: #4cae4f;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+
 .pairsContainer {
     display: flex;
     flex-direction: row;

@@ -38,7 +38,7 @@ public class FlashcardController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Flashcard not found");
 
     }
-//
+
     @GetMapping("/group/{group_id}")
     public ResponseEntity<?> findDueByGroupId(@PathVariable Long group_id) {
 
@@ -91,8 +91,6 @@ public class FlashcardController {
     @PostMapping
     public ResponseEntity<?> createFlashcard(@RequestBody AddFlashcardRequest request, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 
-        System.out.println("Uwaga dostałem coś!");
-
         FlashcardItem createdFlashcard = flashcardService.createFlashcardItem(request.word_id(), customUserDetails.getId());
         if (createdFlashcard != null) {
 
@@ -119,7 +117,6 @@ public class FlashcardController {
     @DeleteMapping("/{id}/word")
     public ResponseEntity<?> deleteFlashcardByOwnerAndWordId(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         try {
-            System.out.println("Wszedlem do usuwania flashcarda");
             flashcardService.deleteFlashcardItemByOwnerAndWordId(customUserDetails.getId(), id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (Exception e) {

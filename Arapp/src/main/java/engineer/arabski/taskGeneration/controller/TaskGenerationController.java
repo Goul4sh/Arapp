@@ -23,8 +23,6 @@ public class TaskGenerationController {
     @PostMapping("/morphology-forms")
     public ResponseEntity<?> generateMorphologyFormsTask(@RequestBody MorphologyRequest request) {
 
-        System.out.println("Jestem w kontrolerze, otrzymalem request: " + request);
-
         List<TaskData> task = taskGenerationService.generateMorphologyFormsTasks(List.of(request), 1);
         if (task != null) {
             return ResponseEntity.status(HttpStatus.OK).body(task.getFirst());
@@ -51,13 +49,8 @@ public class TaskGenerationController {
             @PathVariable Long wordGroupId,
             @RequestParam(defaultValue = "10") int count) {
 
-
-        System.out.println("Generating task set for word group " + wordGroupId);
         List<GeneratedTaskResponse> tasks = taskGenerationService.generateTasksForWordGroup(wordGroupId, count);
         if (tasks != null && !tasks.isEmpty()) {
-
-            System.out.println("Generated tasks for word group " + wordGroupId);
-            System.out.println(tasks);
 
             return ResponseEntity.status(HttpStatus.OK).body(tasks);
         }

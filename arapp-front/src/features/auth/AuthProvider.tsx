@@ -24,6 +24,17 @@ export function AuthProvider({children}: { children: ReactNode }) {
     useEffect(() => {
         const fetchUser = async () => {
 
+
+            const storedUser = localStorage.getItem("user");
+            if (storedUser) {
+                try {
+                    setUser(JSON.parse(storedUser));
+                } catch (e) {
+                    console.error("Failed to parse stored user:", e);
+                }
+            }
+
+
             try {
                 const resp = await api.get("/api/auth/validate", {withCredentials: true});
                 const userData = resp.data;

@@ -35,8 +35,6 @@ public class FlashcardService {
 
     public static FlashcardItemResponse toResponse(FlashcardItem flashcardItem) {
 
-        System.out.println("flashcardItem = " + flashcardItem.getWord());
-
         return new FlashcardItemResponse(flashcardItem.getId(),
                 DictionaryWordFlashcardService.toResponseFlashcard(flashcardItem.getWord()),
                 flashcardItem.getNextReviewDate()
@@ -91,14 +89,12 @@ public class FlashcardService {
             flashcardItem.setWord(dictionaryWord);
         }
 
-
         return flashcardRepository.save(flashcardItem);
     }
 
 
     public void deleteFlashcardItemByOwnerAndWordId(Long owner_id, Long word_id) {
 
-        System.out.println("Jestem juz w usuwaniu flashcarda w serwisie");
         try {
             flashcardRepository.deleteByFlashcardOwner_IdAndWord_Id(owner_id, word_id);
 

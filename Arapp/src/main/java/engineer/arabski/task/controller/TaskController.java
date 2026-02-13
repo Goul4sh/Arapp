@@ -4,6 +4,7 @@ package engineer.arabski.task.controller;
 import engineer.arabski.task.dto.CreateTheoryTaskCompendiumRequest;
 import engineer.arabski.task.dto.TaskData;
 import engineer.arabski.task.dto.TheoryCompendiumResponse;
+import engineer.arabski.task.dto.WritingPreviewResponse;
 import engineer.arabski.task.dto.vocabulary.EnrichedTaskRequest;
 import engineer.arabski.task.model.Task;
 import engineer.arabski.task.service.TaskService;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -59,7 +61,6 @@ public class TaskController {
 
     }
 
-
     @PostMapping("/with-vocab/{wordId}")
     public ResponseEntity<?> createTaskWithVocabDataReference(
             @RequestBody TaskData data,
@@ -102,4 +103,22 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
     }
+
+    @GetMapping("/assisted-writing/preview")
+    public ResponseEntity<?> getAssistedWritingTasks() {
+        List<WritingPreviewResponse> taskData = taskService.getAssistedWritingTaskPreviews();
+        return ResponseEntity.status(HttpStatus.OK).body(taskData);
+
+    }
+
+    @GetMapping("/assisted-writing/detail/{id}")
+    public ResponseEntity<?> getAssistedWritingTaskDetail(@PathVariable Long id) {
+        TaskData taskData = taskService.getAssistedWritingTaskDetail(id);
+        if (taskData != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(taskData);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
+    }
+
+
 }

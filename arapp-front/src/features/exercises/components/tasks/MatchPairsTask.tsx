@@ -122,7 +122,7 @@ function MatchPairsTask({task}: { task: MatchPairsTaskType }) {
             </div>
 
             {status === 'finished' && (
-                <div style={{color: '#4cae4f', fontWeight: 'bold', fontSize: '1.5rem'}}>
+                <div className={styles.successMessage}>
                     Świetnie!
                 </div>
             )}

@@ -63,7 +63,7 @@ const AVAILABLE_TASK_TYPES = [
     {type: 'morphology-parts', label: 'Morfologia - Części słowa'},
     {type: 'theory', label: 'Teoria'},
     {type: 'translate', label: 'Tłumaczenie'},
-    {type: 'writing-assisted', label: 'Pisanie wspomagane'}
+    // {type: 'writing-assisted', label: 'Pisanie wspomagane'}
 ];
 
 function TaskManagementPage() {
@@ -828,8 +828,6 @@ function TaskManagementPage() {
 
         </div>
     );
-
-    //  Oprócz tego powinna byc możliwość zmienienia kolejności zadań w lekcji
 
 }
 

@@ -7,6 +7,7 @@ import engineer.arabski.user.model.Role;
 import engineer.arabski.user.model.User;
 import engineer.arabski.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +25,13 @@ public class UserService {
     @Autowired
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtTokenUtil;
+
+
+    @Value("${app.admin.email}")
+    private String adminEmail;
+
+    @Value("${app.admin.password}")
+    private String adminPassword;
 
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtTokenUtil) {
@@ -46,16 +54,14 @@ public class UserService {
     }
 
     public void createAdminUserIfNotExists() {
-        String adminEmail = "admin@admin.com";
         if (!userRepository.existsByEmail(adminEmail)) {
             User adminUser = new User();
             adminUser.setEmail(adminEmail);
             adminUser.setUsername("admin");
-            adminUser.setPassword(passwordEncoder.encode("admin123"));
+            adminUser.setPassword(passwordEncoder.encode(adminPassword));
             adminUser.setRole(Role.ADMIN);
             adminUser.setEnabled(true);
             userRepository.save(adminUser);
-            System.out.println("Admin user created with email: " + adminEmail + " and password: admin123");
         }
     }
 
@@ -84,9 +90,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    //TODO authentication manager
     public String authenticateUser(String email, String password) {
-
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));

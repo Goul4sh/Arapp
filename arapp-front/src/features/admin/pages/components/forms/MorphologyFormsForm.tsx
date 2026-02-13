@@ -72,8 +72,6 @@ const MorphologyFormsForm = ({onDataChange, initialData}: Props) => {
         }
     }
 
-    //TODO a po tym poprawic losowanie slow przy generacji zadan
-
     return (
         <div className={styles.formContainer}>
 
@@ -90,8 +88,6 @@ const MorphologyFormsForm = ({onDataChange, initialData}: Props) => {
                     rows={1}
                     disabled={formData.id > 0}
                 />
-
-
             </div>
 
             <div className={styles.formSection}>

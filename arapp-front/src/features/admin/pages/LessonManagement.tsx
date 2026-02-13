@@ -752,8 +752,6 @@ function LessonManagement() {
                 </div>
             </Modal>
 
-            {/*TODO dodać stylowanie do modali*/}
-
             <Modal
                 isOpen={deletingLesson !== null}
                 onClose={() => {

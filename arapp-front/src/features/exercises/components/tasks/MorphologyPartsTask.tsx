@@ -55,7 +55,6 @@ function MorphologyPartsTask({task}: { task: MorphologyPartsTaskType }) {
 
             setErrorId(segment.id);
             setTimeout(() => setErrorId(null), 1000);
-            //TODO Cos mozna dodac pozniej - dzwiek?
 
         }
     };
@@ -109,7 +108,7 @@ function MorphologyPartsTask({task}: { task: MorphologyPartsTaskType }) {
                 ))}
 
                 {status === 'finished' && (
-                    <div style={{color: '#4cae4f', fontWeight: 'bold', fontSize: '1.5rem'}}>
+                    <div className={taskStyles.successMessage}>
                         Świetnie!
                     </div>
                 )}

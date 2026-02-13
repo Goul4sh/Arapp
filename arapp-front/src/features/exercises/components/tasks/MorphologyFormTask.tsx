@@ -49,7 +49,6 @@ function MorphologyFormTask ({task}: { task: MorphologyFormTaskType }) {
             setHasMistake(true);
             setErrorId(option.id);
             setTimeout(() => setErrorId(null), 1000);
-            //TODO Cos mozna dodac pozniej - dzwiek?
 
         }
     };

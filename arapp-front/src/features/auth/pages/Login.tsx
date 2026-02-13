@@ -104,7 +104,7 @@ function Login(): JSX.Element {
                     <div className={styles.submitContainer}>
 
                         {errorMessage && (
-                            <div style={{color: 'red', marginBottom: '15px', marginTop: '0px'}}>
+                            <div className={styles.errorMessage}>
                                 {errorMessage}
                             </div>
                         )}

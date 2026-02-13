@@ -19,6 +19,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -59,6 +60,8 @@ public class TaskService {
         Task updatedTask = taskRepository.save(task);
         return updatedTask.getTaskData();
     }
+
+
 
 
     @Transactional
@@ -165,6 +168,29 @@ public class TaskService {
         }
 
         return taskRepository.save(task);
+    }
+
+    public List<WritingPreviewResponse> getAssistedWritingTaskPreviews() {
+        return taskRepository.findByTaskType("writing-assisted").stream()
+                .filter(task -> task.getTaskData() instanceof AssistedWritingTaskData)
+                .map(task -> {
+                    AssistedWritingTaskData data = (AssistedWritingTaskData) task.getTaskData();
+                    return new WritingPreviewResponse(
+                            task.getId(),
+                            data.letterName(),
+                            data.letterForm()
+                    );
+                })
+                .toList();
+    }
+
+
+    public TaskData getAssistedWritingTaskDetail(Long taskId) {
+        Optional<Task> taskOpt = taskRepository.findById(taskId);
+        if (taskOpt.isPresent() && "writing-assisted".equals(taskOpt.get().getTaskType())) {
+            return taskOpt.get().getTaskData();
+        }
+        return null;
     }
 
 }

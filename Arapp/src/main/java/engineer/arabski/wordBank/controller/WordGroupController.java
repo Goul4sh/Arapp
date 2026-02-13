@@ -93,10 +93,7 @@ public class WordGroupController {
     public ResponseEntity<?> addWordsToGroup(@PathVariable Long id, @RequestBody List<Long> wordIds) {
         WordGroupPreviewResponse updatedWordGroup = wordGroupService.removeOrAddWordsToGroup(id, wordIds, false);
 
-
-
         if (updatedWordGroup != null) {
-            System.out.println("Count, który dostalem z serwisu: " + updatedWordGroup.wordsCount());
 
             return ResponseEntity.status(HttpStatus.OK).body(updatedWordGroup);
         }
@@ -110,7 +107,6 @@ public class WordGroupController {
         WordGroupPreviewResponse updatedWordGroup = wordGroupService.removeOrAddWordsToGroup(id, wordIds, true);
 
         if (updatedWordGroup != null) {
-            System.out.println("Count, który dostalem z serwisu: " + updatedWordGroup.wordsCount());
 
             return ResponseEntity.status(HttpStatus.OK).body(updatedWordGroup);
         }

@@ -154,8 +154,6 @@ function AddWordModal({isOpen, onClose, onSave}: ModalProps) {
 
     }
 
-//TODO dodac mozliwosc dodania kilku slow z tym samym lematem, to istotne w arabskim
-
     return (
         <Modal
             isOpen={isOpen}

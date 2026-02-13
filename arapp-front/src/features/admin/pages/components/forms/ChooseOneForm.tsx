@@ -58,7 +58,7 @@ const ChooseOneForm = ({onDataChange, initialData}: Props) => {
                     className={styles.formTextarea}
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Np. Wybierz poprawne tłumaczenie słowa 'Kot'"
+                    placeholder="Wybierz poprawne tłumaczenie słowa 'Kot'"
                     rows={3}
                 />
             </div>

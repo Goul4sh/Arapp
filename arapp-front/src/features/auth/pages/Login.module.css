@@ -70,6 +70,13 @@
 
 }
 
+
+.errorMessage {
+    color: red;
+    margin-bottom: 15px;
+    margin-top: 0;
+}
+
 .button:hover {
     border-color: whitesmoke;
 }

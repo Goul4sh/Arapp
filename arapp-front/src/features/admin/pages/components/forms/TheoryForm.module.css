@@ -26,3 +26,62 @@
 
 
 }
+
+
+.contentLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.contentTextarea {
+    font-family: monospace;
+    font-size: 0.95rem;
+}
+
+.compendiumNoticeLabel {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.compendiumIcon {
+    margin-right: 8px;
+    color: #6b7280;
+}
+
+.compendiumCheckboxItem {
+    cursor: pointer;
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+}
+
+.compendiumCheckboxItemClosed {
+    border-radius: 12px;
+}
+
+.compendiumCheckboxItemActive {
+    background-color: #f0fdf4;
+    border-color: #86efac;
+}
+
+.compendiumCheckboxItemInactive {
+    background-color: #f9fafb;
+    border-color: #e5e7eb;
+}
+
+.compendiumCheckboxIcon {
+    margin-right: 8px;
+}
+
+.compendiumCheckboxIconActive {
+    color: #166534;
+}
+
+.compendiumCheckboxIconInactive {
+    color: #6b7280;
+}
+
+.tagSelectWrapper {
+    flex: 2;
+}

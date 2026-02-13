@@ -12,12 +12,12 @@ public class RedisAuthService {
 
     private final StringRedisTemplate redisTemplate;
 
-    private static final String EMAIL_VERIFICATION_PREFIX = "verify_email:";
+    private static final String EMAIL_VERIFICATION_PREFIX = "verify:";
     private static final String JWT_BLACKLIST_PREFIX = "jwt_blacklist:";
 
     public void saveVerificationToken(String token, String email) {
         redisTemplate.opsForValue().set(
-                "verify:" + token,
+                EMAIL_VERIFICATION_PREFIX + token,
                 email,
                 24, TimeUnit.HOURS
         );

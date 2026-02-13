@@ -59,7 +59,7 @@ public class AuthController {
 
             ResponseCookie jwtCookie = ResponseCookie.from("jwt", jwt)
                     .httpOnly(true)
-                    .secure(false) //localhost
+                    .secure(false)
                     .path("/")
                     .maxAge(24 * 60 * 60)
                     .sameSite("Strict")
@@ -76,7 +76,6 @@ public class AuthController {
                     .body(new ErrorResponse("Nieprawidłowy e-mail lub hasło"));
 
         } catch (DisabledException e) {
-            System.out.println("Konto nieaktywne");
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(new ErrorResponse("Konto nieaktywne. Sprawdź skrzynkę mailową."));
         }
@@ -176,7 +175,6 @@ public class AuthController {
                 "USER"
         );
 
-        System.out.println("Validated user: " + userDetails.getUsername());
         return ResponseEntity.ok(userData);
 
     }

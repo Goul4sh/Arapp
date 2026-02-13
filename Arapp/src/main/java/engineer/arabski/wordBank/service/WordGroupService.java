@@ -222,26 +222,16 @@ public class WordGroupService {
         WordGroup existingGroup = wordGroupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("Word group not found with id " + groupId));
 
-
         List<DictionaryWord> wordsToAdd = dictionaryWordRepository.findByIdIn(wordIds);
 
         if (removeMode) {
-
             wordsToAdd.forEach(existingGroup.getWords()::remove);
-
             WordGroup newGroup = wordGroupRepository.save(existingGroup);
-
-            System.out.println("Liczba słów w grupie po usunięciu: " + newGroup.getWords().size());
 
             return toResponsePreview(newGroup);
         } else {
-
             existingGroup.getWords().addAll(wordsToAdd);
-
             WordGroup newGroup = wordGroupRepository.save(existingGroup);
-
-            System.out.println("Liczba słów w grupie po dodaniu: " + newGroup.getWords().size());
-
             return toResponsePreview(newGroup);
 
         }
@@ -252,7 +242,6 @@ public class WordGroupService {
     @Caching(evict = {
             @CacheEvict(value = "word_group_details", key = "#groupId"),
             @CacheEvict(value = "word_groups_list_admin", allEntries = true),
-            // Zmiana statusu published powoduje pojawienie się/zniknięcie z listy
             @CacheEvict(value = "word_groups_list_published", allEntries = true)
     })
     public void publishWordGroup(Long groupId, boolean published) {

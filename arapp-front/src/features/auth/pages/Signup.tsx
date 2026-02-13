@@ -4,6 +4,7 @@ import styles from './Signup.module.css'
 import api from "../api.ts";
 import {Link, useNavigate} from "react-router-dom";
 import GoogleLogo from "../../../assets/Google__G__logo.svg";
+import PasswordRequirements from "../components/PasswordRequirements.tsx";
 
 function Signup(): JSX.Element {
 
@@ -14,6 +15,13 @@ function Signup(): JSX.Element {
     const [error, setError] = React.useState('');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<boolean>(false);
+
+
+    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const MIN_USERNAME_LENGTH = 3;
+    const MAX_USERNAME_LENGTH = 20;
+    const USERNAME_REGEX = /^[a-zA-Z0-9_-]+$/;
+
 
     const validatePassword = (pwd: string): { isValid: boolean; errors: string[] } => {
         const errors: string[] = [];
@@ -40,13 +48,47 @@ function Signup(): JSX.Element {
         };
     };
 
+    const validateForm = (): { isValid: boolean; error: string } => {
+        if (!email.trim()) {
+            return {isValid: false, error: 'Email jest wymagany'};
+        }
+        if (!EMAIL_REGEX.test(email)) {
+            return {isValid: false, error: 'Nieprawidłowy format adresu email'};
+        }
+        if (!username.trim()) {
+            return {isValid: false, error: 'Nazwa użytkownika jest wymagana'};
+        }
+        if (username.length < MIN_USERNAME_LENGTH) {
+            return {isValid: false, error: `Minimalna wymagana liczba znaków w nazwie: ${MIN_USERNAME_LENGTH}`};
+        }
+        if (username.length > MAX_USERNAME_LENGTH) {
+            return {isValid: false, error: `Maksymalna dopuszczalna liczba znaków w nazwie: ${MAX_USERNAME_LENGTH}`};
+        }
+        if (!USERNAME_REGEX.test(username)) {
+            return {
+                isValid: false,
+                error: 'Nazwa użytkownika może zawierać tylko litery, cyfry, myślniki i podkreślenia'
+            };
+        }
+
+        return {isValid: true, error: ''};
+
+    }
+
     const navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setError('');
         setErrorMessage(null);
-        setSuccessMessage(null);
+        setSuccessMessage(false);
+
+
+        const formValidation = validateForm();
+        if (!formValidation.isValid) {
+            setError(formValidation.error);
+            return;
+        }
 
 
         if (password !== confirmPassword) {
@@ -64,7 +106,7 @@ function Signup(): JSX.Element {
             const resp = await api.post("/api/auth/register", {email, password, username}, {withCredentials: true});
             if (resp.status === 201) {
                 setSuccessMessage(true)
-                setTimeout(() => navigate("/login"), 5500);
+                setTimeout(() => navigate("/login"), 10500);
             }
 
         } catch (error: unknown) {
@@ -153,35 +195,12 @@ function Signup(): JSX.Element {
                     </div>
 
 
-                    {password && (
-                        <div className={styles.passwordRequirements}>
-                            <p style={{fontSize: '0.85rem', marginBottom: '0.5rem', color: '#666'}}>
-                                Wymagania dotyczące hasła:
-                            </p>
-                            <ul style={{fontSize: '0.8rem', margin: 0, paddingLeft: '1.5rem'}}>
-                                <li style={{color: password.length >= 8 ? '#4cae4f' : '#e74c3c'}}>
-                                    Co najmniej 8 znaków
-                                </li>
-                                <li style={{color: /[A-Z]/.test(password) ? '#4cae4f' : '#e74c3c'}}>
-                                    Przynajmniej jedna wielka litera
-                                </li>
-                                <li style={{color: /[a-z]/.test(password) ? '#4cae4f' : '#e74c3c'}}>
-                                    Przynajmniej jedna mała litera
-                                </li>
-                                <li style={{color: /[0-9]/.test(password) ? '#4cae4f' : '#e74c3c'}}>
-                                    Przynajmniej jedna cyfra
-                                </li>
-                                <li style={{color: /[!@#$%^&*(),.?":{}|<>]/.test(password) ? '#4cae4f' : '#e74c3c'}}>
-                                    Przynajmniej jeden znak specjalny (!@#$%^&*...)
-                                </li>
-                            </ul>
-                        </div>
-                    )}
+                    {password && <PasswordRequirements password={password}/>}
 
                     <div className={styles.submitContainer}>
 
                         {errorMessage && (
-                            <div style={{color: 'red', marginBottom: '15px', marginTop: '0px'}}>
+                            <div className={styles.errorMessage}>
                                 {errorMessage}
                             </div>
                         )}
@@ -199,7 +218,7 @@ function Signup(): JSX.Element {
 
                 {successMessage && (
                     <div className={styles.successMessage}>
-                        <p>Link aktywacyjny został wysłany na adres ${email}.</p>
+                        <p>Link aktywacyjny został wysłany na adres {email}.</p>
                         <p>Sprawdź swoją skrzynkę pocztową i kliknij w link, aby aktywować konto.</p>
                         <p>Za chwilę zostaniesz przekierowany do strony logowania.</p>
                     </div>)

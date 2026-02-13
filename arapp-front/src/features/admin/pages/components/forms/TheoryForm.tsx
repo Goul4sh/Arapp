@@ -97,36 +97,25 @@ function TheoryForm({initialData, onDataChange}: Props) {
             <div className={styles.formSection}>
 
                 <div className={styles.formSection}>
-                    <label className={styles.formLabel}
-                           style={{display: 'flex', alignItems: 'center', gap: '8px'}}
-                    >
+                    <label className={`${styles.formLabel} ${localStyles.contentLabel}`}>
                         Treść teoretyczna lekcji
                     </label>
                     <textarea
-                        className={styles.formTextarea}
+                        className={`${styles.formTextarea} ${localStyles.contentTextarea}`}
                         value={formData.content}
                         onChange={(e) => handleChange('content', e.target.value)}
                         placeholder="# Nagłówek&#10;Treść lekcji...&#10;**pogrubienie**"
                         rows={12}
-                        style={{fontFamily: 'monospace', fontSize: '0.95rem'}}
                     />
                     <p className={styles.helperText}>Możesz używać składni Markdown do formatowania tekstu.</p>
                 </div>
             </div>
 
-            <hr style={{border: '0', borderTop: '1px solid #e5e7eb', margin: '10px 0'}}/>
-
             {formData.compendiumEntryId > 0 && (
                 <div className={styles.formSection}>
 
-                    <label
-                        htmlFor="ompendiumEntryNotice"
-                        style={{fontSize: '1rem', fontWeight: 600, marginLeft: '10px'}}
-                    >
-                        <FontAwesomeIcon icon={faBook} style={{
-                            marginRight: '8px',
-                            color: '#6b7280'
-                        }}/>
+                    <label className={localStyles.compendiumNoticeLabel}>
+                        <FontAwesomeIcon icon={faBook} className={localStyles.compendiumIcon}/>
                         To zadanie jest powiązane z wpisem w Kompendium Wiedzy. <br/>
                         Id tego wpisu: {formData.id}
                     </label>
@@ -137,14 +126,11 @@ function TheoryForm({initialData, onDataChange}: Props) {
 
             {formData.id == 0 && (<div className={styles.formSection}>
                     <div
-                        className={styles.listItem}
-                        style={{
-                            backgroundColor: formData.createCompendiumEntry ? '#f0fdf4' : '#f9fafb',
-                            borderColor: formData.createCompendiumEntry ? '#86efac' : '#e5e7eb',
-                            cursor: 'pointer',
-                            borderBottom: formData.createCompendiumEntry ? 'none' : undefined,
-                            borderRadius: formData.createCompendiumEntry ? '12px 12px 0 0' : '12px'
-                        }}
+                        className={`${styles.listItem} ${localStyles.compendiumCheckboxItem} ${
+                            formData.createCompendiumEntry
+                                ? localStyles.compendiumCheckboxItemActive
+                                : `${localStyles.compendiumCheckboxItemInactive} ${localStyles.compendiumCheckboxItemClosed}`
+                        }`}
                         onClick={() => handleChange('createCompendiumEntry', !formData.createCompendiumEntry)}
                     >
                         <input
@@ -153,17 +139,18 @@ function TheoryForm({initialData, onDataChange}: Props) {
                             id="createCompendiumEntry"
                             checked={formData.createCompendiumEntry}
                             onChange={(e) => handleChange('createCompendiumEntry', e.target.checked)}
-                            style={{width: '20px', height: '20px'}}
                         />
                         <label
                             htmlFor="createCompendiumEntry"
                             className={styles.checkboxLabel}
-                            style={{fontSize: '1rem', fontWeight: 600, marginLeft: '10px', cursor: 'pointer'}}
                         >
-                            <FontAwesomeIcon icon={faBook} style={{
-                                marginRight: '8px',
-                                color: formData.createCompendiumEntry ? '#166534' : '#6b7280'
-                            }}/>
+                            <FontAwesomeIcon icon={faBook}
+                                             className={`${localStyles.compendiumCheckboxIcon} ${
+                                                 formData.createCompendiumEntry
+                                                     ? localStyles.compendiumCheckboxIconActive
+                                                     : localStyles.compendiumCheckboxIconInactive
+                                             }`}
+                            />
                             Utwórz automatycznie wpis w Kompendium wiedzy
                         </label>
                     </div>
@@ -182,7 +169,7 @@ function TheoryForm({initialData, onDataChange}: Props) {
                             </div>
 
                             <div className={styles.formRow}>
-                                <div style={{flex: 2}}>
+                                <div className={localStyles.tagSelectWrapper}>
                                     <label className={styles.formLabel}>Tagi / Kategorie</label>
                                     <div style={{position: 'relative'}}>
                                         <Select
@@ -199,7 +186,7 @@ function TheoryForm({initialData, onDataChange}: Props) {
                                 </div>
                             </div>
 
-                            <div className={styles.infoBox} style={{fontSize: '0.85rem', padding: '8px'}}>
+                            <div className={styles.infoBox} >
                                 <FontAwesomeIcon icon={faInfoCircle} style={{marginRight: '5px'}}/>
                                 Wpis zostanie powiązany z tym zdaniem i będzie widoczny w edytorze kompendium.
                             </div>

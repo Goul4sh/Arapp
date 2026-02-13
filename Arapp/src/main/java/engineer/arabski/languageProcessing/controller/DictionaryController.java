@@ -15,14 +15,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DictionaryController {
 
-
     private final DictionaryService dictionaryService;
-
 
     @PostMapping("/analyze")
     public ResponseEntity<?> analyzeText(@RequestBody AnalyzeTextRequest request) {
-
-        System.out.println("to dostałem do analizy: " + request);
 
         List<DictionaryWordResponse> analyzedWords = dictionaryService.analyzeAndEnrichText(request.text());
         return ResponseEntity.status(HttpStatus.OK).body(analyzedWords);
@@ -40,7 +36,6 @@ public class DictionaryController {
                     word.translation())
             );
         }
-
 
         return ResponseEntity.status(HttpStatus.OK).body("Words added/updated successfully.");
     }

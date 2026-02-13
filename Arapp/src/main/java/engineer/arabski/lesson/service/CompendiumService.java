@@ -56,10 +56,9 @@ public class CompendiumService {
 
         CompendiumEntry compendiumEntry = new CompendiumEntry();
         compendiumEntry.setTitle(request.title());
-        compendiumEntry.setIcon(request.subtitle()); // Uwaga! Ten atrybut moze zostac zmieniony w przyszlosci
+        compendiumEntry.setIcon(request.subtitle());
         compendiumEntry.setDescription(request.description());
         compendiumEntry.setContent(request.content());
-//        compendiumEntry.setRequiredLessonId(request.requiredLessonId());
         if (request.requiredLessonId() != null && request.requiredLessonId() > 0) {
             Lesson lesson = lessonService.findByIdEntityOrNull(request.requiredLessonId());
             compendiumEntry.setRequiredLesson(lesson);
@@ -107,17 +106,13 @@ public class CompendiumService {
     @Transactional
     public void addCompendiumItem(CompendiumRequest request) {
 
-        System.out.println(request.tagNames());
-
         Set<String> tagNamesSet = new HashSet<>(request.tagNames());
-
         Set<CompendiumTag> tags = compendiumTagService.getAllByName(tagNamesSet);
 
         if (tags.size() != request.tagNames().size()) {
             System.out.println("Requested tags: " + request.tagNames());
             throw new IllegalArgumentException("One or more Tag Names are invalid");
         }
-        //To można później zoptymalizować
 
         CompendiumEntry compendiumEntry = toEntity(request);
 

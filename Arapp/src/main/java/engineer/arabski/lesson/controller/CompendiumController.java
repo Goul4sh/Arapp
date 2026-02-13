@@ -13,7 +13,6 @@ import java.util.List;
 @RequestMapping("/api/compendium")
 public class CompendiumController {
 
-//TODO testy!
 private final CompendiumService compendiumService;
 
     public CompendiumController(CompendiumService compendiumService) {
@@ -42,8 +41,6 @@ private final CompendiumService compendiumService;
 
     @PostMapping
     public ResponseEntity<?> createCompendiumItem(@RequestBody CompendiumRequest request) {
-
-        System.out.println(request.toString());
 
         compendiumService.addCompendiumItem(request);
         return ResponseEntity.status(HttpStatus.CREATED).body("Compendium entry created successfully");
