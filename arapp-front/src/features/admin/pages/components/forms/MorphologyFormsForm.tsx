@@ -84,7 +84,7 @@ const MorphologyFormsForm = ({onDataChange, initialData}: Props) => {
                     className={styles.formTextarea}
                     value={formData.question}
                     onChange={(e) => setFormData({...formData, question: e.target.value})}
-                    placeholder="Np. Wybierz poprawne tłumaczenie słowa 'Kot'"
+                    placeholder="Np.Przetłumacz słowo 'Kot'"
                     rows={1}
                     disabled={formData.id > 0}
                 />

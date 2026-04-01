@@ -1,0 +1,95 @@
+services:
+
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      backend-net:
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      backend-net:
+
+  backend:
+    build: ./Arapp
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      frontend-net:
+      backend-net:
+    environment:
+        POSTGRES_DB: ${POSTGRES_DB}
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+        SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+        SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+
+        SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+        SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+        JWT_SECRET: ${JWT_SECRET}
+
+        APP_ADMIN_EMAIL: ${APP_ADMIN_EMAIL}
+        APP_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD}
+
+        SPRING_MAIL_HOST: ${SPRING_MAIL_HOST}
+        SPRING_MAIL_PORT: ${SPRING_MAIL_PORT}
+        SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
+        SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
+
+        APP_BACKEND_URL: ${APP_BACKEND_URL}
+        APP_FRONTEND_URL: ${APP_FRONTEND_URL}
+
+        SPRING_DATA_REDIS_HOST: ${SPRING_DATA_REDIS_HOST}
+        SPRING_DATA_REDIS_PORT: ${SPRING_DATA_REDIS_PORT}
+
+        PYTHON_SERVICE_URL: ${PYTHON_SERVICE_URL}
+
+  frontend:
+    build: ./arapp-front
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+    volumes:
+        - ./arapp-front/src:/app/src
+        - ./arapp-front/public:/app/public
+    networks:
+      frontend-net:
+
+  nlpservice:
+    build: ./python-service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - backend
+    networks:
+      backend-net:
+
+networks:
+  frontend-net:
+  backend-net:
+
+volumes:
+  pgdata:

@@ -1,0 +1,10 @@
+.idea
+node_modules
+.dockerignore
+.gitignore
+Dockerfile
+eslint.config.js
+README.md
+tsconfig.app.json
+tsconfig.json
+tsconfig.node.json

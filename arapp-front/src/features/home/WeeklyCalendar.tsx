@@ -1,4 +1,4 @@
-import styles from './WeeklyCalendar.module.css';
+import styles from './weeklyCalendar.module.css';
 import {useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck} from "@fortawesome/free-solid-svg-icons";

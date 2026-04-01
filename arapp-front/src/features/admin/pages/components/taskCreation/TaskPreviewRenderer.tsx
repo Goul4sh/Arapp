@@ -84,7 +84,7 @@ export const TaskPreviewRenderer = ({ taskType, taskData }: Props) => {
                     id: 0,
                     type: "morphology-form",
                     description: data.description || "Podgląd pytania...",
-                    question: data.question || "Ułóż formę morfologiczną z podanych części:",
+                    question: data.question || "...",
                     steps: data.steps?.length ? data.steps : [
                         {
                             stepIndex: 0,
@@ -114,7 +114,7 @@ export const TaskPreviewRenderer = ({ taskType, taskData }: Props) => {
                 const morphologyPartsTask: TaskTypes.MorphologyPartsTaskType = {
                     id: 0,
                     type: "morphology-parts",
-                    question: data.question || "Ułóż części morfologiczne w poprawnej kolejności:",
+                    question: data.question || "...",
                     description: data.description || "Podgląd pytania...",
                     correctOrder: data.correctOrder?.length ? data.correctOrder : ["segment1", "segment2", "segment3"],
                     segments: data.segments?.length ? data.segments : [
