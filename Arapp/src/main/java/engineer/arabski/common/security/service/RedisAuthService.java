@@ -2,9 +2,14 @@ package engineer.arabski.common.security.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +19,7 @@ public class RedisAuthService {
 
     private static final String EMAIL_VERIFICATION_PREFIX = "verify:";
     private static final String JWT_BLACKLIST_PREFIX = "jwt_blacklist:";
+    private static final String USER_DETAILS_PREFIX = "user_details:";
 
     public void saveVerificationToken(String token, String email) {
         redisTemplate.opsForValue().set(
@@ -34,6 +40,35 @@ public class RedisAuthService {
 
         return null;
     }
+
+    public void cacheUserDetails (String username, Collection<? extends GrantedAuthority> authorities) {
+        String authString = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        redisTemplate.opsForValue().set(
+                USER_DETAILS_PREFIX + username,
+                authString,
+                24, TimeUnit.HOURS
+        );
+    }
+    public Collection<? extends GrantedAuthority> getCachedAuthorities(String username) {
+        String key = USER_DETAILS_PREFIX + username;
+        String authString = redisTemplate.opsForValue().get(key);
+
+        if (authString == null) {
+            return null;
+        }
+
+        return Arrays.stream(authString.split(","))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+
+    public void invalidateUserCache(String username) {
+        redisTemplate.delete(USER_DETAILS_PREFIX + username);
+    }
+
 
     public void addToBlacklist(String token, long ttlInMillis) {
         if (ttlInMillis > 0) {

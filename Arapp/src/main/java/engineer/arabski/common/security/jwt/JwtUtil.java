@@ -2,9 +2,11 @@ package engineer.arabski.common.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,17 @@ public class JwtUtil {
 
     private static final long EXPIRATION_TIME = 86400000;
 
+    private SecretKey signingKey;
+    private JwtParser jwtParser;
+
+    @PostConstruct
+    private void init() {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        this.signingKey = Keys.hmacShaKeyFor(keyBytes);
+        this.jwtParser = Jwts.parserBuilder()
+                .setSigningKey(signingKey)
+                .build();
+    }
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
@@ -33,13 +46,11 @@ public class JwtUtil {
         return createToken(claims, username);
     }
 
-
     public String generateTokenGoogle(String email) {
         return createToken(Map.of("provider", "google"), email);
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
-        System.out.println("Creating token for user: " + subject);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
@@ -73,15 +84,13 @@ public class JwtUtil {
 
     }
 
+
     private Claims extractAllClaims(String token) {
         try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
+            return jwtParser
                     .parseClaimsJws(token)
                     .getBody();
         } catch (JwtException e) {
-            System.out.println("Error extracting all claims: " + e.getMessage());
             throw new RuntimeException("Failed to extract all claims" + e + " " + e.getMessage(), e);
         }
     }

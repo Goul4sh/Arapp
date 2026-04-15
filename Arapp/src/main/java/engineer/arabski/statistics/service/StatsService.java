@@ -8,8 +8,9 @@ import engineer.arabski.statistics.model.GlobalUserStats;
 import engineer.arabski.statistics.repository.DailyUserStatsRepository;
 import engineer.arabski.statistics.repository.GlobalUserStatsRepository;
 import engineer.arabski.user.model.User;
-import engineer.arabski.user.service.UserService;
+import engineer.arabski.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,13 +21,15 @@ public class StatsService {
 
     private final DailyUserStatsRepository dailyUserStatsRepository;
     private final GlobalUserStatsRepository globalUserStatsRepository;
+    private final UserRepository userRepository;
 
-    private final UserService userService;
 
-    public StatsService(DailyUserStatsRepository dailyUserStatsRepository, GlobalUserStatsRepository globalUserStatsRepository, UserService userService) {
+    public StatsService(DailyUserStatsRepository dailyUserStatsRepository, GlobalUserStatsRepository globalUserStatsRepository
+            , UserRepository userRepository
+    ) {
         this.dailyUserStatsRepository = dailyUserStatsRepository;
         this.globalUserStatsRepository = globalUserStatsRepository;
-        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     public UserStatsResponse getDailyUserStats(Long userId, LocalDate date) {
@@ -77,11 +80,17 @@ public class StatsService {
 
     @Transactional
     public void saveSessionStats(Long userId, UserStatsRequest request) {
-        User user = userService.getUserById(userId);
+        User user = userRepository.getReferenceById(userId);
         LocalDate today = LocalDate.now();
 
         updateDailyStats(userId, user, today, request);
         updateGlobalStats(userId, user, today, request);
+    }
+
+    @Async
+    @Transactional
+    public void saveSessionStatsAsync (Long userId, UserStatsRequest request) {
+        saveSessionStats(userId, request);
     }
 
 

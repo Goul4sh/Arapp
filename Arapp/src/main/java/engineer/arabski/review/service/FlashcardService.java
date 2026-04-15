@@ -176,11 +176,10 @@ public class FlashcardService {
 
         flashcardRepository.save(flashcard);
 
-        statsService.saveSessionStats(
+        statsService.saveSessionStatsAsync(
                 flashcard.getFlashcardOwner().getId(),
                 new UserStatsRequest(0L, 0L, 0L, 0L, 1L)
         );
-
     }
 
 
