@@ -55,7 +55,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-
         String username = null;
         String jwt = null;
 
@@ -97,19 +96,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 if (jwtUtil.validateToken(jwt, username)) {
 
-//                    Collection< ? extends GrantedAuthority> authorities =
-//                            redisAuthService.getCachedAuthorities(username);
-
-//                    if (authorities == null) {
-                        UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
-                    Collection< ? extends GrantedAuthority>
+                    UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
+                    Collection<? extends GrantedAuthority>
                             authorities = userDetails.getAuthorities();
-//                        redisAuthService.cacheUserDetails(username, authorities);
-//                    }
 
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
-                            username, null, authorities);
+                                    userDetails, null, authorities);
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
